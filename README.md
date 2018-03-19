@@ -1,2 +1,2 @@
 # kaputils
-custom plotting and imulation utilities
+custom plotting and simulation utilities
