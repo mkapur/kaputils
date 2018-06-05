@@ -3,8 +3,10 @@
 #' \code{plotKobe_panel} custom wrapper to loop through nested operating/estimation models and plot using r4ss
 #' @param rootdir master location of all models and (optional) replicates; will search for Report.sso files therein
 #' @param pattern either a pattern to match many models or the full directory name for a single model.
-#' @param subpattern can be NA; a secondary string by which models will be grouped, e.g. "Replicate"
-#' @param llabels logical. If T, will write a CSV with results.
+#' @param plotrows number of rows per page of PDF
+#' @param plotcols number of cols per page of PDF
+#' @param saveplot logical. should plots be saved to model directory
+#' @param plotloc folder to save plots; if NA, will save in location of cpue_results
 #' @seealso \code{\link[r4ss]}
 #'
 plotKobe_panel <- function(rootdir,
@@ -25,36 +27,20 @@ plotKobe_panel <- function(rootdir,
 
   if(saveplot) jpeg(paste0(plotloc, "kobe_panel.jpg"), width = 8, height = 6, units = 'in', res = 1020)
 
+  ## iterate avail. runs and assign colors
+  if(!is.na(pattern)){
+    mods <- list.dirs(rootdir, recursive = F) %>%
+      .[grepl(pattern, .)]
+  } else if (is.na(pattern)){ mods <- rootdir}
+  ## use SS_output function to extract quantities
   par(mfrow = c(plotrows, plotcols), mar = c(4, 4, 2, 1))
-  # par(mfrow = c(1,1))
-  # Kobe plot layout setting
-  x_max = 2
-  x_min = 0
-  y_max = 5
-  y_min = 0
-
-  col.choices = c('deepskyblue',
-                  "mediumspringgreen",
-                  "aquamarine",
-                  "bisque2",
-                  "brown1",
-                  "deeppink")
-
-if(!is.na(pattern)){
-  mods <- list.dirs(rootdir, recursive = F) %>%
-    .[grepl(pattern, .)]
-} else if (is.na(pattern)){
-    mods <- rootdir}
 
   for (m in 1:length(mods)) {
-
-    ## use SS_output function to extract quantities
-
-
-    mtemp <- mods[m] %>%
-      SS_output(.,
-                covar = F,
-                ncols = 313)
+    # Kobe plot layout setting
+    x_max = 2
+    x_min = 0
+    y_max = 5
+    y_min = 0
     plot(
       c(x_min, x_max),
       c(y_min, y_max),
@@ -64,7 +50,7 @@ if(!is.na(pattern)){
       xaxs = "i",
       yaxs = "i",
       bty = "n",
-      main = sub('.*\\/', '', mods)[m]
+      main = basename(mods[m])
     )
     mtext(
       side = 1,
@@ -93,6 +79,12 @@ if(!is.na(pattern)){
             c(1, 1, y_max, y_max),
             col = "goldenrod",
             border = NA)
+
+    mtemp <- mods[m] %>%
+      SS_output(.,
+                covar = F,
+                forecast = F,
+                ncols = 313)
 
     with(mtemp$Kobe,
          points(
@@ -130,33 +122,35 @@ if(!is.na(pattern)){
            pch = c(17,25),
            col = c('purple','grey'),
            legend = c(mtemp$Kobe[1,'Year'], mtemp$Kobe[nrow(mtemp$Kobe),'Year']))
-    text(labels = mtemp$Kobe[1,'Year'],
-         x = mtemp$Kobe[1,'B.Bmsy']*0.95,
-         y = mtemp$Kobe[1,'F.Fmsy']*0.95,
-         cex = 1)
-    text(labels = mtemp$Kobe[nrow(mtemp$Kobe),'Year'],
-         x = mtemp$Kobe[nrow(mtemp$Kobe),'B.Bmsy']*0.95,
-         y = mtemp$Kobe[nrow(mtemp$Kobe),'F.Fmsy']*0.95,
-         cex = 1)
 
+    # text(labels = mtemp$Kobe[1,'Year'],
+    #      x = mtemp$Kobe[1,'B.Bmsy']*0.95,
+    #      y = mtemp$Kobe[1,'F.Fmsy']*0.95,
+    #      cex = 1)
+    # text(labels = mtemp$Kobe[nrow(mtemp$Kobe),'Year'],
+    #      x = mtemp$Kobe[nrow(mtemp$Kobe),'B.Bmsy']*0.95,
+    #      y = mtemp$Kobe[nrow(mtemp$Kobe),'F.Fmsy']*0.95,
+    #      cex = 1)
 
-  }
+  } ## end mods loop
   cat('saved plot with model(s)',pattern," to ", plotloc,"\n")
   cat("set plotloc or change working dir if needed","\n")
   graphics.off()
 
-}
+} ## end function
+
+
 
 # ## not run:
 # ## test many
-# plotKobe_panel(
-#   rootdir = "G:\\MAKO\\mako_sim\\FCruns",
-#   pattern = "7_S",
-#   plotloc = "G:\\MAKO\\mako_sim\\FCruns\\plots\\",
-#   plotrows = 3,
-#   plotcols = 2,
+# kaputils::plotKobe_panel(
+#   rootdir = "G:\\MAKO\\mako_sim",
+#   pattern = "0.7-4-1",
+#   plotloc = "G:\\MAKO\\mako_sim\\plots\\",
+#   plotrows = 5,
+#   plotcols = 4,
 #   saveplot = T)
-#
+# #
 # ## test many
 # plotKobe_panel(
 #   rootdir = "G:\\MAKO\\mako_sim\\presentation",

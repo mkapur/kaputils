@@ -8,16 +8,23 @@
 #' @param FleetName optional vector of fleet names for which data should be extracted; all means all
 #' @seealso \code{\link[r4ss]}
 
-extract_results <- function(rootdir,
+extractResults <- function(rootdir,
                             pattern = NA,
                             subpattern = NA,
                             writeTables = T,
                             FleetName = c("S4_JPN_SS","S7_JPN_GEO","All")[3]){
 
+  # rootdir <-"G:/TUNABOOT/"
+  # pattern = 'TUNA_'
+  # subpattern = 'Rep'
+
   ## iterate avail. runs
-  if(!is.na(pattern)) {mods <- list.dirs(rootdir, recursive = F, full.names = T) %>%
-    .[grepl(pattern, .)]
-  }  else{mods <- rootdir}
+  if (!is.na(pattern)) {
+    mods <- list.dirs(rootdir, recursive = F, full.names = T) %>%
+      .[grepl(pattern, .)]
+  }  else{
+    mods <- rootdir
+  }
 
   refList = data.frame(
     "MOD" = NA,
@@ -26,6 +33,7 @@ extract_results <- function(rootdir,
     "SPB_SSBMSY" = NA
   )
   if(!exists(paste0(rootdir,"/results/"))) dir.create(paste0(rootdir,"/results/"))
+
   for (m in 1:length(mods)) { ## loop into master file
 
     ## use SS_output function to extract quantities
@@ -37,16 +45,20 @@ extract_results <- function(rootdir,
 
 
       for (s in 1:length(subdirs)) {
-        modname <- sub(".*/(.*)/.*","\\1",subdirs)[s]
+        modname <- sub('.*\\/', '', mods)[m]
 
         mtemp <- subdirs[s] %>%
           SS_output(.,
                     covar = F,
+                    forecast = F,
                     ncols = 1000)
 
         ## write and/or append SPRSeries
         if (writeTables == T) {
-          SPRseries = data.frame(mtemp$sprseries, "rep" = s,
+          SPRseries = data.frame(mtemp$sprseries,
+                                 "B.Bmsy" = mtemp$Kobe$B.Bmsy,
+                                 "F.Fmsy" = mtemp$Kobe$F.Fmsy,
+                                 "rep" = s,
                                  "MOD" = modname)
 
           if (m == 1 & s == 1) { ## first mod, first rep
@@ -100,7 +112,7 @@ extract_results <- function(rootdir,
         } ## end writeTables
         ## extract ref point estimates, in order of toMatch
 
-        ## fancy indexing for sublist
+        # ## fancy indexing for sublist
         idx <- (m-1)*length(subdirs) + s
         refList[idx, "MOD" ] <- modname
         refList[idx, "REP"] <- s
@@ -114,24 +126,40 @@ extract_results <- function(rootdir,
       } ## end of subdir loop
     } ## end !is na subpattern
 
-    else if(!is.na(pattern) & is.na(subpattern)){
+    if(!is.na(pattern) & is.na(subpattern)){
       mtemp <- mods[m] %>%
         list.dirs(., recursive = T) %>%
         .[grepl(pattern, .)] %>%
         SS_output(.,
                   covar = F,
+                  forecast = F,
                   ncols = 1000)
-    } else if(is.na(pattern) & is.na(subpattern)){
+    } ## end if only pattern
+
+    if(is.na(pattern) & is.na(subpattern)){
       mtemp <- mods[m] %>%
         SS_output(.,
                   covar = F,
+                  forecast = F,
                   ncols = 1000)
-    }
+    } ## end if just rootdir
 
+    if(is.na(pattern) & is.na(subpattern) |(!is.na(pattern) & is.na(subpattern))){ ## use simple idx for no-sub cases
       modname <- basename(mods[m])
 
+      refList[m,"MOD"] <- modname
+      refList[m,"SPB_SSBMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"B.Bmsy"]
+      refList[m,"F_FMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"F.Fmsy"]
+      refList[m,"LIKELIHOOD_TOTAL"] <- mtemp$likelihoods_used['TOTAL','values']
+      refList[m,"LIKELIHOOD_SURVEY"] <- mtemp$likelihoods_used['Survey','values']
+      refList[m,"LIKELIHOOD_CATCH"] <- mtemp$likelihoods_used['Catch','values']
+      refList[m,"EQUIL_CATCH"] <- mtemp$likelihoods_used['Equil_catch','values']
+
       if (writeTables == T) {
-        SPRseries = data.frame(mtemp$sprseries, "MOD" = modname)
+        SPRseries = data.frame(mtemp$sprseries,
+                               "B.Bmsy" = mtemp$Kobe$B.Bmsy,
+                               "F.Fmsy" = mtemp$Kobe$F.Fmsy,
+                               "MOD" = modname)
         if (m == 1) { ## first mod, first rep
           write.table(
             SPRseries,
@@ -182,18 +210,12 @@ extract_results <- function(rootdir,
           )
         } ## end other reps
       } ## end writeTables
+    } ## end simplecase write
+  } ## end mods loop
 
-      refList[m,"MOD"] <- modname
-      refList[m,"SPB_SSBMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"B.Bmsy"]
-      refList[m,"F_FMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"F.Fmsy"]
-      refList[m,"LIKELIHOOD_TOTAL"] <- mtemp$likelihoods_used['TOTAL','values']
-      refList[m,"LIKELIHOOD_SURVEY"] <- mtemp$likelihoods_used['Survey','values']
-      refList[m,"LIKELIHOOD_CATCH"] <- mtemp$likelihoods_used['Catch','values']
-      refList[m,"EQUIL_CATCH"] <- mtemp$likelihoods_used['Equil_catch','values']
-      # refList[m,"RMSE_S4"] <- mtemp$index_variance_tuning_check %>% .$r.m.s.e %>% as.numeric()
-    }
   if(writeTables) write.csv(refList, paste0(rootdir,"/results/management_quantities.csv"), row.names = F)
   return(refList)
+
   } ## end function
 
 
@@ -207,7 +229,7 @@ extract_results <- function(rootdir,
 #                             writeTables = T,
 #                             FleetName = c("S4_JPN_SS","S7_JPN_GEO","All")[3])
 # ## test with subdir
-# extract_results(rootdir = "G:\\SSBOOT-archive\\eachoff",
+# extractResults(rootdir =  "G:/SSBOOT/",
 #                 pattern = 'MAK',
 #                 subpattern = 'Rep',
 #                 writeTables = T,

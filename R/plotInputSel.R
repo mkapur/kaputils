@@ -17,8 +17,13 @@ plotInputSel <- function(rootdir,
                          pdfrows = 3,
                          pdfcols = 2) {
 
-# rootdir <- "G:\\MAKO\\mako_sim"
-# pattern = NA
+
+  if (is.na(plotloc)) {
+    if (!exists(paste0(getwd(), "/plots/"))) {
+      dir.create(paste0(getwd(), "/plots/"))
+    }
+    plotloc <- paste0(getwd(), "/plots/")
+  } ## end plotploc
 
   if (sum(is.na(pattern)) == 0) {
     mods <- list.dirs(rootdir) %>%
@@ -37,6 +42,7 @@ plotInputSel <- function(rootdir,
   summaryoutput0 <- mods[m] %>%
     SSgetoutput(dirvec = .,
                 getcovar = F,
+                forecast = F,
                 ncols = 1000)
 
   summaryoutput <- summaryoutput0$replist1
@@ -98,7 +104,7 @@ plotInputSel <- function(rootdir,
   ## save individual JPEGs
   for (s in 1:length(selp)) {
     ggplot2::ggsave(
-      paste0(mods[m], "\\Selex_",  seldf[seldf$Fleet == s, 'fleetName'][1], ".jpg"),
+      paste0(mods[m], "plots/Selex_",  seldf[seldf$Fleet == s, 'fleetName'][1], ".jpg"),
       plot = selp[[s]],
       width = 7,
       height = 5,
@@ -111,12 +117,16 @@ plotInputSel <- function(rootdir,
   ## save one-page PDF
   ml <- gridExtra::marrangeGrob(selp, nrow=pdfrows, ncol=pdfcols)
   ## non-interactive use, multipage pdf
-  ggplot2::ggsave(paste0(mods[m], "\\Selex_all.pdf"), ml,    width = 8.5,
-         height = 11,
-         units = 'in')
+  ggplot2::ggsave(
+    paste0(mods[m], "/plots/Selex_all.pdf"),
+    ml,
+    width = 8.5,
+    height = 11,
+    units = 'in'
+  )
   graphics.off()
-  cat("saved plot to ", paste0(rootdir, "\\Selex_all.pdf"),"\n")
-  cat("set plotloc or change working dir if needed","\n")
+  cat("saved plot to ", paste0(rootdir, "/plots/Selex_all.pdf"), "\n")
+  cat("set plotloc or change working dir if needed", "\n")
 
 
 } ## end loop mods
@@ -125,7 +135,7 @@ plotInputSel <- function(rootdir,
 
 ## not run:
 # plotInputSel(
-#   rootdir = "G:\\MAKO\\mako_sim",
+#   rootdir = "G:/MAKO/mako_sim",
 #   pattern = NA,
 #   year = 2016,
 #   lmin = 35,

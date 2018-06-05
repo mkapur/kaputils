@@ -12,7 +12,9 @@ Depends: R (>= 3.2.0),
     Rmisc,
     jpeg,
     gridExtra,
-    RColorBrewer
+    RColorBrewer,
+    gridBase,
+    maps
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

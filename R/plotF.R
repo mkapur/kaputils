@@ -29,7 +29,7 @@ plotF <- function(SPRseries,
   } else{
     SPRseries0 <- SPRseries
   }
-  if(length(mods) <= 5){
+  if(length(unique(SPRseries0$MOD)) <= 5){
 
     SPRseries0 %>% ggplot(., aes(x = Year, y = F_std, col = MOD)) +
     theme_bw() +
@@ -48,7 +48,7 @@ plotF <- function(SPRseries,
     ylab("F_Std") +
     xlab("Year") +
     geom_line(lwd = 1.1)
-  } else if(length(mods)> 5){
+  } else if(length(unique(SPRseries0$MOD))> 5){
 
       SPRseries0 %>% ggplot(., aes(x = Year, y = F_std, col = MOD)) +
       theme_bw() +
@@ -77,6 +77,17 @@ if (saveplot == T) {
     dpi = 1020,
     limitsize = TRUE
   )
+  ggplot2::ggsave(
+    paste0(plotloc, "/F_Trajectory.pdf"),
+    plot = last_plot(),
+    path = NULL,
+    scale = 1,
+    width = 7,
+    height = 5,
+    units = "in",
+    dpi = 1020,
+    limitsize = TRUE
+  )
 }
     cat('saved plot with model(s)',
         mods,
@@ -87,8 +98,17 @@ if (saveplot == T) {
 
   }
 
-
-
+# RootFile = "G:/MAKO/mako_sim/"
+# SPRseries <-read.csv(paste0(RootFile,"/results/SPRseries.csv")) %>%
+#   plyr::rename(c('Yr' = 'Year', 'F.Z.M' = 'F_std'))
+# plotF(
+#   SPRseries,
+#   saveplot = T,
+#   mods = NA,
+#   plotloc = paste0(RootFile,"/plots/"),
+#   pdfrows = 1,
+#   pdfcols = 1
+# )
 
 ## not run
 # SPRseries <- read.csv("G:\\MAKO\\mako_sim\\presentation\\results\\SPRseries.csv")

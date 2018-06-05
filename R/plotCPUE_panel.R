@@ -26,15 +26,16 @@ plotCPUE_panel <-
     yrvec <- with(cpue_results, c(min(Yr), max(Yr)))
     cpuevec <- with(cpue_results, c(0, max(Exp, Obs)))
 
-    for (i in unique(cpue_results$FleetName)) {
+    for (i in unique(cpue_results$Name)) {
       if (sum(is.na(mods)) == 0) {
         cpue_results0 <-
           cpue_results[cpue_results$MOD %in% mods &
-                         cpue_results$FleetName == i, ]
+                         cpue_results$Name == i, ]
       } else{
         cpue_results0 <-
-          with(cpue_results, cpue_results[grepl(i, FleetName), ])
+          with(cpue_results, cpue_results[grepl(i, Name), ])
       }
+      if(length(unique(cpue_results0$MOD)) <= 5){
       cpuep[[i]] <-
         ggplot(cpue_results0, aes(x = Yr, col = MOD)) +
         theme_bw() +
@@ -63,25 +64,47 @@ plotCPUE_panel <-
         ),
         col = 'black',
         width = 0)
-    }
+    } ## end if < 5
+      else {     cpuep[[i]] <-
+        ggplot(cpue_results0, aes(x = Yr, col = MOD)) +
+        theme_bw() +
+        theme(
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          axis.text = element_text(size = rel(0.75)),
+          axis.title = element_text(size = rel(0.75)),
+          legend.position = 'none'
+        ) +
+        scale_color_manual(values = rep(brewer.pal(11, name = 'Spectral'), nrow(cpue_results))) +
+        scale_y_continuous(limits = cpuevec, expand = c(0, 0)) +
+        scale_x_continuous(limits = yrvec) +
+        ylab(paste0(i, " Expected CPUE")) +
+        xlab("Year") +
+        geom_line(lwd = 1.1, aes(y = Exp)) +
+        geom_point(aes(y = Obs), col = 'black') +
+        geom_errorbar(aes(
+          x = Yr,
+          ymin = Obs - SE,
+          ymax = Obs + SE
+        ),
+        col = 'black',
+        width = 0)
+      } ## end if > 5
+      } ## end loop
     if (saveplot == T) {
-      # # save individual JPEGs
-      # for (s in 1:length(cpuep)) {
-      #   ggplot2::ggsave(
-      #     paste0(plotloc, "\\CPUE_",  names(cpuep)[s], ".jpg"),
-      #     plot = cpuep[[s]],
-      #     width = 7,
-      #     height = 5,
-      #     units = 'in',
-      #     dpi = 1020
-      #   )
-      # }
       ## save one-page PDF
       ml <-
         gridExtra::marrangeGrob(cpuep, nrow = pdfrows, ncol = pdfcols)
       ## non-interactive use, multipage pdf
       ggplot2::ggsave(
-        paste0(plotloc, "\\cpue_panel.pdf"),
+        paste0(plotloc, "/cpue_panel.pdf"),
+        ml,
+        width = 8.5,
+        height = 11,
+        units = 'in'
+      )
+      ggplot2::ggsave(
+        paste0(plotloc, "/cpue_panel.jpg"),
         ml,
         width = 8.5,
         height = 11,
@@ -97,15 +120,25 @@ plotCPUE_panel <-
 
 ## not run:
 ## testing with subset of mods
-# cpue_results <- read.csv("G:\\MAKO\\mako_sim\\FCruns\\results\\cpue.csv")
+# cpue_results <- read.csv("G:/MAKO/mako_sim/results/cpue.csv")
 #
 # plotCPUE_panel(cpue_results,
 #            saveplot = T,
-#            mods = c("47_S1-NewCTL","47_S2-NewCTL"),
-#            plotloc = "G:\\MAKO\\mako_sim\\FCruns\\plots",
-#            pdfrows = 2,
-#            pdfcols = 2)
-#
+#            mods = NA,
+#            plotloc = "G:/MAKO/mako_sim/plots",
+#            pdfrows = 1,
+#            pdfcols = 1)
+
+
+# cpue_results <- read.csv(paste0("G:\\MAKO\\mako_sim\\results\\cpue.csv"))
+# plotCPUE_panel(
+#   cpue_results,
+#   saveplot = T,
+#   mods = NA,
+#   plotloc = "G:\\MAKO\\mako_sim/plots/",
+#   pdfrows = 1,
+#   pdfcols = 1
+# )
 # ## test with all mods
 # plotCPUE_panel(cpue_results,
 #                saveplot = T,

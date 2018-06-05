@@ -18,8 +18,7 @@ extractResults_grid <- function(rootdir,
   mods <- list.dirs(rootdir, recursive = F) %>%
     .[grepl(pattern, .)]
 
-  if (!exists(paste0(rootdir, "/results/")))
-    dir.create(paste0(rootdir, "/results/"))
+  if (!exists(paste0(rootdir, "/results/"))) { dir.create(paste0(rootdir, "/results/"))}
 
   refList = data.frame(
     "MOD" = NA,
@@ -45,13 +44,17 @@ extractResults_grid <- function(rootdir,
     mtemp <- mods[m] %>%
       SS_output(.,
                 covar = F,
-                ncols = 313,
-                verbose = F)
+                ncols = 1000,
+                verbose = F,
+                forecast = F)
 
     modname <- basename(mods)[m]
+
+    cat(modname,"\n")
+
     ## write and/or append SPRSeries and CPUE
     if (writeTables == T) {
-      SPRseries = data.frame(
+      SPRseries <- data.frame(
         mtemp$sprseries,
         "MOD" = modname,
         "BETA" =   as.numeric(sapply(
@@ -97,8 +100,7 @@ extractResults_grid <- function(rootdir,
       if (FleetName != 'All') {
         ## if you don't want everything, subset CPUE
         cpue.df <- mtemp$cpue[mtemp$cpue$Name == FleetName, ]
-      } else
-        cpue.df <- mtemp$cpue
+      } else {cpue.df <- mtemp$cpue}
 
       cpue <- data.frame(
         cpue.df,
@@ -158,8 +160,8 @@ extractResults_grid <- function(rootdir,
       as.numeric(sapply(strsplit(modname, "-", fixed = TRUE), "[", 4))
 
     refList[m, "SPB_SSBMSY"] <-
-      mtemp$Kobe[nrow(mtemp$Kobe), "B.Bmsy"]
-    refList[m, "F_FMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe), "F.Fmsy"]
+      mtemp$Kobe[nrow(mtemp$Kobe), 2]
+    refList[m, "F_FMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe), 3]
     refList[m, "LIKELIHOOD_TOTAL"] <-
       mtemp$likelihoods_used['TOTAL', 'values']
     refList[m, "LIKELIHOOD_SURVEY"] <-
@@ -169,7 +171,9 @@ extractResults_grid <- function(rootdir,
     refList[m, "EQUIL_CATCH"] <-
       mtemp$likelihoods_used['Equil_catch', 'values']
     refList[m, "RMSE_S4"] <-
-      mtemp$index_variance_tuning_check %>% filter(Fleet == 'S4_JPN_SS') %>% .$r.m.s.e %>% as.numeric()
+      mtemp$index_variance_tuning_check %>% filter(.[,ncol(.)] == 'S4_JPN_SS') %>% .$r.m.s.e %>% as.numeric()
+
+
 
     refList[m, "STATUS"] <- ifelse(refList[m, "SPB_SSBMSY"]   > 1 &
                                      refList[m, "F_FMSY"] < 1,
@@ -193,8 +197,8 @@ extractResults_grid <- function(rootdir,
 
 ## not run
 ## test on mako
-
-# extractResults_grid(rootdir = "G:\\MAKO\\mako_sim-archive\\dummyrun_2ems_0308",
+#
+# extractResults_grid(rootdir = "G:\\MAKO\\mako_sim\\",
 #                      pattern = "MAK_",
 #                      writeTables = T,
 #                      ## subset fleets for CPUE csv
