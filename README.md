@@ -2,6 +2,6 @@
 custom plotting and simulation utilities
 
 ```
-devtools::install_github(mkapur/kaputils")
+devtools::install_github("mkapur/kaputils")
 library(kaputils)
 ```
