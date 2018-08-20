@@ -11,6 +11,8 @@
 plotInputSel <- function(rootdir,
                          pattern = NA,
                          year = 2016,
+                         seltype = c('age','length')[1],
+                         plotloc = NA,
                          lmin = 35,
                          lmax = 350,
                          linc = 5,
@@ -23,7 +25,8 @@ plotInputSel <- function(rootdir,
       dir.create(paste0(getwd(), "/plots/"))
     }
     plotloc <- paste0(getwd(), "/plots/")
-  } ## end plotploc
+  } ## end plot loc
+  message('est. plotting directory \n')
 
   if (sum(is.na(pattern)) == 0) {
     mods <- list.dirs(rootdir) %>%
@@ -51,34 +54,44 @@ plotInputSel <- function(rootdir,
     data.frame(Fleet = summaryoutput$fleet_ID,
                fleetName = summaryoutput$FleetNames)
 
+  if(seltype == 2) {
+    seldf0 <-  summaryoutput$sizeselex
 
-  seldf <-
-    summaryoutput$sizeselex %>%
-    dplyr::filter(Factor == "Lsel" & year == year) %>%
-    dplyr::select(-year,-Factor,-label) %>%
-    reshape2::melt(id = c('Fleet', 'gender')) %>%
-    dplyr::mutate(variable = as.numeric(as.character(variable)))
+    seldf <- seldf0 %>% dplyr::filter(Factor == "Lsel" & year == year) %>%
+      dplyr::select(-year,-Factor,-Label) %>%
+      reshape2::melt(id = c('Fleet', 'Sex')) %>%
+      dplyr::mutate(variable = as.numeric(as.character(variable)))
+  } else{
+    seldf0 <- summaryoutput$ageselex
 
-  seldf[, 'fleetName'] <-
-    fleetKey$fleetName[match(seldf$Fleet, fleetKey$Fleet)]
+    seldf <- seldf0 %>% dplyr::filter(Factor == "Asel" & Yr == year) %>%
+      dplyr::select(-year,-Factor,-Label) %>%
+      reshape2::melt(id = c('Fleet', 'Sex')) %>%
+      dplyr::mutate(variable = as.numeric(as.character(variable)))
+  }
+
+
+
+  seldf[, 'fleetName'] <- fleetKey$fleetName[match(seldf$Fleet, fleetKey$Fleet)]
 
 
   selp <- list()
 
   for (i in unique(seldf$Fleet)) {
     temp <- subset(seldf, Fleet == i)
+    lpos <-
     selp[[i]] <- ggplot2::ggplot(temp, aes(
       x = variable,
       y = value,
-      col = factor(gender)
+      col = factor(Sex)
     )) +
       theme_bw() +
       theme(
         panel.grid = element_blank(),
         title = element_text(size = rel(0.6)),
-        axis.text = element_text(size = rel(1)),
-        axis.title = element_text(size = rel(1)),
-        legend.position = c(0.9, 0.9),
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 14),
+        legend.position = ifelse(length(unique(temp$Sex)) > 1, c(0.9, 0.9), 'none'),
         legend.background = element_blank(),
         legend.key = element_blank(),
         legend.title = element_blank(),
@@ -87,16 +100,18 @@ plotInputSel <- function(rootdir,
         axis.line = element_line(colour = "black")
       ) +
       scale_x_continuous(limits = c(lmin, lmax),
-                         breaks = seq(lmin, lmax, 50)) +
+                         breaks = seq(lmin, lmax, linc)) +
       ylim(0, 1) +
       scale_color_manual(
         values = c('dodgerblue3', 'goldenrod'),
         labels = c("Male", "Fem")
       ) +
       labs(
-        title = paste0('L-based Selex for ', temp[1, 'fleetName'], ', ', year),
+        title = ifelse(seltype == 2,
+                       paste0('L-based Selex for ', temp[1, 'fleetName'], ', ', year),
+                       paste0('A-based Selex for ', temp[1, 'fleetName'], ', ', year)),
         y = 'Selectivity',
-        x = 'Length (cm)'
+        x = ifelse(seltype == 2,'Length (cm)','Age (yrs)')
       ) +
       geom_line(lwd = 1.2)
   } ## end selp
@@ -104,12 +119,12 @@ plotInputSel <- function(rootdir,
   ## save individual JPEGs
   for (s in 1:length(selp)) {
     ggplot2::ggsave(
-      paste0(mods[m], "plots/Selex_",  seldf[seldf$Fleet == s, 'fleetName'][1], ".jpg"),
+      paste0(plotloc,"/Selex_",  seldf[seldf$Fleet == s, 'fleetName'][1], ".jpg"),
       plot = selp[[s]],
       width = 7,
       height = 5,
       units = 'in',
-      dpi = 1020
+      dpi = 720
     )
   }
 
@@ -144,3 +159,13 @@ plotInputSel <- function(rootdir,
 # pdfrows = 3,
 # pdfcols = 2
 # )
+
+# plotInputSel(rootdir =  "G:/consbio_rev/results",
+#              pattern = "Rep",
+#              plotloc = "G:/consbio_rev/plots",
+#              year = 2013,
+#              lmin = 0,
+#              lmax = 41,
+#              linc = 10,
+#              pdfrows = 3,
+#              pdfcols = 2)

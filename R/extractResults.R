@@ -14,9 +14,7 @@ extractResults <- function(rootdir,
                             writeTables = T,
                             FleetName = c("S4_JPN_SS","S7_JPN_GEO","All")[3]){
 
-  # rootdir <-"G:/TUNABOOT/"
-  # pattern = 'TUNA_'
-  # subpattern = 'Rep'
+
 
   ## iterate avail. runs
   if (!is.na(pattern)) {
@@ -33,19 +31,27 @@ extractResults <- function(rootdir,
     "SPB_SSBMSY" = NA
   )
   if(!exists(paste0(rootdir,"/results/"))) dir.create(paste0(rootdir,"/results/"))
-
+  idx <- 1
   for (m in 1:length(mods)) { ## loop into master file
 
     ## use SS_output function to extract quantities
-
     if (!is.na(subpattern)) { ## if subpattern provided loop once more
       subdirs <- mods[m] %>%
         list.dirs(., recursive = T) %>%
         .[grepl(subpattern, .)]
 
-
       for (s in 1:length(subdirs)) {
+
+        ## skip if it's just directory with folders inside
+        if(length(list.dirs(subdirs[s], recursive = F)) > 0)  next
+
         modname <- sub('.*\\/', '', mods)[m]
+        IDX <-  basename(subdirs)[s]
+
+        ## pull out rep based on file name
+        splitpath0 <- strsplit(subdirs[s],"/")[[1]]
+        splitpath1 <- splitpath0[grep('Rep',splitpath0)]
+        splitpath <-  sub("Rep*","",splitpath1)
 
         mtemp <- subdirs[s] %>%
           SS_output(.,
@@ -55,11 +61,12 @@ extractResults <- function(rootdir,
 
         ## write and/or append SPRSeries
         if (writeTables == T) {
-          SPRseries = data.frame(mtemp$sprseries,
+          SPRseries <- data.frame(mtemp$sprseries,
                                  "B.Bmsy" = mtemp$Kobe$B.Bmsy,
                                  "F.Fmsy" = mtemp$Kobe$F.Fmsy,
-                                 "rep" = s,
-                                 "MOD" = modname)
+                                 "rep" =  splitpath,
+                                 "MOD" = modname,
+                                 'IDX' = IDX)
 
           if (m == 1 & s == 1) { ## first mod, first rep
             write.table(
@@ -87,8 +94,10 @@ extractResults <- function(rootdir,
           } else
             cpue.df <- mtemp$cpue
 
-          cpue = data.frame(cpue.df, "rep" = s,
-                            "MOD" = modname)
+          cpue = data.frame(cpue.df,
+                            "rep" = splitpath,
+                            "MOD" = modname,
+                            'IDX' = IDX)
           if (m == 1 & s == 1) {
             write.table(
               cpue,
@@ -112,16 +121,20 @@ extractResults <- function(rootdir,
         } ## end writeTables
         ## extract ref point estimates, in order of toMatch
 
-        # ## fancy indexing for sublist
-        idx <- (m-1)*length(subdirs) + s
+        ## fancy indexing for sublist
+        # idx <- (m-1)*length(subdirs) + s
+
         refList[idx, "MOD" ] <- modname
-        refList[idx, "REP"] <- s
+        refList[idx, "REP"] <- splitpath
+        refList[idx,'IDX'] <- IDX
         refList[idx,"SPB_SSBMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"B.Bmsy"]
         refList[idx,"F_FMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"F.Fmsy"]
         refList[idx,"LIKELIHOOD_TOTAL"] <- mtemp$likelihoods_used['TOTAL','values']
         refList[idx,"LIKELIHOOD_SURVEY"] <- mtemp$likelihoods_used['Survey','values']
         refList[idx,"LIKELIHOOD_CATCH"] <- mtemp$likelihoods_used['Catch','values']
         refList[idx,"EQUIL_CATCH"] <- mtemp$likelihoods_used['Equil_catch','values']
+
+        idx <- idx + 1
         # refList[idx,"RMSE_S4"] <- mtemp$index_variance_tuning_check %>% .$r.m.s.e %>% as.numeric()
       } ## end of subdir loop
     } ## end !is na subpattern
@@ -219,7 +232,9 @@ extractResults <- function(rootdir,
   } ## end function
 
 
-
+# rootdir <-"G:/TUNABOOT"
+# pattern = 'TUNA_'
+# subpattern = 'Rep'
 
 ## not run:
 ## test without subdir
