@@ -30,7 +30,15 @@ ss_compare <- function(rootdir,
       .[grepl(pattern, .)]
   }else{ mods = list.files(rootdir,  pattern = "EM|OM")}
 
-  summaryoutput = mods %>%
+  ## skip if it's just directory with folders inside
+  moddrop <- NULL
+  for(m in 1:length(mods)){
+  if(length(list.dirs(mods[m], recursive = F)) > 0)  moddrop[m] <- m
+  }
+  moddrop <- moddrop[!is.na(moddrop)]
+  mods <- mods[-moddrop]
+
+  summaryoutput <- mods %>%
     SSgetoutput(dirvec = .,
                 getcovar = F,
                 ncols = 1000) %>%
