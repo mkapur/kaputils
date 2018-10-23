@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1539987261136.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1386950047",
+    "id" : "4BA1C248",
+    "lastKnownWriteTime" : 1539989295,
+    "last_content_update" : 1539989295321,
+    "path" : "~/GitHub/kaputils/R/plotInputSel.R",
+    "project_path" : "R/plotInputSel.R",
+    "properties" : {
+        "cursorPosition" : "172,13",
+        "scrollLine" : "160"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

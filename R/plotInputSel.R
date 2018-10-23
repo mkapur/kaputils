@@ -1,6 +1,6 @@
 #' plotInputSel
 #'
-#' \code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-sex curves as proposed in SS3 Control File
+#' \code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-gender curves as proposed in SS3 Control File
 #' @param moddir filepath where Report.sso is stored
 #' @param write logical. should plots be saved to model directory
 #' @param type type of file to be saved
@@ -26,7 +26,6 @@ plotInputSel <- function(rootdir,
     }
     plotloc <- paste0(getwd(), "/plots/")
   } ## end plot loc
-  message('est. plotting directory \n')
 
   if (sum(is.na(pattern)) == 0) {
     mods <- list.dirs(rootdir) %>%
@@ -41,6 +40,14 @@ plotInputSel <- function(rootdir,
       )
   }
 
+  ## skip if it's just directory with folders inside
+  moddrop <- NULL
+  for(m in 1:length(mods)){
+    if(length(list.dirs(mods[m], recursive = F)) > 0)  moddrop[m] <- m
+  }
+  moddrop <- moddrop[!is.na(moddrop)]
+  mods <- mods[-moddrop]
+
   for (m in 1:length(mods)) {
   summaryoutput0 <- mods[m] %>%
     SSgetoutput(dirvec = .,
@@ -54,19 +61,25 @@ plotInputSel <- function(rootdir,
     data.frame(Fleet = summaryoutput$fleet_ID,
                fleetName = summaryoutput$FleetNames)
 
-  if(seltype == 2) {
+  if(seltype == 'length') {
     seldf0 <-  summaryoutput$sizeselex
 
-    seldf <- seldf0 %>% dplyr::filter(Factor == "Lsel" & year == year) %>%
-      dplyr::select(-year,-Factor,-Label) %>%
-      reshape2::melt(id = c('Fleet', 'Sex')) %>%
+    seldf <- seldf0 %>%
+      plyr::rename(c('Factor'='fctr')) %>% ## breaks if factor
+      dplyr::filter(fctr == "Lsel" & year == year) %>%
+      dplyr::select(-year,-fctr,-label) %>%
+      reshape2::melt(id = c('Fleet', 'gender')) %>%
       dplyr::mutate(variable = as.numeric(as.character(variable)))
-  } else{
+  }
+
+  if(seltype == 'age'){
     seldf0 <- summaryoutput$ageselex
 
-    seldf <- seldf0 %>% dplyr::filter(Factor == "Asel" & Yr == year) %>%
-      dplyr::select(-year,-Factor,-Label) %>%
-      reshape2::melt(id = c('Fleet', 'Sex')) %>%
+    seldf <- seldf0 %>% dplyr::filter(fctr == "Asel" & year == year) %>%
+      plyr::rename(c('Factor'='fctr')) %>% ## breaks if factor
+
+      dplyr::select(-year,-fctr,-label) %>%
+      reshape2::melt(id = c('Fleet', 'gender')) %>%
       dplyr::mutate(variable = as.numeric(as.character(variable)))
   }
 
@@ -83,7 +96,7 @@ plotInputSel <- function(rootdir,
     selp[[i]] <- ggplot2::ggplot(temp, aes(
       x = variable,
       y = value,
-      col = factor(Sex)
+      col = factor(gender)
     )) +
       theme_bw() +
       theme(
@@ -91,7 +104,7 @@ plotInputSel <- function(rootdir,
         title = element_text(size = rel(0.6)),
         axis.text = element_text(size = 14),
         axis.title = element_text(size = 14),
-        legend.position = ifelse(length(unique(temp$Sex)) > 1, c(0.9, 0.9), 'none'),
+        legend.position = ifelse(length(unique(temp$gender)) > 1, c(0.9, 0.9), 'none'),
         legend.background = element_blank(),
         legend.key = element_blank(),
         legend.title = element_blank(),
@@ -133,7 +146,7 @@ plotInputSel <- function(rootdir,
   ml <- gridExtra::marrangeGrob(selp, nrow=pdfrows, ncol=pdfcols)
   ## non-interactive use, multipage pdf
   ggplot2::ggsave(
-    paste0(mods[m], "/plots/Selex_all.pdf"),
+    paste0( mods[m], "/Selex_all.pdf"),
     ml,
     width = 8.5,
     height = 11,
@@ -160,12 +173,13 @@ plotInputSel <- function(rootdir,
 # pdfcols = 2
 # )
 
-# plotInputSel(rootdir =  "G:/consbio_rev/results",
-#              pattern = "Rep",
-#              plotloc = "G:/consbio_rev/plots",
-#              year = 2013,
-#              lmin = 0,
-#              lmax = 41,
-#              linc = 10,
-#              pdfrows = 3,
-#              pdfcols = 2)
+plotInputSel(rootdir = "C:/users/mkapur/dropbox/HAKEBOOT/",
+             pattern = "HAKE_",
+             plotloc = "C:/users/mkapur/dropbox/HAKEBOOT/plots/",
+             year = 2016,
+             lmin = 0,
+             lmax = 50,
+             linc = 5,
+             seltype = c('age','length')[2],
+             pdfrows = 2,
+             pdfcols = 2)
