@@ -23,18 +23,21 @@ plotCPUE_panel <-
     }
 
     cpuep <- list()
-    yrvec <- with(cpue_results, c(min(Yr), max(Yr)))
-    cpuevec <- with(cpue_results, c(0, max(Exp, Obs)))
 
-    for (i in unique(cpue_results$Name)) {
+
+    for (i in unique(cpue_results$Fleet_name)) {
       if (sum(is.na(mods)) == 0) {
         cpue_results0 <-
           cpue_results[cpue_results$MOD %in% mods &
-                         cpue_results$Name == i, ]
+                         cpue_results$Fleet_name == i, ]
       } else{
         cpue_results0 <-
-          with(cpue_results, cpue_results[grepl(i, Name), ])
+          with(cpue_results, cpue_results[grepl(i, Fleet_name), ])
       }
+      ## truncate to subset
+      yrvec <- with(cpue_results0, c(min(Yr)-1, max(Yr)+1))
+      cpuevec <- with(cpue_results0, c(0, max(Exp, Obs)))
+
       if(length(unique(cpue_results0$MOD)) <= 5){
       cpuep[[i]] <-
         ggplot(cpue_results0, aes(x = Yr, col = MOD)) +
@@ -97,14 +100,14 @@ plotCPUE_panel <-
         gridExtra::marrangeGrob(cpuep, nrow = pdfrows, ncol = pdfcols)
       ## non-interactive use, multipage pdf
       ggplot2::ggsave(
-        paste0(plotloc, "/cpue_panel.pdf"),
+        paste0(plotloc, "cpue_panel.pdf"),
         ml,
         width = 8.5,
         height = 11,
         units = 'in'
       )
       ggplot2::ggsave(
-        paste0(plotloc, "/cpue_panel.jpg"),
+        paste0(plotloc, "cpue_panel.jpg"),
         ml,
         width = 8.5,
         height = 11,
