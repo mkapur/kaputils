@@ -31,12 +31,12 @@ ss_compare <- function(rootdir,
   }else{ mods = list.files(rootdir,  pattern = "EM|OM")}
 
   ## skip if it's just directory with folders inside
-  moddrop <- NULL
+  moddrop <- NA
   for(m in 1:length(mods)){
   if(length(list.dirs(mods[m], recursive = F)) > 0)  moddrop[m] <- m
   }
   moddrop <- moddrop[!is.na(moddrop)]
-  mods <- mods[-moddrop]
+  if(length(moddrop >0)) mods <- mods[-moddrop]
 
   summaryoutput <- mods %>%
     SSgetoutput(dirvec = .,
@@ -53,12 +53,12 @@ ss_compare <- function(rootdir,
     pdf = F,
     png = F,
     print = T,
-    plotdir = plotloc,
+    plotdir = "plots/",
     indexfleets = length(unique(summaryoutput$indices$FleetName)),
     lty = c(rep(1, summaryoutput$n-1),3),
     legend = dolegend,
     legendloc = 'bottomright',
-    legendlabels = llabels
+    legendlabels = basename(mods)
   )
 
 }
