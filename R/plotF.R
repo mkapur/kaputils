@@ -8,6 +8,7 @@
 
 plotF <- function(SPRseries,
                   saveplot = T,
+                  pal = 'Spectral',
                   mods = NA,
                   plotloc = NA,
                   pdfrows = 4,
@@ -44,7 +45,7 @@ plotF <- function(SPRseries,
       legend.text = element_text(size = rel(1)),
       legend.title = element_blank()
     ) +
-    scale_color_manual(values = rep(brewer.pal(11, name = 'Spectral'), length(unique(SPRseries0$MOD)))) +
+    scale_color_manual(values = rep(brewer.pal(11, name = pal), length(unique(SPRseries0$MOD)))) +
     ylab("F_Std") +
     xlab("Year") +
     geom_line(lwd = 1.1)
