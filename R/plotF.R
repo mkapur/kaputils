@@ -60,7 +60,7 @@ plotF <- function(SPRseries,
         axis.title = element_text(size = rel(1)),
         legend.position = 'none'
       ) +
-      scale_color_manual(values = rep(brewer.pal(11, name = 'Spectral'), length(unique(SPRseries0$MOD)))) +
+      scale_color_manual(values = rep(brewer.pal(11, name = pal), length(unique(SPRseries0$MOD)))) +
       ylab("F_Std") +
       xlab("Year") +
       geom_line(lwd = 1.1)
