@@ -8,7 +8,6 @@
 
 plotF <- function(SPRseries,
                   saveplot = T,
-                  pal = 'Spectral',
                   mods = NA,
                   plotloc = NA,
                   pdfrows = 4,
@@ -35,7 +34,7 @@ plotF <- function(SPRseries,
     SPRseries0 %>% ggplot(., aes(x = Year, y = F_std, col = MOD)) +
     theme_bw() +
     theme(
-      panel.grid.minor = element_blank(),
+      panel.grid = element_blank(),
       panel.border = element_blank(),
       axis.text = element_text(size = rel(1)),
       axis.title = element_text(size = rel(1)),
@@ -45,7 +44,7 @@ plotF <- function(SPRseries,
       legend.text = element_text(size = rel(1)),
       legend.title = element_blank()
     ) +
-    scale_color_manual(values = rep(brewer.pal(11, name = pal), length(unique(SPRseries0$MOD)))) +
+    scale_color_manual(values = rep(brewer.pal(9, name = 'Greys'), length(unique(SPRseries0$MOD)))) +
     ylab("F_Std") +
     xlab("Year") +
     geom_line(lwd = 1.1)
@@ -54,13 +53,13 @@ plotF <- function(SPRseries,
       SPRseries0 %>% ggplot(., aes(x = Year, y = F_std, col = MOD)) +
       theme_bw() +
       theme(
-        panel.grid.minor = element_blank(),
+        panel.grid = element_blank(),
         panel.border = element_blank(),
         axis.text = element_text(size = rel(1)),
         axis.title = element_text(size = rel(1)),
         legend.position = 'none'
       ) +
-      scale_color_manual(values = rep(brewer.pal(11, name = pal), length(unique(SPRseries0$MOD)))) +
+      scale_color_manual(values = rep(brewer.pal(9, name = 'Greys'), length(unique(SPRseries0$MOD)))) +
       ylab("F_Std") +
       xlab("Year") +
       geom_line(lwd = 1.1)
