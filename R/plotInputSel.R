@@ -67,7 +67,7 @@ plotInputSel <- function(rootdir,
     seldf <- seldf0 %>%
       plyr::rename(c('Factor'='fctr')) %>% ## breaks if factor
       dplyr::filter(fctr == "Lsel" & Yr == year) %>%
-      dplyr::select(-Yr,-fctr,-Label) %>%
+      dplyr::select(-Yr,-fctr,-Label,-Seas,-Morph) %>%
       reshape2::melt(id = c('Fleet', 'Sex')) %>%
       dplyr::mutate(variable = as.numeric(as.character(variable)))
   }
@@ -75,10 +75,10 @@ plotInputSel <- function(rootdir,
   if(seltype == 'age'){
     seldf0 <- summaryoutput$ageselex
 
-    seldf <- seldf0 %>%
+    seldf <- seldf0  %>%
       plyr::rename(c('Factor'='fctr')) %>% ## breaks if factor
-      dplyr::filter(fctr == "Asel" & Yr == year) %>%
-      dplyr::select(-Yr,-fctr,-Label) %>%
+      dplyr::filter(fctr == "Asel" & Yr == max(.$Yr)) %>%
+      dplyr::select(-Yr,-fctr,-Label,-Seas,-Morph) %>%
       reshape2::melt(id = c('Fleet', 'Sex')) %>%
       dplyr::mutate(variable = as.numeric(as.character(variable)))
   }
@@ -112,8 +112,8 @@ plotInputSel <- function(rootdir,
         panel.border = element_blank(),
         axis.line = element_line(colour = "black")
       ) +
-      scale_x_continuous(limits = c(lmin, lmax),
-                         breaks = seq(lmin, lmax, linc)) +
+      # scale_x_continuous(limits = c(lmin, lmax),
+      #                    breaks = seq(lmin, lmax, linc)) +
       ylim(0, 1.1) +
       scale_color_manual(
         values = c('dodgerblue3', 'goldenrod'),

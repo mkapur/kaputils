@@ -24,15 +24,15 @@ plotCPUE_panel <-
 
     cpuep <- list()
 
-
-    for (i in unique(cpue_results$Fleet_name)) {
+    fns <- unique(cpue_results$Fleet_name)[!is.na(unique(cpue_results$Fleet_name))]
+    for (i in 1:(length(fns)-1)) {
       if (sum(is.na(mods)) == 0) {
         cpue_results0 <-
           cpue_results[cpue_results$MOD %in% mods &
-                         cpue_results$Fleet_name == i, ]
+                         cpue_results$Fleet_name == fns[i], ]
       } else{
         cpue_results0 <-
-          with(cpue_results, cpue_results[grepl(i, Fleet_name), ])
+          with(cpue_results, cpue_results[grepl(i, fns[i]), ])
       }
       ## truncate to subset
       yrvec <- with(cpue_results0, c(min(Yr)-1, max(Yr)+1))

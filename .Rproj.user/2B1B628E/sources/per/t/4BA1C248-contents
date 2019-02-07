@@ -1,6 +1,6 @@
 #' plotInputSel
 #'
-#' \code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-gender curves as proposed in SS3 Control File
+#' \code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-Sex curves as proposed in SS3 Control File
 #' @param moddir filepath where Report.sso is stored
 #' @param write logical. should plots be saved to model directory
 #' @param type type of file to be saved
@@ -41,12 +41,12 @@ plotInputSel <- function(rootdir,
   }
 
   ## skip if it's just directory with folders inside
-  moddrop <- NULL
+  moddrop <- NA
   for(m in 1:length(mods)){
     if(length(list.dirs(mods[m], recursive = F)) > 0)  moddrop[m] <- m
   }
   moddrop <- moddrop[!is.na(moddrop)]
-  mods <- mods[-moddrop]
+  if(length(moddrop >0)) mods <- mods[-moddrop]
 
   for (m in 1:length(mods)) {
   summaryoutput0 <- mods[m] %>%
@@ -66,20 +66,20 @@ plotInputSel <- function(rootdir,
 
     seldf <- seldf0 %>%
       plyr::rename(c('Factor'='fctr')) %>% ## breaks if factor
-      dplyr::filter(fctr == "Lsel" & year == year) %>%
-      dplyr::select(-year,-fctr,-label) %>%
-      reshape2::melt(id = c('Fleet', 'gender')) %>%
+      dplyr::filter(fctr == "Lsel" & Yr == year) %>%
+      dplyr::select(-Yr,-fctr,-Label,-Seas,-Morph) %>%
+      reshape2::melt(id = c('Fleet', 'Sex')) %>%
       dplyr::mutate(variable = as.numeric(as.character(variable)))
   }
 
   if(seltype == 'age'){
     seldf0 <- summaryoutput$ageselex
 
-    seldf <- seldf0 %>% dplyr::filter(fctr == "Asel" & year == year) %>%
+    seldf <- seldf0  %>%
       plyr::rename(c('Factor'='fctr')) %>% ## breaks if factor
-
-      dplyr::select(-year,-fctr,-label) %>%
-      reshape2::melt(id = c('Fleet', 'gender')) %>%
+      dplyr::filter(fctr == "Asel" & Yr == max(.$Yr)) %>%
+      dplyr::select(-Yr,-fctr,-Label,-Seas,-Morph) %>%
+      reshape2::melt(id = c('Fleet', 'Sex')) %>%
       dplyr::mutate(variable = as.numeric(as.character(variable)))
   }
 
@@ -96,7 +96,7 @@ plotInputSel <- function(rootdir,
     selp[[i]] <- ggplot2::ggplot(temp, aes(
       x = variable,
       y = value,
-      col = factor(gender)
+      col = factor(Sex)
     )) +
       theme_bw() +
       theme(
@@ -104,7 +104,7 @@ plotInputSel <- function(rootdir,
         title = element_text(size = rel(0.6)),
         axis.text = element_text(size = 14),
         axis.title = element_text(size = 14),
-        legend.position = ifelse(length(unique(temp$gender)) > 1, c(0.9, 0.9), 'none'),
+        legend.position = ifelse(length(unique(temp$Sex)) > 1, c(0.9, 0.9), 'none'),
         legend.background = element_blank(),
         legend.key = element_blank(),
         legend.title = element_blank(),
@@ -112,9 +112,9 @@ plotInputSel <- function(rootdir,
         panel.border = element_blank(),
         axis.line = element_line(colour = "black")
       ) +
-      scale_x_continuous(limits = c(lmin, lmax),
-                         breaks = seq(lmin, lmax, linc)) +
-      ylim(0, 1) +
+      # scale_x_continuous(limits = c(lmin, lmax),
+      #                    breaks = seq(lmin, lmax, linc)) +
+      ylim(0, 1.1) +
       scale_color_manual(
         values = c('dodgerblue3', 'goldenrod'),
         labels = c("Male", "Fem")
@@ -132,7 +132,7 @@ plotInputSel <- function(rootdir,
   ## save individual JPEGs
   for (s in 1:length(selp)) {
     ggplot2::ggsave(
-      paste0(plotloc,"/Selex_",  seldf[seldf$Fleet == s, 'fleetName'][1], ".jpg"),
+      paste0(plotloc,"Selex_",  seldf[seldf$Fleet == s, 'fleetName'][1], ".jpg"),
       plot = selp[[s]],
       width = 7,
       height = 5,
@@ -173,13 +173,13 @@ plotInputSel <- function(rootdir,
 # pdfcols = 2
 # )
 
-plotInputSel(rootdir = "C:/users/mkapur/dropbox/HAKEBOOT/",
-             pattern = "HAKE_",
-             plotloc = "C:/users/mkapur/dropbox/HAKEBOOT/plots/",
-             year = 2016,
-             lmin = 0,
-             lmax = 50,
-             linc = 5,
-             seltype = c('age','length')[2],
-             pdfrows = 2,
-             pdfcols = 2)
+# plotInputSel(rootdir = "C:/users/mkapur/dropbox/HAKEBOOT/",
+#              pattern = "HAKE_",
+#              plotloc = "C:/users/mkapur/dropbox/HAKEBOOT/plots/",
+#              year = 2016,
+#              lmin = 0,
+#              lmax = 50,
+#              linc = 5,
+#              seltype = c('age','length')[2],
+#              pdfrows = 2,
+#              pdfcols = 2)
