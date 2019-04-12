@@ -39,7 +39,7 @@ extractResults <- function(rootdir,
       subdirs <- mods[m] %>%
         list.dirs(., recursive = T) %>%
         .[grepl(subpattern, .)] %>%
-        .[!grepl("plots", .)] %>%
+        .[!grepl("plots", .)]
 
 
       for (s in 1:length(subdirs)) {
@@ -146,7 +146,6 @@ extractResults <- function(rootdir,
         list.dirs(., recursive = T) %>%
         .[grepl(pattern, .)] %>%
         .[!grepl("plots", .)] %>%
-
         SS_output(.,
                   covar = F,
                   forecast = F,
