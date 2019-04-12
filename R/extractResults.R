@@ -9,6 +9,7 @@
 #' @seealso \code{\link[r4ss]}
 
 extractResults <- function(rootdir,
+                           terminal_year = 2015,
                             pattern = NA,
                             subpattern = NA,
                             writeTables = T,
@@ -129,8 +130,8 @@ extractResults <- function(rootdir,
         refList[idx, "MOD" ] <- modname
         refList[idx, "REP"] <- splitpath
         refList[idx,'IDX'] <- IDX
-        refList[idx,"SPB_SSBMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"B.Bmsy"]
-        refList[idx,"F_FMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"F.Fmsy"]
+        refList[idx,"SPB_SSBMSY"] <- mtemp$Kobe[mtemp$Kobe$Yr == terminal_year,"B.Bmsy"]
+        refList[idx,"F_FMSY"] <- mtemp$Kobe[mtemp$Kobe$Yr == terminal_year,"F.Fmsy"]
         refList[idx,"LIKELIHOOD_TOTAL"] <- mtemp$likelihoods_used['TOTAL','values']
         refList[idx,"LIKELIHOOD_SURVEY"] <- mtemp$likelihoods_used['Survey','values']
         refList[idx,"LIKELIHOOD_CATCH"] <- mtemp$likelihoods_used['Catch','values']
@@ -165,8 +166,8 @@ extractResults <- function(rootdir,
       modname <- basename(mods[m])
 
       refList[m,"MOD"] <- modname
-      refList[m,"SPB_SSBMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"B.Bmsy"]
-      refList[m,"F_FMSY"] <- mtemp$Kobe[nrow(mtemp$Kobe),"F.Fmsy"]
+      refList[m,"SPB_SSBMSY"] <- mtemp$Kobe[mtemp$Kobe$Yr == terminal_year,"B.Bmsy"]
+      refList[m,"F_FMSY"] <- mtemp$Kobe[mtemp$Kobe$Yr == terminal_year,"F.Fmsy"]
       refList[m,"LIKELIHOOD_TOTAL"] <- mtemp$likelihoods_used['TOTAL','values']
       refList[m,"LIKELIHOOD_SURVEY"] <- mtemp$likelihoods_used['Survey','values']
       refList[m,"LIKELIHOOD_CATCH"] <- mtemp$likelihoods_used['Catch','values']
