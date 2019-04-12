@@ -47,7 +47,7 @@ plotKobe_compare <- function(rootdir,
       width = 8,
       height = 6,
       units = 'in',
-      res = 1020
+      res = 420
     )} ## end saveplot
 
   par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
@@ -137,8 +137,7 @@ plotKobe_compare <- function(rootdir,
       )
     } ## end legend
       # dev.off()
-      cat('saved plot with model(s)',pattern," to ", plotloc,"\n")
-      cat("set plotloc or change working dir if needed","\n")
+
       # graphics.off()
     } else if(!is.na(mq_csv)){
       df <- read.csv(mq_csv)
@@ -164,6 +163,8 @@ plotKobe_compare <- function(rootdir,
 
     } ## end !is.na(mq)
   graphics.off()
+  cat('saved plot with model(s)',pattern," to ", plotloc,"\n")
+  cat("set plotloc or change working dir if needed","\n")
 } ## end function
 
 ## not run
