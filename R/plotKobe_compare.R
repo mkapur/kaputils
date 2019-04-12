@@ -108,7 +108,9 @@ plotKobe_compare <- function(rootdir,
         ## if subpattern provided loop once more
         subdirs <- mods[m] %>%
           list.dirs(., recursive = T) %>%
-          .[grepl(subpattern, .)]
+          .[grepl(subpattern, .)] %>%
+          .[!grepl("plots", .)]
+
         for (s in 1:length(subdirs)) {
           mtemp <- subdirs[s] %>%
             SS_output(.,
@@ -168,13 +170,13 @@ plotKobe_compare <- function(rootdir,
 } ## end function
 
 ## not run
-# plotKobe_compare(
-#   rootdir = "G:\\MAKO\\mako_sim",
-#   mq_csv = "G:\\MAKO\\mako_sim\\results\\management_quantities.csv",
-#   b.name = 'SPB_SSBMSY',
-#   f.name = 'F_FMSY',
-#   pattern = "MAK_",
-#   subpattern = NA,
-#   plotloc = "G:\\MAKO\\mako_sim\\plots\\",
-#   saveplot = T,
-#   doLegend = F)
+# rootdir <- "C:/Users/Maia Kapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test"
+# plotKobe_compare(rootdir,
+#                  mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
+#                  b.name = "SPB_SSBMSY",
+#                  f.name = 'F_FMSY',
+#                  pattern = 'Model',
+#                  subpattern = NA,
+#                  saveplot = T,
+#                  plotloc = paste0(rootdir,"/plots/"),
+#                  doLegend = T)
