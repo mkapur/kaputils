@@ -155,7 +155,8 @@ extractResults <- function(rootdir,
 
     if(is.na(pattern) & is.na(subpattern)){
       mtemp <- mods[m] %>%
-        SS_output(.,
+        .[!grepl("plots", .)] %>%
+                SS_output(.,
                   covar = F,
                   forecast = F,
                   ncols = 1000)
