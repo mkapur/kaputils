@@ -38,7 +38,9 @@ extractResults <- function(rootdir,
     if (!is.na(subpattern)) { ## if subpattern provided loop once more
       subdirs <- mods[m] %>%
         list.dirs(., recursive = T) %>%
-        .[grepl(subpattern, .)]
+        .[grepl(subpattern, .)] %>%
+        .[!grepl("plots", .)] %>%
+
 
       for (s in 1:length(subdirs)) {
 
@@ -143,6 +145,8 @@ extractResults <- function(rootdir,
       mtemp <- mods[m] %>%
         list.dirs(., recursive = T) %>%
         .[grepl(pattern, .)] %>%
+        .[!grepl("plots", .)] %>%
+
         SS_output(.,
                   covar = F,
                   forecast = F,
