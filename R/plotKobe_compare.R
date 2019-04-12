@@ -32,7 +32,7 @@ plotKobe_compare <- function(rootdir,
     plotloc <- paste0(getwd(), "/plots/")
   } ## end plotploc
 
-  col.choices <- RColorBrewer::brewer.pal(10,'Accent')
+  col.choices <- RColorBrewer::brewer.pal(8,'Accent')
 
   ## iterate avail. runs and assign colors
   if(!is.na(pattern)){
