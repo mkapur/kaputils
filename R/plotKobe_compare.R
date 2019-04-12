@@ -32,13 +32,13 @@ plotKobe_compare <- function(rootdir,
     plotloc <- paste0(getwd(), "/plots/")
   } ## end plotploc
 
-  col.choices <- RColorBrewer::brewer.pal(10,'Spectral')
+  col.choices <- RColorBrewer::brewer.pal(10,'Accent')
 
   ## iterate avail. runs and assign colors
   if(!is.na(pattern)){
     mods <- list.dirs(rootdir, recursive = F) %>%
       .[grepl(pattern, .)]
-    cols <- c(rep(col.choices, (length(mods)/10),'black'))
+    cols <- c(rep(col.choices, max(c(10,length(mods)/10)),'black'))
   } else if (is.na(pattern)){ mods <- rootdir; cols <- 'black'}
 
   if (saveplot){
@@ -99,9 +99,8 @@ plotKobe_compare <- function(rootdir,
           col = "goldenrod",
           border = NA)
 
+  if(is.na(mq_csv)){
   for (m in 1:length(mods)) {
-    if(is.na(mq_csv)){
-
       ## loop into master file
       modnames[m] <- basename(mods[m])
       ## use SS_output function to extract quantities
@@ -126,6 +125,9 @@ plotKobe_compare <- function(rootdir,
                ))
         } ## end subdirs of mod
       } ## end !is na subpattern
+    } ## end mods loop
+
+
     if (doLegend == T & !is.na(subpattern)) {
       legend(
         "topright",
@@ -134,36 +136,35 @@ plotKobe_compare <- function(rootdir,
         col = rep(cols,ceiling(length(modnames)/length(cols)))
       )
     } ## end legend
-    dev.off()
-    cat('saved plot with model(s)',pattern," to ", plotloc,"\n")
-    cat("set plotloc or change working dir if needed","\n")
-    graphics.off()
-  } ## end NA mq_csv
-  else if(!is.na(mq_csv)){
-    df <- read.csv(mq_csv)
-    for(i in 1:nrow(df)){
-      if(is.na( df[i,b.name])  | is.na( df[i,f.name])) stop("Your biomass or F column in management_quantities is NA. \n Did your model(s) estimate F/FMSY or B/BMSY for the final year? Check SPRSeries.csv")
+      # dev.off()
+      cat('saved plot with model(s)',pattern," to ", plotloc,"\n")
+      cat("set plotloc or change working dir if needed","\n")
+      # graphics.off()
+    } else if(!is.na(mq_csv)){
+      df <- read.csv(mq_csv)
+      for(i in 1:nrow(df)){
+        if(is.na( df[i,b.name])  | is.na( df[i,f.name])) stop("Your biomass or F column in management_quantities is NA. \n Did your model(s) estimate F/FMSY or B/BMSY for the final year? Check SPRSeries.csv")
 
-      with(df,
-           points(
-             df[i,b.name],
-             df[i,f.name],
-             pch = 19,
-             col = cols[i]
-           ))
-    } ## end looped points
-    if (doLegend == T) {
-      legend(
-        "topright",
-        legend = df$MOD,
-        pch = 19,
-        col = rep(cols,ceiling(length(df$MOD)/length(cols)))
-      )
-    } ## end legend
-    graphics.off()
-  } ## end !is.na(mq)
-  } ## end mods loop
-  } ## end function
+        with(df,
+             points(
+               df[i,b.name],
+               df[i,f.name],
+               pch = 19,
+               col = cols[i]
+             ))
+      } ## end looped points
+      if (doLegend == T) {
+        legend(
+          "topright",
+          legend = df$MOD,
+          pch = 19,
+          col = rep(cols,ceiling(length(df$MOD)/length(cols)))
+        )
+      } ## end legend
+
+    } ## end !is.na(mq)
+  graphics.off()
+} ## end function
 
 ## not run
 # plotKobe_compare(
