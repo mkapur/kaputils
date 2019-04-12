@@ -142,6 +142,8 @@ plotKobe_compare <- function(rootdir,
   else if(!is.na(mq_csv)){
     df <- read.csv(mq_csv)
     for(i in 1:nrow(df)){
+      if(is.na( df[i,b.name])  | is.na( df[i,f.name])) stop("Your biomass or F column in management_quantities is NA. Did your model(s) estimate F/FMSY or B/BMSY for the final year? Check SPRSeries.csv")
+
       with(df,
            points(
              df[i,b.name],
