@@ -1,7 +1,7 @@
-## Code to prep data as used in SSlotMnwt
+## Code to prep data as used in SSplotMnwt
+## Identical to r4ss::SSMethod.TA1.8() except it returns the actual CSV i naddition to plots
 ## kapurm@uw.edu
-## Adapted from https://rdrr.io/cran/r4ss/src/R/SSplotMnwt.R
-## and https://rdrr.io/cran/r4ss/src/R/SSMethod.TA1.8.R
+## Adapted from https://rdrr.io/cran/r4ss/src/R/SSplotMnwt.R and https://rdrr.io/cran/r4ss/src/R/SSMethod.TA1.8.R
 
 SSMethod.TA1.8.MK <- function(fit,
            type,
