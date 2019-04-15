@@ -13,6 +13,7 @@
 
 
 plotKobe_compare <- function(rootdir,
+                             kobe.type = c(NA,'ISC')[1],
                              mq_csv = NA,
                              b.name = NA,
                              f.name = NA,
@@ -82,6 +83,7 @@ plotKobe_compare <- function(rootdir,
         line = 2.5,
         cex = 1)
 
+  if(is.na(kobe.type)){
   polygon(c(x_min, 1, 1, x_min),
           c(1, 1, x_min, x_min),
           col = "gold",
@@ -98,6 +100,12 @@ plotKobe_compare <- function(rootdir,
           c(1, 1, y_max, y_max),
           col = "goldenrod",
           border = NA)
+  }else if(kobe.type == 'ISC'){
+    polygon(c(x_min,1,1,x_min), c(1,1,y_min,y_min),col="khaki1")
+    polygon(c(1,x_max,x_max,1), c(1,1,y_min,y_min),col="palegreen")
+    polygon(c(x_min,1,1,x_min), c(1,1,y_max,y_max),col="salmon")
+    polygon(c(1,x_max,x_max,1), c(1,1,y_max,y_max),col="khaki1")
+  }
 
   if(is.na(mq_csv)){
   for (m in 1:length(mods)) {
@@ -150,16 +158,19 @@ plotKobe_compare <- function(rootdir,
              points(
                df[i,b.name],
                df[i,f.name],
-               pch = 19,
-               col = cols[i]
+               pch = c(21:25)[as.numeric(df[i,'MOD'])],
+               col = factor(df$MOD)[i],
+               bg = 'white',
+               cex = 2
              ))
       } ## end looped points
       if (doLegend == T) {
         legend(
           "topright",
           legend = df$MOD,
-          pch = 19,
-          col = rep(cols,ceiling(length(df$MOD)/length(cols)))
+          pch = c(21:25)[as.numeric(df$MOD)],
+          col = factor(df$MOD),
+          bg = 'white'
         )
       } ## end legend
 
@@ -170,13 +181,13 @@ plotKobe_compare <- function(rootdir,
 } ## end function
 
 ## not run
-# rootdir <- "C:/Users/Maia Kapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test"
-# plotKobe_compare(rootdir,
-#                  mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
-#                  b.name = "SPB_SSBMSY",
-#                  f.name = 'F_FMSY',
-#                  pattern = 'Model',
-#                  subpattern = NA,
-#                  saveplot = T,
-#                  plotloc = paste0(rootdir,"/plots/"),
-#                  doLegend = T)
+rootdir <- "C:/Users/Maia Kapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test"
+plotKobe_compare(rootdir,
+                 mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
+                 b.name = "SPB_SSBMSY",
+                 f.name = 'F_FMSY',
+                 pattern = 'Model',
+                 subpattern = NA,
+                 saveplot = T,
+                 plotloc = paste0(rootdir,"/plots/"),
+                 doLegend = T)
