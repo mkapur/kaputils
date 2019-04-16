@@ -183,7 +183,6 @@ SSMethod.TA1.8.MK <- function(fit,
 # require(dplyr)
 
 # mod <- SS_output("C:/Users/mkapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test/Model_716", covar = F) ## folder where ss outputs are (rep file etc)
-
 # francisdat <- SSMethod.TA1.8.MK(mod, type = 'len',
 #                                 fleet = 1:5, pick.gender = 0:3, plotit = T) %>% as.data.frame()
 # francisdat$Fleet <- mod$FleetNames[francisdat$Fleet] ## name the actual fleets
