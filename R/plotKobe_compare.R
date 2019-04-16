@@ -161,7 +161,7 @@ plotKobe_compare <- function(rootdir,
                pch = c(21:25)[as.numeric(df[i,'MOD'])],
                col = factor(df$MOD)[i],
                bg = 'white',
-               cex = 2
+               cex = 1.1
              ))
       } ## end looped points
       if (doLegend == T) {
@@ -170,7 +170,8 @@ plotKobe_compare <- function(rootdir,
           legend = df$MOD,
           pch = c(21:25)[as.numeric(df$MOD)],
           col = factor(df$MOD),
-          bg = 'white'
+          bg = 'white',
+          cex = 1.1
         )
       } ## end legend
 
@@ -181,13 +182,14 @@ plotKobe_compare <- function(rootdir,
 } ## end function
 
 ## not run
-rootdir <- "C:/Users/Maia Kapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test"
-plotKobe_compare(rootdir,
-                 mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
-                 b.name = "SPB_SSBMSY",
-                 f.name = 'F_FMSY',
-                 pattern = 'Model',
-                 subpattern = NA,
-                 saveplot = T,
-                 plotloc = paste0(rootdir,"/plots/"),
-                 doLegend = T)
+# rootdir <- "C:/Users/Maia Kapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test"
+# plotKobe_compare(rootdir,
+#                  mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
+#                  kobe.type = 'ISC',
+#                  b.name = "SPB_SSBMSY",
+#                  f.name = 'F_FMSY',
+#                  pattern = 'Model',
+#                  subpattern = NA,
+#                  saveplot = T,
+#                  plotloc = paste0(rootdir,"/plots/"),
+#                  doLegend = T)
