@@ -170,6 +170,7 @@ extractResults <- function(rootdir,
       refList[m,"F_FMSY"] <- mtemp$Kobe[mtemp$Kobe$Yr == terminal_year,"F.Fmsy"]
       refList[m,"LIKELIHOOD_TOTAL"] <- mtemp$likelihoods_used['TOTAL','values']
       refList[m,"LIKELIHOOD_SURVEY"] <- mtemp$likelihoods_used['Survey','values']
+      refList[m,"LENGTH_COMP"] <- mtemp$likelihoods_used['Length_comp','values']
       refList[m,"LIKELIHOOD_CATCH"] <- mtemp$likelihoods_used['Catch','values']
       refList[m,"EQUIL_CATCH"] <- mtemp$likelihoods_used['Equil_catch','values']
 
