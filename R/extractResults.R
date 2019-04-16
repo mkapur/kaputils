@@ -242,7 +242,7 @@ extractResults <- function(rootdir,
 # pattern = 'TUNA_'
 # subpattern = 'Rep'
 
-## not run:
+## not run:ddd
 ## test without subdir
 # extract_results(rootdir = "G:\\MAKO\\Base_Case_S4",
 #                             pattern = NA,
