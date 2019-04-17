@@ -2,6 +2,8 @@
 #' terminal kobe plot. check out FLR.
 #' @param rootdir home directory
 #' @param mq_csv  optional; if you already generated a MQ csv using extractResults it will read from that, otherwise need pattern/subpattern
+#' @param axes.limits x and y maximums for kobe plot, default to 2
+#' @param kobe.type if 'ISC', will have pale orange coloring in place of orange/yellow
 #' @param b.name the character column name of the biomass ref point; can rename to change y lab
 #' @param f.name the character column name of the fishing ref point
 #' @param pattern 1st order directory character
@@ -13,6 +15,7 @@
 
 
 plotKobe_compare <- function(rootdir,
+                             axes.limits = c(2,2),
                              kobe.type = c(NA,'ISC')[1],
                              mq_csv = NA,
                              b.name = NA,
@@ -54,9 +57,9 @@ plotKobe_compare <- function(rootdir,
   par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
 
   # Kobe plot layout setting
-  x_max = 2
+  x_max = axes.limits[1]
   x_min = 0
-  y_max = 5
+  y_max = axes.limits[2]
   y_min = 0
 
   modnames <- NULL ## empty vector for model names
@@ -182,9 +185,10 @@ plotKobe_compare <- function(rootdir,
 } ## end function
 
 ## not run
-# rootdir <- "C:/Users/Maia Kapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test"
+# rootdir <- "C:/Users/MKapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test"
 # plotKobe_compare(rootdir,
 #                  mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
+#                  axes.limits = c(2,2),
 #                  kobe.type = 'ISC',
 #                  b.name = "SPB_SSBMSY",
 #                  f.name = 'F_FMSY',
