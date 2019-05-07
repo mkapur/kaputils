@@ -75,7 +75,8 @@ extractResults <- function(rootdir,
           derivedquants <- mtemp$derived_quants %>%
             select(Label,Value,StdDev) %>%
             mutate(Yr = sub("^[^_]*_", "", Label),
-                   Quant = gsub( "_.*", "", Label ))
+                   Quant = gsub( "_.*", "", Label),
+                   MOD = modname)
 
           if(FleetName != 'All'){
             cpue.df <- mtemp$cpue %>% filter(Name %in% FleetName)
@@ -204,7 +205,8 @@ extractResults <- function(rootdir,
         derivedquants <- mtemp$derived_quants %>%
           select(Label,Value,StdDev) %>%
           mutate(Yr = sub("^[^_]*_", "", Label),
-                 Quant = gsub( "_.*", "", Label ))
+                 Quant = gsub( "_.*", "", Label),
+                 MOD = modname)
 
         ## write and/or append CPUEseries
         if(FleetName != 'All'){ ## if you don't want everything, subset CPUE
