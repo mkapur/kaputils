@@ -71,29 +71,14 @@ extractResults <- function(rootdir,
                                  "MOD" = modname,
                                  'IDX' = IDX)
 
-          if (m == 1 & s == 1) { ## first mod, first rep
-            write.table(
-              SPRseries,
-              append = F,
-              file =  paste0(rootdir, "/results/SPRseries.csv"),
-              row.names = F,
-              col.names = T,
-              sep = ","
-            )
-          }
-          else{
-            write.table(
-              SPRseries,
-              append = T,
-              file =  paste0(rootdir, "/results/SPRseries.csv"),
-              row.names = F,
-              col.names = F,
-              sep = ","
-            )
-          }
+
+          derivedquants <- mtemp$derived_quants %>%
+            select(Label,Value,StdDev) %>%
+            mutate(Yr = sub("^[^_]*_", "", Label),
+                   Quant = gsub( "_.*", "", Label ))
 
           if(FleetName != 'All'){
-            cpue.df <- mtemp$cpue %>% filter(Name == FleetName)
+            cpue.df <- mtemp$cpue %>% filter(Name %in% FleetName)
           } else
             cpue.df <- mtemp$cpue
 
@@ -101,7 +86,26 @@ extractResults <- function(rootdir,
                             "rep" = splitpath,
                             "MOD" = modname,
                             'IDX' = IDX)
-          if (m == 1 & s == 1) {
+
+
+
+          if (m == 1 & s == 1) { ## first mod, first rep
+            write.table(
+              derivedquants,
+              append = F,
+              file =  paste0(rootdir, "/results/derivedquants.csv"),
+              row.names = F,
+              col.names = T,
+              sep = ","
+            )
+            write.table(
+              SPRseries,
+              append = F,
+              file =  paste0(rootdir, "/results/SPRseries.csv"),
+              row.names = F,
+              col.names = T,
+              sep = ","
+            )
             write.table(
               cpue,
               append = F,
@@ -110,8 +114,23 @@ extractResults <- function(rootdir,
               col.names = T,
               sep = ","
             )
-          }
-          else{
+          } else{
+            write.table(
+              derivedquants,
+              append = T,
+              file =  paste0(rootdir, "/results/derivedquants.csv"),
+              row.names = F,
+              col.names = F,
+              sep = ","
+            )
+            write.table(
+              SPRseries,
+              append = T,
+              file =  paste0(rootdir, "/results/SPRseries.csv"),
+              row.names = F,
+              col.names = F,
+              sep = ","
+            )
             write.table(
               cpue,
               append = T,
@@ -120,6 +139,7 @@ extractResults <- function(rootdir,
               col.names = F,
               sep = ","
             )
+
           } ## end other reps
         } ## end writeTables
         ## extract ref point estimates, in order of toMatch
@@ -175,30 +195,16 @@ extractResults <- function(rootdir,
       refList[m,"EQUIL_CATCH"] <- mtemp$likelihoods_used['Equil_catch','values']
 
       if (writeTables == T) {
-        SPRseries = data.frame(mtemp$sprseries,
+
+        SPRseries <- data.frame(mtemp$sprseries,
                                "B.Bmsy" = mtemp$Kobe$B.Bmsy,
                                "F.Fmsy" = mtemp$Kobe$F.Fmsy,
                                "MOD" = modname)
-        if (m == 1) { ## first mod, first rep
-          write.table(
-            SPRseries,
-            append = F,
-            file =  paste0(rootdir, "/results/SPRseries.csv"),
-            row.names = F,
-            col.names = T,
-            sep = ","
-          )
-        }
-        else{
-          write.table(
-            SPRseries,
-            append = T,
-            file =  paste0(rootdir, "/results/SPRseries.csv"),
-            row.names = F,
-            col.names = F,
-            sep = ","
-          )
-        }
+
+        derivedquants <- mtemp$derived_quants %>%
+          select(Label,Value,StdDev) %>%
+          mutate(Yr = sub("^[^_]*_", "", Label),
+                 Quant = gsub( "_.*", "", Label ))
 
         ## write and/or append CPUEseries
         if(FleetName != 'All'){ ## if you don't want everything, subset CPUE
@@ -208,7 +214,23 @@ extractResults <- function(rootdir,
 
         cpue <- data.frame(cpue.df, "MOD" = modname)
 
-        if (m == 1) {
+        if (m == 1) { ## first mod, first rep
+          write.table(
+            SPRseries,
+            append = F,
+            file =  paste0(rootdir, "/results/SPRseries.csv"),
+            row.names = F,
+            col.names = T,
+            sep = ","
+          )
+          write.table(
+            derivedquants,
+            append = F,
+            file =  paste0(rootdir, "/results/derivedquants.csv"),
+            row.names = F,
+            col.names = T,
+            sep = ","
+          )
           write.table(
             cpue,
             append = F,
@@ -217,8 +239,23 @@ extractResults <- function(rootdir,
             col.names = T,
             sep = ","
           )
-        }
-        else{
+        } else{
+          write.table(
+            SPRseries,
+            append = T,
+            file =  paste0(rootdir, "/results/SPRseries.csv"),
+            row.names = F,
+            col.names = F,
+            sep = ","
+          )
+          write.table(
+            derivedquants,
+            append = T,
+            file =  paste0(rootdir, "/results/derivedquants.csv"),
+            row.names = F,
+            col.names = F,
+            sep = ","
+          )
           write.table(
             cpue,
             append = T,
@@ -238,20 +275,13 @@ extractResults <- function(rootdir,
   } ## end function
 
 
-# rootdir <-"G:/TUNABOOT"
-# pattern = 'TUNA_'
-# subpattern = 'Rep'
 
-## not run:ddd
-## test without subdir
-# extract_results(rootdir = "G:\\MAKO\\Base_Case_S4",
-#                             pattern = NA,
-#                             subpattern = NA,
-#                             writeTables = T,
-#                             FleetName = c("S4_JPN_SS","S7_JPN_GEO","All")[3])
 # ## test with subdir
-# extractResults(rootdir =  "G:/SSBOOT/",
-#                 pattern = 'MAK',
-#                 subpattern = 'Rep',
-#                 writeTables = T,
-#                 FleetName = c("S4_JPN_SS","S7_JPN_GEO","All")[3])
+# kaputils:::extractResults(
+#   rootdir = "C:/Users/MKapur/Dropbox/UW/coursework/FISH-555/stm_mods/model_805",
+#   terminal_year = 2017,
+#   pattern = NA,
+#   subpattern = NA,
+#   writeTables = TRUE,
+#   FleetName = 'All'
+# )
