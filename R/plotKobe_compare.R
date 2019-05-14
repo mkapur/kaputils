@@ -54,7 +54,7 @@ plotKobe_compare <- function(rootdir,
       res = 420
     )} ## end saveplot
 
-  par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
+  par(mfrow = c(1, 1), mar = c(4, 4, 2, 1), xpd = TRUE)
 
   # Kobe plot layout setting
   x_max = axes.limits[1]
@@ -64,6 +64,7 @@ plotKobe_compare <- function(rootdir,
 
   modnames <- NULL ## empty vector for model names
   ## ensure OM is always black
+  par(mfrow = c(1, 1), mar = c(4, 4, 2, 1), xpd = TRUE)
 
   plot(
     c(x_min, x_max),
@@ -161,7 +162,7 @@ plotKobe_compare <- function(rootdir,
              points(
                df[i,b.name],
                df[i,f.name],
-               pch = c(21:25)[as.numeric(df[i,'MOD'])],
+               pch = rep(21:25, length(as.numeric(df$MOD)))[i],
                col = factor(df$MOD)[i],
                bg = 'white',
                cex = 1.1
@@ -169,9 +170,10 @@ plotKobe_compare <- function(rootdir,
       } ## end looped points
       if (doLegend == T) {
         legend(
-          "topright",
+          "right",
+          inset=c(-0,-0.9),
           legend = df$MOD,
-          pch = c(21:25)[as.numeric(df$MOD)],
+          pch = rep(21:25, length(as.numeric(df$MOD))),
           col = factor(df$MOD),
           bg = 'white',
           cex = 1.1
@@ -188,7 +190,7 @@ plotKobe_compare <- function(rootdir,
 # rootdir <- "C:/Users/MKapur/Dropbox/UW/coursework/FISH-555/stm_mods/wp_test"
 # plotKobe_compare(rootdir,
 #                  mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
-#                  axes.limits = c(2,2),
+#                  axes.limits = c(4,4),
 #                  kobe.type = 'ISC',
 #                  b.name = "SPB_SSBMSY",
 #                  f.name = 'F_FMSY',
