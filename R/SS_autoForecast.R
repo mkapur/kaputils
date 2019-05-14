@@ -130,6 +130,7 @@ SS_autoForecast <- function(rootdir,
       ## https://github.com/melmonk/StockAssessment_template/blob/master/8a_Tables.Rmd
       df[1:lYOI,"Year"] <- YOI
       df[1:lYOI,"PredOFL"] <- mod1$derived_quants[grep(paste0("ForeCatch_",YOI,collapse = "|"), mod1$derived_quants$Label),"Value"]
+      df[1:lYOI,"ABCCatch"] <- NA ## placeholder
       ForecastC = mod1$timeseries[, grepl('Yr|retain[(]B[)]', names(mod1$timeseries))]
       ForecastC$total = rowSums(ForecastC[, -1])
       df[1:lYOI,"Landings"] <- subset(ForecastC, Yr %in% YOI)$total
@@ -143,6 +144,10 @@ SS_autoForecast <- function(rootdir,
 
     } ## end make df if t == 1
     if(t == 10){ ## when done, round and save
+      mod10 <- SS_output(paste0(rootdir,"/forecasts/forecast2030"), covar = FALSE)
+
+      df[1:lYOI,"ABCCatch"] <- mod10$sprseries$Retain_Catch_B[mod10$sprseries$Yr %in% YOI]
+
       df[,2:4] <- round(df[,2:4],2)
       write.csv(df,file =paste0(rootdir,"/forecasts/decision_table_base.csv"),row.names = FALSE)
     }
