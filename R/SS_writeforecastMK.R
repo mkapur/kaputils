@@ -4,16 +4,16 @@ SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",
                               writeAll=FALSE, overwrite=FALSE, verbose=TRUE){
   # function to write Stock Synthesis forecast files
   if(verbose) cat("running SS_writeforecast\n")
-  
+
   if(!is.list(mylist) || mylist$type!="Stock_Synthesis_forecast_file"){
     stop("input 'mylist' should be a list with $type=='Stock_Synthesis_forecast_file'")
   }
-  
+
   # this command will hopefully prevent earlier issues of getting stuck with all R
   # output written to the file after the function crashes before closing connection
   ## on.exit({if(sink.number()>0) sink(); close(zz)})
   on.exit({if(sink.number()>0) sink()})
-  
+
   if(is.null(dir)) dir <- getwd() # set to working directory if no input provided
   outfile <- paste(dir,file,sep="/")
   if(file.exists(outfile)){
@@ -26,11 +26,11 @@ SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",
   }else{
     if(verbose) cat("writing new file:",outfile,"\n")
   }
-  
+
   # preliminary setup
   oldwidth <- options()$width
   options(width=1000)
-  
+
   if(verbose) cat("opening connection to",outfile,"\n")
   zz <- file(outfile, open="at")
   sink(zz)
@@ -45,13 +45,13 @@ SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",
     names(dataframe)[1] <- paste("#_",names(dataframe)[1],sep="")
     print.data.frame(dataframe, row.names=FALSE, strip.white=TRUE)
   }
-  
+
   writeLines("#C forecast file written by R function SS_writeforecast")
   writeLines("#C rerun model to get more complete formatting in forecast.ss_new")
   writeLines(paste("#C should work with SS version:",mylist$SSversion))
   writeLines(paste("#C file write time:",Sys.time()))
   writeLines("#")
-  
+
   wl("benchmarks")
   wl("MSY")
   wl("SPRtarget")
@@ -60,7 +60,7 @@ SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",
   writeLines(paste(paste(mylist$Bmark_years,collapse=" ")))
   wl("Bmark_relF_Basis")
   wl("Forecast")
-  
+
   # only continue beyond this point if Forecast is not 0 or writeAll==TRUE
   if(mylist$Forecast > 0 | writeAll){
     wl("Nforecastyrs")
@@ -75,7 +75,7 @@ SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",
     wl("BfornoF")
     wl("Flimitfraction")
     wl("N_forecast_loops")
-    
+
     wl("First_forecast_loop_with_stochastic_recruitment")
     wl("Forecast_loop_control_3")
     wl("Forecast_loop_control_4")
@@ -86,10 +86,10 @@ SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",
     wl("Ydecl")
     wl("Yinit")
     wl("fleet_relative_F")
-    # if(mylist$fleet_relative_F==2) stop("SS_readforecast doesn't yet support option 2 for 'fleet relative F'")
+    # if(mylist$fleet_relative_F==2) stop("SS_readforecast doesn't yet support option 2 for 'fleet relative F'") !MK
     wl("basis_for_fcast_catch_tuning")
     wl("vals_fleet_relative_f") #!
-    
+
     if(mylist$SSversion==3.24){
       writeLines("# max totalcatch by fleet (-1 to have no max)")
       writeLines(paste(paste(mylist$max_totalcatch_by_fleet,collapse=" ")))
@@ -131,10 +131,10 @@ SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",
       writeLines("-9999 1 1 0")
     }
   }
-  
+
   writeLines("#")
   writeLines("999 # verify end of input ")
-  
+
   options(width=oldwidth)
   sink()
   close(zz)
