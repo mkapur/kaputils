@@ -364,8 +364,9 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   rawforecast  <- readLines(paste0(dir, "/forecast.ss"))
   rawstarter   <- readLines(paste0(dir, "/starter.ss"))
   spr          <- as.numeric(strsplit(rawforecast[grep("SPR target",rawforecast)]," ")[[1]][1])
+  ssb.virgin = Get.Values(dat = base, label = "SPB_Virgin",      hist, quant, single = TRUE)
 
-  ssb.virgin = Get.Values(dat = base, label = "SSB_unfished",      hist, quant, single = TRUE)
+  # ssb.virgin = Get.Values(dat = base, label = "SSB_unfished",      hist, quant, single = TRUE)
   smry.virgin= Get.Values(dat = base, label = "SmryBio_unfished",  hist, quant, single = TRUE)
   rec.virgin = Get.Values(dat = base, label = "Recr_unfished",     hist, quant, single = TRUE)
   final.depl = 100*depl[dim(depl)[1],2:4]
