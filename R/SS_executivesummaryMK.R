@@ -262,7 +262,7 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   #======================================================================
   #ES Table b Spawning Biomass and Depletion
   #======================================================================
-  ssb =  Get.Values(dat = base, label = "SSB"    , hist, quant )
+  ssb =  Get.Values(dat = base, label = "SPB", hist, quant )
   if (nsexes == 1) { ssb$dq = ssb$dq / sexfactor ; ssb$low = ssb$low / sexfactor ; ssb$high = ssb$high / sexfactor }
   depl = Get.Values(dat = base, label = "Bratio" , hist, quant )
   for (i in 1:length(hist)){ dig = ifelse(ssb[i,2] < 100, 1, 0)}
@@ -631,3 +631,6 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
 
   } #nareas
 }
+
+## not run::
+SS_executivesummaryMK(dir = "C:/Users/Maia Kapur/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crSouth_upper_high")
