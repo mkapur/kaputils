@@ -367,10 +367,9 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   ssb.virgin = Get.Values(dat = base, label = "SPB_Virgin",      hist, quant, single = TRUE)
 
   # ssb.virgin = Get.Values(dat = base, label = "SSB_unfished",      hist, quant, single = TRUE)
-  smry.virgin= Get.Values(dat = base, label = "SmryBio_unfished",  hist, quant, single = TRUE)
+  # smry.virgin= Get.Values(dat = base, label = "SmryBio_unfished",  hist, quant, single = TRUE) ! can't find
   rec.virgin = Get.Values(dat = base, label = "Recr_Virgin",     hist, quant, single = TRUE)
-
-    # rec.virgin = Get.Values(dat = base, label = "Recr_unfished",     hist, quant, single = TRUE)
+# rec.virgin = Get.Values(dat = base, label = "Recr_unfished",     hist, quant, single = TRUE)
   final.depl = 100*depl[dim(depl)[1],2:4]
   b.target   = Get.Values(dat = base, label = "SSB_Btgt",    	     hist, quant, single = TRUE)
   spr.btarg  = Get.Values(dat = base, label = "SPR_Btgt",    	     hist, quant, single = TRUE)
