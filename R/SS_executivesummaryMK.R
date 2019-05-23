@@ -1,4 +1,4 @@
-function (dir, plotdir = 'default', quant = 0.95, es.only = FALSE, nsex = FALSE)
+SS_executivesummaryMK <- function (dir, plotdir = 'default', quant = 0.95, es.only = FALSE, nsex = FALSE)
 {
   # Check to make sure dir is a dir
   if(!is.character(dir) || !file.info(dir)$isdir){
