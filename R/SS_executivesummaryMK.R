@@ -278,62 +278,63 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   #======================================================================
   #ES Table c Recruitment
   #======================================================================
-  parameters   <- matchfun2("PARAMETERS",1,"DERIVED_QUANTITIES", -1, header=TRUE)
-  recdevMain   <- parameters[substring(parameters$Label,1,12)=="Main_RecrDev",]
-
-  recdevLate   <- parameters[substring(parameters$Label,1,12)=="Late_RecrDev",]
-  temp         <- toupper(substr(recdevLate$Label,14,17))
-  late.yrs     <- as.numeric(temp)
-
-  recdevFore   <- parameters[substring(parameters$Label,1, 8)=="ForeRecr",]
-  temp	     <- toupper(substr(recdevFore$Label,10,13))
-  fore.yrs     <- as.numeric(temp)
-  ind          <- fore.yrs <= max(hist)
-  fore.yrs     <- fore.yrs[ind]
-
-  end 		 <- ifelse(length(late.yrs) == 0, fore.yrs - 1, late.yrs - 1)
-
-  recruits     = Get.Values(dat = base, label = "Recr" , hist, quant )
-  if (dim(recdevMain)[1] != 0){
-    recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = 1971:end, quant )
-
-    # recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = hist[1]:end, quant )
-    devs = cbind(recdevs$dq, recdevs$low, recdevs$high)
-
-    if (length(late.yrs) > 0 ){
-      late.recdevs = Get.Values(dat = base, label = "Late_RecrDev", yrs = late.yrs, quant )
-      devs = cbind(c(recdevs$dq, late.recdevs$dq), c(recdevs$low, late.recdevs$low), c(recdevs$high, late.recdevs$high))
-    }
-
-    if(length(fore.yrs) > 0){
-      fore.recdevs = Get.Values(dat = base, label = "ForeRecr", yrs = fore.yrs, quant )
-      if (length(late.yrs) > 0){
-        devs = cbind(c(recdevs$dq, late.recdevs$dq, fore.recdevs$dq),
-                     c(recdevs$low, late.recdevs$low, fore.recdevs$low),
-                     c(recdevs$high, late.recdevs$high, fore.recdevs$high))
-      }
-
-      if (length(late.yrs) == 0){
-        devs = cbind(c(recdevs$dq,    fore.recdevs$dq),
-                     c(recdevs$low,   fore.recdevs$low),
-                     c(recdevs$high,  fore.recdevs$high))
-      }
-
-    }
-    # Zero out the sd for years where devs were not estimated
-    devs.out = data.frame(print(devs[,1], digits = 3), paste0(print(devs[,2],digits = 3), "\u2013", print(devs[,3], digits = 3)))
-  }
-
-  if (dim(recdevMain)[1] == 0) { devs.out = data.frame(rep(0, length(hist)), rep(0, length(hist))) }
-  for (i in 1:length(hist)){ dig = ifelse(recruits[i,2] < 100, 1, 0)}
-
-  es.c = data.frame(hist,
-                    comma(recruits$dq, dig), paste0(comma(recruits$low, dig), "\u2013", comma(recruits$high, dig)),
-                    devs.out )
-
-  colnames(es.c) = c("Years", "Recruitment", "95% Asymptotic Interval", "Recruitment Deviations", "95% Asymptotic Interval")
-
-  write.csv(es.c, paste0(csv.dir, "/c_Recr_ExecutiveSummary.csv"), row.names = F)
+  # parameters   <- matchfun2("PARAMETERS",1,"DERIVED_QUANTITIES", -1, header=TRUE)
+  # recdevMain   <- parameters[substring(parameters$Label,1,12)=="Main_RecrDev",]
+  #
+  # recdevLate   <- parameters[substring(parameters$Label,1,12)=="Late_RecrDev",]
+  # temp         <- toupper(substr(recdevLate$Label,14,17))
+  # late.yrs     <- as.numeric(temp)
+  #
+  # recdevFore   <- parameters[substring(parameters$Label,1, 8)=="ForeRecr",]
+  # temp	     <- toupper(substr(recdevFore$Label,10,13))
+  # fore.yrs     <- as.numeric(temp)
+  # ind          <- fore.yrs <= max(hist)
+  # fore.yrs     <- fore.yrs[ind]
+  #
+  # end 		 <- ifelse(length(late.yrs) == 0, fore.yrs - 1, late.yrs - 1)
+  #
+  # recruits     = Get.Values(dat = base, label = "Recr" , hist, quant )
+  # if (dim(recdevMain)[1] != 0){
+  #   recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = 1971:end, quant )
+  #
+  #   # recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = hist[1]:end, quant )
+  #   devs = cbind(recdevs$dq, recdevs$low, recdevs$high)
+  #
+  #   if (length(late.yrs) > 0 ){
+  #     late.recdevs = Get.Values(dat = base, label = "Late_RecrDev", yrs = late.yrs, quant )
+  #     devs = cbind(c(recdevs$dq, late.recdevs$dq), c(recdevs$low, late.recdevs$low), c(recdevs$high, late.recdevs$high))
+  #   }
+  #
+  #   if(length(fore.yrs) > 0){
+  #     fore.recdevs = Get.Values(dat = base, label = "ForeRecr", yrs = fore.yrs, quant )
+  #     if (length(late.yrs) > 0){
+  #       devs = cbind(c(recdevs$dq, late.recdevs$dq, fore.recdevs$dq),
+  #                    c(recdevs$low, late.recdevs$low, fore.recdevs$low),
+  #                    c(recdevs$high, late.recdevs$high, fore.recdevs$high))
+  #     }
+  #
+  #     if (length(late.yrs) == 0){
+  #       devs = cbind(c(recdevs$dq,    fore.recdevs$dq),
+  #                    c(recdevs$low,   fore.recdevs$low),
+  #                    c(recdevs$high,  fore.recdevs$high))
+  #     }
+  #
+  #   }
+  #   # Zero out the sd for years where devs were not estimated
+  #   devs.out = data.frame(print(devs[,1], digits = 3), paste0(print(devs[,2],digits = 3), "\u2013", print(devs[,3], digits = 3)))
+  # }
+  #
+  # if (dim(recdevMain)[1] == 0) { devs.out = data.frame(rep(0, length(hist)), rep(0, length(hist))) }
+  # for (i in 1:length(hist)){ dig = ifelse(recruits[i,2] < 100, 1, 0)}
+  #
+  # es.c = data.frame(hist,
+  #                   comma(recruits$dq, dig), paste0(comma(recruits$low, dig),
+  #                                                   "\u2013", comma(recruits$high, dig)),
+  #                   devs.out )
+  #
+  # colnames(es.c) = c("Years", "Recruitment", "95% Asymptotic Interval", "Recruitment Deviations", "95% Asymptotic Interval")
+  #
+  # write.csv(es.c, paste0(csv.dir, "/c_Recr_ExecutiveSummary.csv"), row.names = F)
 
   #======================================================================
   #ES Table d 1-SPR (%)
