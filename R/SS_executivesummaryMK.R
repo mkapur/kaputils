@@ -263,6 +263,8 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   #ES Table b Spawning Biomass and Depletion
   #======================================================================
   ssb =  Get.Values(dat = base, label = "SPB", hist, quant )
+
+  # ssb =  Get.Values(dat = base, label = "SSB", hist, quant )
   if (nsexes == 1) { ssb$dq = ssb$dq / sexfactor ; ssb$low = ssb$low / sexfactor ; ssb$high = ssb$high / sexfactor }
   depl = Get.Values(dat = base, label = "Bratio" , hist, quant )
   for (i in 1:length(hist)){ dig = ifelse(ssb[i,2] < 100, 1, 0)}
@@ -293,7 +295,9 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
 
   recruits     = Get.Values(dat = base, label = "Recr" , hist, quant )
   if (dim(recdevMain)[1] != 0){
-    recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = hist[1]:end, quant )
+    recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = 1971:end, quant )
+
+    # recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = hist[1]:end, quant )
     devs = cbind(recdevs$dq, recdevs$low, recdevs$high)
 
     if (length(late.yrs) > 0 ){
