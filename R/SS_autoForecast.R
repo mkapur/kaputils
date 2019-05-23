@@ -26,9 +26,9 @@ SS_autoForecast <- function(rootdir,
   replist0 <- SS_output(paste0(rootdir,"/",basedir))
 
   ## error trapping
-  if(length(catch_proportions) != replist0$nfleets) stop('catch_proportions should have a value for each fleet')
+  if(length(catch_proportions) != replist0$nfishfleets) stop('catch_proportions should have a value for each fleet')
   # if(nrow(fixed_catches) != (forecast_start-1-inityr)) stop('fixed_catches should have a value for years before forecast_start')
-  if(ncol(fixed_catches) != replist0$nfleets) stop('fixed_catches should have a value for each fleet')
+  if(ncol(fixed_catches) != replist0$nfishfleets) stop('fixed_catches should have a value for each fleet')
 
   for(t in 1:foreyrs){
     base_temp <- paste0("forecasts/forecast", (t-1)+forecast_start)
@@ -38,11 +38,11 @@ SS_autoForecast <- function(rootdir,
     file.copy(list.files(
       paste0(rootdir,"/",basedir),
       full.names = TRUE,
-      recursive = TRUE),
-      list.files(
-        paste0(rootdir,"/",base_temp),
-        full.names = TRUE,
-        recursive = TRUE), overwrite = TRUE)
+      recursive = TRUE), to = paste0(rootdir,"/",base_temp), overwrite = TRUE)
+      # list.files(
+      #   paste0(rootdir,"/",base_temp),
+      #   full.names = TRUE,
+      #   recursive = TRUE), overwrite = TRUE)
 
     setwd(base_temp)
 
@@ -71,12 +71,12 @@ SS_autoForecast <- function(rootdir,
     ## Step 4a. Add catch/projections through 2020.
     fore <- SS_readforecast(file = './forecast.ss',
                             Nareas = replist0$nareas,
-                            Nfleets = replist0$nfleets,
+                            Nfleets = replist0$nfishfleets,
                             version = paste(replist0$SS_versionNumeric),
                             readAll = TRUE)
     fore$Nforecastyrs <- forecast_end-replist0$endyr
     fore$FirstYear_for_caps_and_allocations <- forecast_start+(t-1)
-    fore$Ncatch <- replist0$nfleets*(t+forecast_start-replist0$endyr-2)
+    fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
     fore$InputBasis <- 2 ## discards
 
     ## Now Add Catch data/projections thru the year before forecast_start.
@@ -84,7 +84,7 @@ SS_autoForecast <- function(rootdir,
     inityr <- max(fore$ForeCatch$Year)
     for(k in 1:(forecast_start-1-inityr)){
       term <- nrow(fore$ForeCatch) ## intital final row
-      for(i in 1:replist0$nfleets){
+      for(i in 1:replist0$nfishfleets){
         fore$ForeCatch[term+i,'Year'] <- inityr+k
         fore$ForeCatch[term+i,'Seas'] <- 1
         fore$ForeCatch[term+i,'Fleet'] <- i
@@ -139,7 +139,6 @@ SS_autoForecast <- function(rootdir,
     if(t == 10){
 
       mod10 <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_end-1), covar = FALSE)
-
       YOI <- (replist0$endyr+1):(forecast_end); lYOI <- length(YOI)
       ## this will read the output of the first model and save the OFLs
       ## which will get used to comptue subsequent mods
@@ -174,13 +173,5 @@ SS_autoForecast <- function(rootdir,
   } ## end t loop
 } ## end function
 
-## not run:
-catch_projections <- read.csv("C:/Users/Maia Kapur/Dropbox/UW/chinarock_update/china_north_cproj.csv")
-SS_autoForecast(rootdir = "C:/Users/Maia Kapur/Dropbox/UW/chinarock_update",
-                basedir = "base2015",
-                catch_proportions = c(0.5,0.08426184,0.4157382),
-                forecast_start = 2021,
-                forecast_end = 2031,
-                fixed_catches = catch_projections[1:4,5:7],
-                Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020])
-read.csv(paste0(rootdir,"/forecasts/decision_table_base.csv"))
+
+
