@@ -1,3 +1,24 @@
+#' A function to create a executive summary tables from an SS Report.sso file
+#'
+#' Reads the Report.sso within the directory and creates executive summary
+#' tables as required by the current Terms of Reference for West Coast
+#' groundfish.  Works with Stock Synthesis versions 3.24U and later.
+#' Additionally, historical catch and numbers at ages tables are created.
+#'
+#' @param dir Locates the directory of the files to be read in, double
+#' backslashes (or forwardslashes) and quotes necessary.
+#' @param plotdir Directory where the table will be saved.  The default
+#' saves the table to the dir location where the Report.sso file is located.
+#' @param quant to calculate confidence intervals, default is set at 0.95
+#' @param es.only =  only the executive summary tables will be produced, default is false which
+#' will return all executive summary tables, historical catches, and numbers-at-ages
+#' @param nsex This will allow the user to calculate single sex values based on the new sex
+#' specification (-1) in SS for single sex models. Default value is FALSE. TRUE will not divide by 2.
+#' @return A csv files containing executive summary tables.
+#' @author Chantel Wetzel
+#' @export
+#'
+
 SS_executivesummaryMK <- function (dir, plotdir = 'default', quant = 0.95, es.only = FALSE, nsex = FALSE)
 {
   # Check to make sure dir is a dir
