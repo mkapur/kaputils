@@ -38,9 +38,9 @@ plotKobe_compare <- function(rootdir,
       dir.create(paste0(rootdir, "/plots/")) ## make it
       plotloc <- paste0(rootdir, "/plots/") ## assign it
     }
-    if (!exists(plotloc) {
-      dir.create(plotloc) ## make it
-    } ## end plotploc
+  }
+    if (!exists(plotloc) ) dir.create(plotloc) ## make it
+ ## end plotploc
 
   col.choices <- RColorBrewer::brewer.pal(8,'Dark2')
 
@@ -257,16 +257,16 @@ plotKobe_compare <- function(rootdir,
 } ## end function
 
 ## not run
-rootdir <- "C:/Users/Maia Kapur/Dropbox/UW/coursework/FISH-555/SA_Meeting_Final Runs-20190513T235227Z-001/SA_Meeting_Final Runs/Base_case"
-plotKobe_compare(rootdir,
-                 mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
-                 axes.limits = c(4,4),
-                 kobe.type = 'ISC',
-                 b.name = "SPB_SSBMSY",
-                 f.name = 'F_FMSY',
-                 pattern = NA,
-                 subpattern = NA,
-                 saveplot = T,
-                 plotloc = paste0(rootdir,"/plots/"),
-                 doDistrib = T,
-                 doLegend = T)
+# rootdir <- "C:/Users/Maia Kapur/Dropbox/UW/coursework/FISH-555/SA_Meeting_Final Runs-20190513T235227Z-001/SA_Meeting_Final Runs/Base_case"
+# plotKobe_compare(rootdir,
+#                  mq_csv = paste0(rootdir,"/results/management_quantities.csv"),
+#                  axes.limits = c(4,4),
+#                  kobe.type = 'ISC',
+#                  b.name = "SPB_SSBMSY",
+#                  f.name = 'F_FMSY',
+#                  pattern = NA,
+#                  subpattern = NA,
+#                  saveplot = T,
+#                  plotloc = paste0(rootdir,"/plots/"),
+#                  doDistrib = T,
+#                  doLegend = T)
