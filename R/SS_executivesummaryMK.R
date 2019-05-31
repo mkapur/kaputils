@@ -20,6 +20,8 @@
 #'
 
 SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.only = FALSE, nsex = FALSE){
+  basemod1  <- SS_output(dir, covar = TRUE)
+
   # Check to make sure dir is a dir
   if(!is.character(dir) || !file.info(dir)$isdir){
     stop("Input 'dir' should be a directory")
@@ -196,6 +198,7 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   startyr  <- min(as.numeric(rawrep[begin:end,2]))+2
   foreyr   <- max(as.numeric(temptime[temptime[,2]=="FORE",1]))
   hist     <- (endyr - 11):(endyr + 1)
+
   fore     <- (endyr+1):foreyr
   all      <- startyr:foreyr
 
@@ -258,10 +261,25 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
     write.csv(es.a, paste0(csv.dir, "/a_Catches_Area", nareas[a], "_ExecutiveSummary.csv"), row.names = F)
   }
 
+   # SS_readforecastMK(paste0(dir,"/forecast.ss"))
+   fore <- readLines(paste0(dir,"/forecast.ss"))[44:(length(  readLines(paste0(dir,"/forecast.ss")))-2)] %>%
+     strsplit(.,"  ")
+   df <- data.frame()
+   for(e in 1:length(fore)){
+     df[e,"Years"] <- as.numeric(fore[[e]][2])
+     df[e,"Fleet"] <- as.numeric(fore[[e]][4])
+     df[e,"Total_Catch"] <- as.numeric(fore[[e]][9])
+     # df[e,"Total_Dead"] <- NA
 
+   }
+    df %>% select(Years, Fleet, Total_Catch) %>% spread(Fleet,Total_Catch)
+  # fore <-
+
+   df2 <- read.csv(paste0(dir,"/tempForeCatch.csv")) %>% select(X.Year, Fleet, dead.B.) %>% spread(Fleet, dead.B.)
   #======================================================================
   #ES Table b Spawning Biomass and Depletion
   #======================================================================
+  hist     <- (endyr - 11):(endyr + 5)
   ssb =  Get.Values(dat = base, label = "SPB", hist, quant )
 
   # ssb =  Get.Values(dat = base, label = "SSB", hist, quant )
@@ -274,72 +292,74 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   colnames(es.b) = c("Years", "Spawning Output", "95% Asymptotic Interval", "Estimated Depletion (%)", "95% Asymptotic Interval")
 
   write.csv(es.b, paste0(csv.dir, "/b_SSB_ExecutiveSummary.csv"), row.names = F)
-
+  hist     <- (endyr - 11):(endyr + 1)
   #======================================================================
   #ES Table c Recruitment
   #======================================================================
-  # parameters   <- matchfun2("PARAMETERS",1,"DERIVED_QUANTITIES", -1, header=TRUE)
-  # recdevMain   <- parameters[substring(parameters$Label,1,12)=="Main_RecrDev",]
+  parameters   <- matchfun2("PARAMETERS",1,"DERIVED_QUANTITIES", -1, header=TRUE)
+  recdevMain   <- parameters[substring(parameters$Label,1,12)=="Main_RecrDev",]
+
+  recdevLate   <- parameters[substring(parameters$Label,1,12)=="Late_RecrDev",]
+  temp         <- toupper(substr(recdevLate$Label,14,17))
+  late.yrs     <- as.numeric(temp)
+
+  recdevFore   <- parameters[substring(parameters$Label,1, 8)=="ForeRecr",]
+  temp	     <- toupper(substr(recdevFore$Label,10,13))
+  fore.yrs     <- as.numeric(temp)
+  ind          <- fore.yrs <= max(hist)
+  fore.yrs     <- 2015:2019 #fore.yrs[ind]
+
+  end 		 <- ifelse(length(late.yrs) == 0, fore.yrs - 1, late.yrs - 1)
   #
-  # recdevLate   <- parameters[substring(parameters$Label,1,12)=="Late_RecrDev",]
-  # temp         <- toupper(substr(recdevLate$Label,14,17))
-  # late.yrs     <- as.numeric(temp)
-  #
-  # recdevFore   <- parameters[substring(parameters$Label,1, 8)=="ForeRecr",]
-  # temp	     <- toupper(substr(recdevFore$Label,10,13))
-  # fore.yrs     <- as.numeric(temp)
-  # ind          <- fore.yrs <= max(hist)
-  # fore.yrs     <- fore.yrs[ind]
-  #
-  # end 		 <- ifelse(length(late.yrs) == 0, fore.yrs - 1, late.yrs - 1)
-  #
-  # recruits     = Get.Values(dat = base, label = "Recr" , hist, quant )
-  # if (dim(recdevMain)[1] != 0){
-  #   recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = 1971:end, quant )
-  #
-  #   # recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = hist[1]:end, quant )
-  #   devs = cbind(recdevs$dq, recdevs$low, recdevs$high)
-  #
-  #   if (length(late.yrs) > 0 ){
-  #     late.recdevs = Get.Values(dat = base, label = "Late_RecrDev", yrs = late.yrs, quant )
-  #     devs = cbind(c(recdevs$dq, late.recdevs$dq), c(recdevs$low, late.recdevs$low), c(recdevs$high, late.recdevs$high))
-  #   }
-  #
-  #   if(length(fore.yrs) > 0){
-  #     fore.recdevs = Get.Values(dat = base, label = "ForeRecr", yrs = fore.yrs, quant )
-  #     if (length(late.yrs) > 0){
-  #       devs = cbind(c(recdevs$dq, late.recdevs$dq, fore.recdevs$dq),
-  #                    c(recdevs$low, late.recdevs$low, fore.recdevs$low),
-  #                    c(recdevs$high, late.recdevs$high, fore.recdevs$high))
-  #     }
-  #
-  #     if (length(late.yrs) == 0){
-  #       devs = cbind(c(recdevs$dq,    fore.recdevs$dq),
-  #                    c(recdevs$low,   fore.recdevs$low),
-  #                    c(recdevs$high,  fore.recdevs$high))
-  #     }
-  #
-  #   }
-  #   # Zero out the sd for years where devs were not estimated
-  #   devs.out = data.frame(print(devs[,1], digits = 3), paste0(print(devs[,2],digits = 3), "\u2013", print(devs[,3], digits = 3)))
-  # }
-  #
-  # if (dim(recdevMain)[1] == 0) { devs.out = data.frame(rep(0, length(hist)), rep(0, length(hist))) }
-  # for (i in 1:length(hist)){ dig = ifelse(recruits[i,2] < 100, 1, 0)}
-  #
-  # es.c = data.frame(hist,
-  #                   comma(recruits$dq, dig), paste0(comma(recruits$low, dig),
-  #                                                   "\u2013", comma(recruits$high, dig)),
-  #                   devs.out )
-  #
-  # colnames(es.c) = c("Years", "Recruitment", "95% Asymptotic Interval", "Recruitment Deviations", "95% Asymptotic Interval")
-  #
-  # write.csv(es.c, paste0(csv.dir, "/c_Recr_ExecutiveSummary.csv"), row.names = F)
+  recruits     = Get.Values(dat = base, label = "Recr" , (endyr - 11):(endyr + 5), quant )
+  if (dim(recdevMain)[1] != 0){
+    recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = 1971:end, quant )
+
+    # recdevs      = Get.Values(dat = base, label = "Main_RecrDev", yrs = hist[1]:end, quant )
+    devs = cbind(recdevs$dq, recdevs$low, recdevs$high)
+
+    if (length(late.yrs) > 0 ){
+      late.recdevs = Get.Values(dat = base, label = "Late_RecrDev", yrs = late.yrs, quant )
+      devs = cbind(c(recdevs$dq, late.recdevs$dq), c(recdevs$low, late.recdevs$low), c(recdevs$high, late.recdevs$high))
+    }
+
+    if(length(fore.yrs) > 0){
+      fore.recdevs = Get.Values(dat = base, label = "ForeRecr", yrs = fore.yrs, quant )
+      if (length(late.yrs) > 0){
+        devs = cbind(c(recdevs$dq, late.recdevs$dq, fore.recdevs$dq),
+                     c(recdevs$low, late.recdevs$low, fore.recdevs$low),
+                     c(recdevs$high, late.recdevs$high, fore.recdevs$high))
+      }
+
+      if (length(late.yrs) == 0){
+        devs = cbind(c(recdevs$dq,    fore.recdevs$dq),
+                     c(recdevs$low,   fore.recdevs$low),
+                     c(recdevs$high,  fore.recdevs$high))
+      }
+
+    }
+    # Zero out the sd for years where devs were not estimated
+    devs.out = data.frame(print(devs[,1], digits = 3), paste0(print(devs[,2],digits = 3), "\u2013", print(devs[,3], digits = 3)))
+  }
+
+  if (dim(recdevMain)[1] == 0) { devs.out = data.frame(rep(0, length(hist)), rep(0, length(hist))) }
+  for (i in 1:length(hist)){ dig = ifelse(recruits[i,2] < 100, 1, 0)}
+
+  es.c = data.frame(recruits$yrs,
+                    comma(recruits$dq, dig), paste0(comma(recruits$low, dig),
+                                                    "\u2013", comma(recruits$high, dig)))#,
+                    #devs.out )
+
+  colnames(es.c) = c("Years", "Recruitment", "95% Asymptotic Interval") #, "Recruitment Deviations", "95% Asymptotic Interval")
+
+  write.csv(es.c, paste0(csv.dir, "/c_Recr_ExecutiveSummary.csv"), row.names = F)
 
   #======================================================================
   #ES Table d 1-SPR (%)
   #======================================================================
-  spr.name = ifelse(SS_versionNumeric >= 3.30, "SPR_report_basis", "SPR_ratio_basis")
+  hist     <- (endyr - 11):(endyr + 5)
+
+   spr.name = ifelse(SS_versionNumeric >= 3.30, "SPR_report_basis", "SPR_ratio_basis")
   spr_type = strsplit(base[grep(spr.name,base)]," ")[[1]][3]
   #if (spr_type != "1-SPR") {
   #	print(":::::::::::::::::::::::::::::::::::WARNING:::::::::::::::::::::::::::::::::::::::")
@@ -355,6 +375,7 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   colnames(es.d) = c("Years", paste0("Estimated ", spr_type, " (%)"), "95% Asymptotic Interval", "Harvest Rate (proportion)", "95% Asymptotic Interval")
 
   write.csv(es.d, paste0(csv.dir, "/d_SPR_ExecutiveSummary.csv"), row.names = F)
+  hist     <- (endyr - 11):(endyr + 1)
 
 
   #======================================================================
@@ -363,25 +384,26 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   # Find the values within the forecast file
   rawforecast  <- readLines(paste0(dir, "/forecast.ss"))
   rawstarter   <- readLines(paste0(dir, "/starter.ss"))
-  spr          <- as.numeric(strsplit(rawforecast[grep("SPR target",rawforecast)]," ")[[1]][1])
+  spr          <- as.numeric(strsplit(rawforecast[grep("SPRtarget",rawforecast)]," ")[[1]][1])
   ssb.virgin = Get.Values(dat = base, label = "SPB_Virgin",      hist, quant, single = TRUE)
-
   # ssb.virgin = Get.Values(dat = base, label = "SSB_unfished",      hist, quant, single = TRUE)
-  # smry.virgin= Get.Values(dat = base, label = "SmryBio_unfished",  hist, quant, single = TRUE) ! can't find
+  smry.virgin = data.frame("dq" = basemod1$derived_quants[grep("SmryBio_Unfished", basemod1$derived_quants$Label),"Value"],
+                          "low" = basemod1$derived_quants[grep("SmryBio_Unfished", basemod1$derived_quants$Label),"Value"] - 1.96*basemod1$derived_quants[grep("SmryBio_Unfished", basemod1$derived_quants$Label),"StdDev"],
+                          "high" = basemod1$derived_quants[grep("SmryBio_Unfished", basemod1$derived_quants$Label),"Value"] + 1.96*basemod1$derived_quants[grep("SmryBio_Unfished", basemod1$derived_quants$Label),"StdDev"])
   rec.virgin = Get.Values(dat = base, label = "Recr_Virgin",     hist, quant, single = TRUE)
 # rec.virgin = Get.Values(dat = base, label = "Recr_unfished",     hist, quant, single = TRUE)
   final.depl = 100*depl[dim(depl)[1],2:4]
   b.target   = Get.Values(dat = base, label = "SSB_Btgt",    	     hist, quant, single = TRUE)
   spr.btarg  = Get.Values(dat = base, label = "SPR_Btgt",    	     hist, quant, single = TRUE)
   f.btarg    = Get.Values(dat = base, label = "Fstd_Btgt", 	     hist, quant, single = TRUE)
-  yield.btarg= Get.Values(dat = base, label = "Dead_Catch_Btgt",   hist, quant, single = TRUE)
+  yield.btarg= Get.Values(dat = base, label = "TotYield_Btgt",   hist, quant, single = TRUE)
   b.spr 	   = Get.Values(dat = base, label = "SSB_SPR",  	     hist, quant, single = TRUE)
   f.spr      = Get.Values(dat = base, label = "Fstd_SPR", 		 hist, quant, single = TRUE)
-  yield.spr  = Get.Values(dat = base, label = "Dead_Catch_SPR",    hist, quant, single = TRUE)
+  yield.spr  = Get.Values(dat = base, label = "TotYield_SPRtgt",    hist, quant, single = TRUE)
   b.msy 	   = Get.Values(dat = base, label = "SSB_MSY", 		     hist, quant, single = TRUE)
   spr.msy    = Get.Values(dat = base, label = "SPR_MSY", 		     hist, quant, single = TRUE)
   f.msy 	   = Get.Values(dat = base, label = "Fstd_MSY", 	     hist, quant, single = TRUE)
-  msy 	   = Get.Values(dat = base, label = "Dead_Catch_MSY",    hist, quant, single = TRUE)
+  msy 	   = Get.Values(dat = base, label = "TotYield_MSY",    hist, quant, single = TRUE)
 
   # Convert spawning quantities for single-sex models
   if (nsexes == 1){
@@ -441,9 +463,9 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
 
   write.csv(es.e, paste0(csv.dir, "/e_ReferencePoints_ExecutiveSummary.csv"))
 
-  #======================================================================
-  # ES Table f is the historical harvest
-  #======================================================================
+  # #======================================================================
+  # # ES Table f is the historical harvest
+  # #======================================================================
   ind = hist
   ofl = rep("fill_in", length(ind))
   abc = rep("fill_in", length(ind))
@@ -454,13 +476,21 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   colnames(es.f) = c("Years", "OFL", "ABC", "ACL", "Landings", "Total Dead")
 
   write.csv(es.f, paste0(csv.dir, "/f_Manage_ExecutiveSummary.csv"), row.names = F)
-
-  #======================================================================
-  #ES Table g  Predicted Quantities
-  #======================================================================
+  #
+  # #======================================================================
+  # #ES Table g  Predicted Quantities
+  # #======================================================================
   ofl.fore =  Get.Values(dat = base, label = "OFLCatch" ,  yrs = fore, quant)
   abc.fore =  Get.Values(dat = base, label = "ForeCatch" , yrs = fore, quant)
-  ssb.fore  = Get.Values(dat = base, label = "SSB" ,       yrs = fore, quant)
+
+  ## ssb for all forecast yrs
+  ssb.fore  = data.frame("yrs" = fore,
+                         "dq" = basemod1$derived_quants[grep(paste0("SSB_",fore,collapse = "|"), basemod1$derived_quants$Label),"Value"],
+                         "low" = basemod1$derived_quants[grep(paste0("SSB_",fore,collapse = "|"), basemod1$derived_quants$Label),"Value"] - 1.96*basemod1$derived_quants[grep("SmryBio_Unfished", basemod1$derived_quants$Label),"StdDev"],
+                         "high" = basemod1$derived_quants[grep(paste0("SSB_",fore,collapse = "|"), basemod1$derived_quants$Label),"Value"] + 1.96*basemod1$derived_quants[grep("SmryBio_Unfished", basemod1$derived_quants$Label),"StdDev"])
+
+
+    #Get.Values(dat = base, label = "SSB" ,       yrs = fore, quant)
   depl.fore = Get.Values(dat = base, label = "Bratio",     yrs = fore, quant)
 
   if (nsexes == 1) {
@@ -482,162 +512,163 @@ SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.onl
   colnames(es.g) = c("Year", "Predicted OFL (mt)", "ABC Catch (mt)", paste0("Age ", smry.age, "+ Biomass (mt)"), "Spawning Biomass (mt)", "Depletion (%)")
 
   write.csv(es.g, paste0(csv.dir, "/g_Projections_ExecutiveSummary.csv"), row.names = F)
-
-  #======================================================================
-  #ES Table h decision table
-  #======================================================================
-  # To be done later
-
-
-  #======================================================================
-  #ES Table i the summary table
-  #======================================================================
-  ind = length(hist)-1
-  smry = 0
-  for(a in 1:nareas){
-    temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, x,"TIME",sep=" "),base)]," ")[[1]][6]), x = hist[1:ind])
-    smry = smry + temp
-  }
-
-  smry = c(smry, smry.fore[1])
-
-  es.i = matrix(c(hist,
-                  c(print(adj.spr$dq[1:(length(hist)-1)],2), "NA"),
-                  c(print(f.value$dq[1:(length(hist)-1)],2), "NA"),
-                  comma(smry,   dig),
-                  comma(ssb$dq, dig),
-                  paste0(comma(ssb$low, dig), "\u2013", comma(ssb$high, dig)),
-                  comma(recruits$dq, dig),
-                  paste0(comma(recruits$low, dig), "\u2013", comma(recruits$high, dig)),
-                  print(depl$dq*100, 1),
-                  paste0(print(depl$low*100,1), "\u2013", print(depl$high*100,1))),
-                ncol = length(hist), byrow = T)
-
-  es.i = noquote(es.i)
-
-  rownames(es.i) = c(" Years",
-                     "1-SPR",
-                     "Exploitation_Rate",
-                     paste0("Age ", smry.age, "+ Biomass (mt)"),
-                     "Spawning Biomass (mt)",
-                     "95% Confidence Interval",
-                     "Recruitment",
-                     "95% Confidence Interval",
-                     "Depletion (%)",
-                     "95% Confidence Interval")
-
-  write.csv(es.i, paste0(csv.dir, "/i_Summary_ExecutiveSummary.csv"))
-
-
-  if (es.only == FALSE){
-    #======================================================================
-    # Total Catch when discards are estimated
-    #======================================================================
-    xx = ifelse(SS_versionNumeric < 3.3, 12, 15)
-    total.dead = total.catch = 0
-    catch = NULL
-    ind = startyr:endyr
-    for(a in 1:nareas){
-      for (i in 1:nfleets){
-        killed = mapply(function(x) killed = as.numeric(strsplit(base[grep(paste(fleet.num[i], names[i], nareas[a], x, sep=" "),base)]," ")[[1]][xx]), x = ind)
-        input.catch = mapply(function(x) input.catch = as.numeric(strsplit(base[grep(paste(fleet.num[i], names[i], nareas[a], x, sep=" "),base)]," ")[[1]][xx+1]), x = ind)
-        total.dead = total.dead + killed
-        total.catch = total.catch + input.catch
-        catch = cbind(catch, input.catch)
-      }
-      mortality = data.frame(ind, comma(catch, 2), comma(total.catch,2), comma(total.dead,2))
-      colnames(mortality) = c("Year",names, "Total Catch", "Total Dead")
-
-      write.csv(mortality, paste0(csv.dir, "/_CatchesAllYrs_Area", nareas[a], ".csv"), row.names = F)
-    }
-
-    #======================================================================
-    #Numbers at age
-    #======================================================================
-    if ( nareas > 1) { print(paste0("Patience: There are ", nareas, " areas that are being pulled and combined to create the numbers-at-age tables.")) }
-
-    if(SS_versionNumeric < 3.30) {
-      maxAge = length(strsplit(base[grep(paste("1 1 1 1 1 1", startyr,sep=" "),base)]," ")[[1]]) - 14
-
-      if (nsexes == 1) {
-        natage.f = natage.m = 0
-        for(a in 1:nareas){
-          temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a,"1 1 1 1", x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
-          natage.f = natage.f + t(temp)
-        }
-
-        colnames(natage.f) = 0:maxAge
-        rownames(natage.f) <- startyr:endyr
-
-        write.csv(natage.f, paste0(csv.dir, "/_natage.csv"))
-      }
-
-      if (nsexes == 2) {
-        natage.f = natage.m = 0
-        for(a in 1:nareas){
-          for (b in 1:nmorphs){
-            n = b
-            temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, b, "1 1 1", n, x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
-            natage.f = natage.f + t(temp)
-            n = ifelse(nmorphs ==1, nsexes, b + nsexes)
-            temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, b, "2 1 1", n, x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
-            natage.m = natage.m + t(temp)
-          }
-        }
-
-        colnames(natage.f) = 0:maxAge; colnames(natage.m) = 0:maxAge
-        rownames(natage.f) <- startyr:endyr ; rownames(natage.m) <- startyr:endyr
-
-        write.csv(natage.f, paste0(csv.dir, "/_natage_f.csv"))
-        write.csv(natage.m, paste0(csv.dir, "/_natage_m.csv"))
-      }
-    } # SS v3.24 verions loop
-
-    # Check to see if numbers-at-age is calculated
-    if(SS_versionNumeric >= 3.30) {
-      check = as.numeric(strsplit(rawstarter[grep("detailed output", rawstarter)]," ")[[1]][1])
-      if (check == 2) { "Detailed age-structure set in starter file set = 2 which does not create numbers-at-age table."}
-
-      if (check != 2){
-        maxAge = length(strsplit(base[grep(paste("1 1 1 1 1 1 1", startyr,sep=" "),base)]," ")[[1]]) - 14
-
-        if (nsexes == 1) {
-          natage.f = natage.m = 0
-          for(a in 1:nareas){
-            temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a,"1 1 1 1 1 1", x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
-            natage.f = natage.f + t(temp)
-          }
-
-          colnames(natage.f) = 0:maxAge
-          rownames(natage.f) <- startyr:endyr
-
-          write.csv(natage.f, paste0(csv.dir, "/_natage.csv"))
-        }
-
-        if (nsexes == 2) {
-          natage.f = natage.m = 0
-          for(a in 1:nareas){
-            for (b in 1:nmorphs){
-              n = b
-              temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, b, "1 1 1 1", n, x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
-              natage.f = natage.f + t(temp)
-              n = ifelse(nmorphs ==1, nsexes, b + nsexes)
-              temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, b, "2 1 1 1", n, x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
-              natage.m = natage.m + t(temp)
-            }
-          }
-
-          colnames(natage.f) = 0:maxAge; colnames(natage.m) = 0:maxAge
-          rownames(natage.f) <- startyr:endyr ; rownames(natage.m) <- startyr:endyr
-
-          write.csv(natage.f, paste0(csv.dir, "/_natage_f.csv"))
-          write.csv(natage.m, paste0(csv.dir, "/_natage_m.csv"))
-        }
-      } #check loop
-    } #  SS version 3.30
-
-  } #nareas
+  #
+  # #======================================================================
+  # #ES Table h decision table
+  # #======================================================================
+  # # To be done later
+  #
+  #
+  # #======================================================================
+  # #ES Table i the summary table
+  # #======================================================================
+  # hist     <- (endyr - 11):(endyr + 5)
+  # ind = length(hist)-1
+  # smry = 0
+  # for(a in 1:nareas){
+  #   temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, x,"TIME",sep=" "),base)]," ")[[1]][6]), x = hist[1:ind])
+  #   smry = smry + temp
+  # }
+  #
+  # smry = c(smry, smry.fore[1])
+  #
+  # es.i = matrix(c(hist,
+  #                 c(print(adj.spr$dq[1:(length(hist)-1)],2), "NA"),
+  #                 c(print(f.value$dq[1:(length(hist)-1)],2), "NA"),
+  #                 comma(smry,   dig),
+  #                 comma(ssb$dq[1:length(hist)], dig),
+  #                 paste0(comma(ssb$low[1:length(hist)], dig), "\u2013", comma(ssb$high[1:length(hist)], dig)),
+  #                 comma(recruits$dq, dig),
+  #                 paste0(comma(recruits$low, dig), "\u2013", comma(recruits$high, dig)),
+  #                 print(depl$dq[1:length(hist)]*100, 1),
+  #                 paste0(print(depl$low[1:length(hist)]*100,1), "\u2013", print(depl$high[1:length(hist)]*100,1))),
+  #               ncol = length(hist), byrow = T)
+  #
+  # es.i = noquote(es.i)
+  #
+  # rownames(es.i) = c(" Years",
+  #                    "1-SPR",
+  #                    "Exploitation_Rate",
+  #                    paste0("Age ", smry.age, "+ Biomass (mt)"),
+  #                    "Spawning Biomass (mt)",
+  #                    "95% Confidence Interval",
+  #                    "Recruitment",
+  #                    "95% Confidence Interval",
+  #                    "Depletion (%)",
+  #                    "95% Confidence Interval")
+  #
+  # write.csv(es.i, paste0(csv.dir, "/i_Summary_ExecutiveSummary.csv"))
+  # hist     <- (endyr - 11):(endyr +1)
+  #
+  # if (es.only == FALSE){
+  #   #======================================================================
+  #   # Total Catch when discards are estimated
+  #   #======================================================================
+  #   xx = ifelse(SS_versionNumeric < 3.3, 12, 15)
+  #   total.dead = total.catch = 0
+  #   catch = NULL
+  #   ind = startyr:endyr
+  #   for(a in 1:nareas){
+  #     for (i in 1:nfleets){
+  #       killed = mapply(function(x) killed = as.numeric(strsplit(base[grep(paste(fleet.num[i], names[i], nareas[a], x, sep=" "),base)]," ")[[1]][xx]), x = ind)
+  #       input.catch = mapply(function(x) input.catch = as.numeric(strsplit(base[grep(paste(fleet.num[i], names[i], nareas[a], x, sep=" "),base)]," ")[[1]][xx+1]), x = ind)
+  #       total.dead = total.dead + killed
+  #       total.catch = total.catch + input.catch
+  #       catch = cbind(catch, input.catch)
+  #     }
+  #     mortality = data.frame(ind, comma(catch, 2), comma(total.catch,2), comma(total.dead,2))
+  #     colnames(mortality) = c("Year",names, "Total Catch", "Total Dead")
+  #
+  #     write.csv(mortality, paste0(csv.dir, "/_CatchesAllYrs_Area", nareas[a], ".csv"), row.names = F)
+  #   }
+  #
+  #   #======================================================================
+  #   #Numbers at age
+  #   #======================================================================
+  #   if ( nareas > 1) { print(paste0("Patience: There are ", nareas, " areas that are being pulled and combined to create the numbers-at-age tables.")) }
+  #
+  #   if(SS_versionNumeric < 3.30) {
+  #     maxAge = length(strsplit(base[grep(paste("1 1 1 1 1 1", startyr,sep=" "),base)]," ")[[1]]) - 14
+  #
+  #     if (nsexes == 1) {
+  #       natage.f = natage.m = 0
+  #       for(a in 1:nareas){
+  #         temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a,"1 1 1 1", x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
+  #         natage.f = natage.f + t(temp)
+  #       }
+  #
+  #       colnames(natage.f) = 0:maxAge
+  #       rownames(natage.f) <- startyr:endyr
+  #
+  #       write.csv(natage.f, paste0(csv.dir, "/_natage.csv"))
+  #     }
+  #
+  #     if (nsexes == 2) {
+  #       natage.f = natage.m = 0
+  #       for(a in 1:nareas){
+  #         for (b in 1:nmorphs){
+  #           n = b
+  #           temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, b, "1 1 1", n, x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
+  #           natage.f = natage.f + t(temp)
+  #           n = ifelse(nmorphs ==1, nsexes, b + nsexes)
+  #           temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, b, "2 1 1", n, x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
+  #           natage.m = natage.m + t(temp)
+  #         }
+  #       }
+  #
+  #       colnames(natage.f) = 0:maxAge; colnames(natage.m) = 0:maxAge
+  #       rownames(natage.f) <- startyr:endyr ; rownames(natage.m) <- startyr:endyr
+  #
+  #       write.csv(natage.f, paste0(csv.dir, "/_natage_f.csv"))
+  #       write.csv(natage.m, paste0(csv.dir, "/_natage_m.csv"))
+  #     }
+  #   } # SS v3.24 verions loop
+  #
+  #   # Check to see if numbers-at-age is calculated
+  #   if(SS_versionNumeric >= 3.30) {
+  #     check = as.numeric(strsplit(rawstarter[grep("detailed output", rawstarter)]," ")[[1]][1])
+  #     if (check == 2) { "Detailed age-structure set in starter file set = 2 which does not create numbers-at-age table."}
+  #
+  #     if (check != 2){
+  #       maxAge = length(strsplit(base[grep(paste("1 1 1 1 1 1 1", startyr,sep=" "),base)]," ")[[1]]) - 14
+  #
+  #       if (nsexes == 1) {
+  #         natage.f = natage.m = 0
+  #         for(a in 1:nareas){
+  #           temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a,"1 1 1 1 1 1", x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
+  #           natage.f = natage.f + t(temp)
+  #         }
+  #
+  #         colnames(natage.f) = 0:maxAge
+  #         rownames(natage.f) <- startyr:endyr
+  #
+  #         write.csv(natage.f, paste0(csv.dir, "/_natage.csv"))
+  #       }
+  #
+  #       if (nsexes == 2) {
+  #         natage.f = natage.m = 0
+  #         for(a in 1:nareas){
+  #           for (b in 1:nmorphs){
+  #             n = b
+  #             temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, b, "1 1 1 1", n, x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
+  #             natage.f = natage.f + t(temp)
+  #             n = ifelse(nmorphs ==1, nsexes, b + nsexes)
+  #             temp = mapply(function(x) temp = as.numeric(strsplit(base[grep(paste(a, b, "2 1 1 1", n, x,sep=" "),base)]," ")[[1]][14:(14+maxAge)]), x = startyr:endyr)
+  #             natage.m = natage.m + t(temp)
+  #           }
+  #         }
+  #
+  #         colnames(natage.f) = 0:maxAge; colnames(natage.m) = 0:maxAge
+  #         rownames(natage.f) <- startyr:endyr ; rownames(natage.m) <- startyr:endyr
+  #
+  #         write.csv(natage.f, paste0(csv.dir, "/_natage_f.csv"))
+  #         write.csv(natage.m, paste0(csv.dir, "/_natage_m.csv"))
+  #       }
+  #     } #check loop
+  #   } #  SS version 3.30
+  #
+  # } #nareas
 }
 
 ## not run::
-SS_executivesummaryMK(dir = "C:/Users/Maia Kapur/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crSouth_upper_high")
+# SS_executivesummaryMK(dir = "C:/Users/Maia Kapur/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crCen/base2015")
