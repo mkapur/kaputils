@@ -20,6 +20,8 @@ SS_autoForecast <- function(rootdir,
   devtools::source_url("https://raw.githubusercontent.com/mkapur/kaputils/master/R/SS_writeforecastMK.R") ## use dev version
 
 
+  # source("C:/Users/mkapur/Dropbox/kaputils/R/SS_writeforecastMK.R")
+
   df <- data.frame()
   foreyrs <- forecast_end-forecast_start
   if(!exists(paste0(rootdir,"/forecasts"))) dir.create(paste0(rootdir,"/forecasts"))
@@ -31,19 +33,28 @@ SS_autoForecast <- function(rootdir,
   if(ncol(fixed_catches) != replist0$nfishfleets) stop('fixed_catches should have a value for each fleet')
 
   for(t in 1:foreyrs){
+
     base_temp <- paste0("forecasts/forecast", (t-1)+forecast_start)
     setwd(rootdir); if(exists(base_temp)) unlink(  paste0(rootdir,"/",base_temp), force = TRUE)
     dir.create(base_temp)
     ## copy original files into new forecast folder
-    file.copy(list.files(
-      paste0(rootdir,"/",basedir),
-      full.names = TRUE,
-      recursive = TRUE), to = paste0(rootdir,"/",base_temp), overwrite = TRUE)
-      # list.files(
+    if(t == 1){
+      file.copy(from = list.files(
+        paste0(rootdir,"/",basedir),
+        full.names = TRUE,
+        recursive = TRUE), to = paste0(rootdir,"/",base_temp), overwrite = TRUE)
+    }
+    # list.files(
       #   paste0(rootdir,"/",base_temp),
       #   full.names = TRUE,
       #   recursive = TRUE), overwrite = TRUE)
-
+## copy from previous year so as to retain proper catches
+    if(t>1){
+      file.copy(list.files(
+        paste0(rootdir,"/",paste0("forecasts/forecast", (t-2)+forecast_start)),
+        full.names = TRUE,
+        recursive = TRUE), to = paste0(rootdir,"/",base_temp), overwrite = TRUE)
+    }
     setwd(base_temp)
 
     ## change init_src to 1 (read from .par)
@@ -68,7 +79,7 @@ SS_autoForecast <- function(rootdir,
     length(NewLine[[1]]);length(NewLine[[2]])
     writeLines(text=mpar, con="ss3.par") ## save it
 
-    ## Step 4a. Add catch/projections through 2020.
+    ## Step 4a. Add catch/projections through 2020. -- this will likely need to revert to MK version to 'build on' prev
     fore <- SS_readforecast(file = './forecast.ss',
                             Nareas = replist0$nareas,
                             Nfleets = replist0$nfishfleets,
@@ -110,14 +121,20 @@ SS_autoForecast <- function(rootdir,
     ## Allocate this catch among the fleets according to the given proportions
     ## add this to forecast file in increments
     if(t > 1){ ## add a single year of catch
-      if(t == 2)   mod1 <- SS_output(paste0(rootdir,"/forecasts/forecast2021"), covar = FALSE) ## just load once
-      predOFLs_startForecast <-  mod1$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod1$derived_quants$Label),"Value"]
+      # if(t == 2)
+      ## get previous model
+      mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast",(forecast_start+(t-2))), covar = FALSE) ## just load once
+      # predOFLs_startForecast <-  mod1$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod1$derived_quants$Label),"Value"]
 
       # modX <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_start+(t-1)), covar = FALSE) ## just load once
-      # predOFLs_startForecast <-  modX$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), modX$derived_quants$Label),"Value"]
+      predOFLs_startForecast <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-1)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
 
-      tempForeCatch <- SS_ForeCatch(mod1,
-                                    yrs = 2021:(2021+(t-2)),
+      # tempForeCatch <- SS_ForeCatch(mod1,
+      #                               yrs = 2021:(2021+(t-2)), ## just do THIS year
+      #                               average = FALSE,
+      #                               total = predOFLs_startForecast)
+      tempForeCatch <- SS_ForeCatch(mod_prev,
+                                    yrs = 2021+(t-1), ## just do THIS year
                                     average = FALSE,
                                     total = predOFLs_startForecast)
 
@@ -146,7 +163,7 @@ SS_autoForecast <- function(rootdir,
       df[1:lYOI,"Year"] <- YOI
       df[1:lYOI,"PredOFL"] <-  mod10$derived_quants[grep(paste0("OFLCatch_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
       df[1:lYOI,"ForeCatch_ABC"] <- mod10$derived_quants[grep(paste0("ForeCatch_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
-      endyrABC <- read.csv(paste0(rootdir,'/forecasts/forecast',forecast_end-1,"/tempForeCatch.csv"))
+      endyrABC <- read.csv(paste0(rootdir,'/forecasts/forecast',forecast_end-1,"/tempForeCatch.csv")) ## the ABC which was used
       # df[1:lYOI,"ABC"] <-   endyrABC %>% filter(X.Year %in% YOI) %>% group_by(X.Year) %>% summarise(sumCatch = sum(dead.B.))
       ForecastC.dead = mod10$timeseries[, grepl('Yr|dead[(]B', names(mod10$timeseries))]
       ForecastC.dead$total = rowSums(ForecastC.dead[, -1])
