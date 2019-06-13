@@ -3,7 +3,7 @@ Title: Utilities for Stock Assessment Simulation and Data Analysis
 Version: 0.0.0.9000
 Authors@R: person("Maia", "Kapur", email = "kapurm@uw.edu", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
-Depends: R (>= 3.2.0), ggplot2, gridBase, gridExtra, gtools, maps, mvtnorm, r4ss, reshape2, scales, tidyr,dplyr,jpeg,RColorBrewer,Rmisc
+Depends: R (>= 3.2.0), ggplot2, gridBase, gridExtra, gtools, maps, mvtnorm, r4ss, reshape2, scales, tidyr, dplyr,jpeg,RColorBrewer,Rmisc
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
