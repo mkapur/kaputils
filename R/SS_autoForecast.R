@@ -80,7 +80,7 @@ SS_autoForecast <- function(rootdir,
     writeLines(text=mpar, con="ss3.par") ## save it
 
     ## Step 4a. Add catch/projections through 2020. -- this will likely need to revert to MK version to 'build on' prev
-    fore <- SS_readforecast(file = './forecast.ss',
+    fore <- SS_readforecastMK(file = './forecast.ss',
                             Nareas = replist0$nareas,
                             Nfleets = replist0$nfishfleets,
                             version = paste(replist0$SS_versionNumeric),
