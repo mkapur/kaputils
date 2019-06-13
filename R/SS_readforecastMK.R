@@ -18,23 +18,23 @@
 #' \code{\link{SS_writestarter}},
 #' \code{\link{SS_writeforecast}}, \code{\link{SS_writedat}},
 
-SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
+SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas = 1,
                              version="3.30", readAll=FALSE, verbose=TRUE){
   # function to read Stock Synthesis forecast files
   if(!(version=="3.24" | version=="3.30" | version==3.3)){
     # turns out 3.30 != "3.30" in R
     stop('version must be either 3.24 or 3.30')
   }
-  
+
   if(verbose) cat("running SS_readforecast\n")
   forecast <- readLines(file,warn=F)
-  
+
   mylist <- list()
   mylist$sourcefile <- file
   mylist$type <- "Stock_Synthesis_forecast_file"
   mylist$SSversion <- version
-  
-  
+
+
   # get numbers (could be better integrated with function above)
   allnums <- NULL
   for(i in 1:length(forecast)){
@@ -49,7 +49,7 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
       allnums <- c(allnums, nums)
     }
   }
-  
+
   # go through numerical values and save as elements of a big list
   i <- 1
   mylist$benchmarks <- allnums[i]; i <- i+1
@@ -128,7 +128,7 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
         allocation_among_groups <- allnums[i:(i+mylist$N_allocation_groups*nseas-1)]; i <- i+mylist$N_allocation_groups*nseas
         mylist$allocation_among_groups<-
           as.data.frame(t(array(data=allocation_among_groups,dim=c(mylist$N_allocation_groups,nseas))))
-        colnames(mylist$allocation_among_groups)<-paste0("Grp",1:mylist$N_allocation_groups) 
+        colnames(mylist$allocation_among_groups)<-paste0("Grp",1:mylist$N_allocation_groups)
       }else{
         mylist$N_allocation_groups <- 0
         mylist$allocation_among_groups <- NULL
@@ -165,16 +165,16 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
         stop("sorry, SS_readforecast doesn't yet work for 3.30 models with catch caps or allocation groups")
       }
       i <- i+6 # increment indicator past section on caps and allocations
-      
+
       # NULL variables that may be needed for SS_writeforecast
       mylist$max_totalcatch_by_fleet <- NULL
       mylist$max_totalcatch_by_area <- NULL
       mylist$fleet_assignment_to_allocation_group <- NULL
       mylist$N_allocation_groups <- 0
       mylist$allocation_among_groups <- NULL
-      
+
       mylist$InputBasis <- allnums[i]; i <- i+1
-      
+
       # forcast catch levels
       if(allnums[i]==-9999){
         ForeCatch <- NULL
