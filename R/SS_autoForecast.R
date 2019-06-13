@@ -8,7 +8,7 @@
 #' @param forecast_end last year to forecast
 #' @param fixed_catches a matrix of input fixed catches from the end of the original model to forecast_start
 #' @param Flimitfraction a value or fector of same length as forecast period with P* values corresponding to a given year
-
+# devtools::install_github("r4ss/r4ss@2663227")
 SS_autoForecast <- function(rootdir,
                             basedir,
                             catch_proportions = c(0.5,0.08426184,0.4157382),
@@ -80,11 +80,19 @@ SS_autoForecast <- function(rootdir,
     writeLines(text=mpar, con="ss3.par") ## save it
 
     ## Step 4a. Add catch/projections through 2020. -- this will likely need to revert to MK version to 'build on' prev
-    fore <- SS_readforecastMK(file = './forecast.ss',
-                            Nareas = replist0$nareas,
-                            Nfleets = replist0$nfishfleets,
-                            version = paste(replist0$SS_versionNumeric),
-                            readAll = TRUE)
+    # fore <- kaputils:::SS_readforecastMK(file = './forecast.ss',
+    #                         Nareas = replist0$nareas,
+    #                         Nfleets = replist0$nfishfleets,
+    #                       nseas = 1,
+    #                         version = paste(replist0$SS_versionNumeric),
+    #                         readAll = TRUE)
+
+  fore <-  SS_readforecast(file = './forecast.ss',
+                    Nareas = replist0$nareas,
+                    Nfleets = replist0$nfishfleets,
+                    nseas = replist0$nseasons,
+                    version = paste(replist0$SS_versionNumeric),
+                    readAll = TRUE)
     fore$Nforecastyrs <- forecast_end-replist0$endyr
     fore$FirstYear_for_caps_and_allocations <- forecast_start+(t-1)
     fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
@@ -109,7 +117,7 @@ SS_autoForecast <- function(rootdir,
     fore$Bmark_years[1:6] <- 0
     fore$Fcast_years[1:4] <- 0
     ## Fix trawl relative F to reflect proportional catch amounts by fleet in forecast.
-    fore$fleet_relative_F <- 2 ## will cause original r4ss write_forecast to fail
+    # fore$fleet_relative_F <- 2 ## will cause original r4ss write_forecast to fail
     fore$vals_fleet_relative_f <- paste(paste0(catch_proportions, collapse = " "))
     fore$basis_for_fcast_catch_tuning <- 2 ## dead biomass
 
@@ -151,7 +159,18 @@ SS_autoForecast <- function(rootdir,
     ## save file
     SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE)
     ## execute model
+    ## manual overwrite fleetrelF
+    fore2 <- readLines("./forecast.ss")
+    fore2[32] <- "2 #_fleet_relative_F"
+    writeLines(fore2,"./forecast.ss")
     system('ss3 -nohess') ## works
+    if(t < 10){
+      ## manual re-write so the SS_read funcs will work
+      fore2 <- readLines("./forecast.ss")
+      fore2[32] <- "1 #_fleet_relative_F"
+      writeLines(fore2,"./forecast.ss")
+
+    }
 
     if(t == 10){
 
