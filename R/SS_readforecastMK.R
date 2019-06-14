@@ -18,14 +18,14 @@
 #' \code{\link{SS_writestarter}},
 #' \code{\link{SS_writeforecast}}, \code{\link{SS_writedat}},
 
-## not run testing
-file = './forecast.ss'
-Nareas = replist0$nareas
-Nfleets = replist0$nfishfleets
-nseas = 1
-version = paste(replist0$SS_versionNumeric)
-readAll = TRUE
-verbose = T
+# ## not run testing
+# file = './forecast.ss'
+# Nareas = replist0$nareas
+# Nfleets = replist0$nfishfleets
+# nseas = 1
+# version = paste(replist0$SS_versionNumeric)
+# readAll = TRUE
+# verbose = T
 
 SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
                              version="3.30", readAll=FALSE, verbose=TRUE){
