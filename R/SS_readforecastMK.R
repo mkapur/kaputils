@@ -18,7 +18,7 @@
 #' \code{\link{SS_writestarter}},
 #' \code{\link{SS_writeforecast}}, \code{\link{SS_writedat}},
 
-SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas = 1,
+SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
                              version="3.30", readAll=FALSE, verbose=TRUE){
   # function to read Stock Synthesis forecast files
   if(!(version=="3.24" | version=="3.30" | version==3.3)){
@@ -33,7 +33,6 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas = 1,
   mylist$sourcefile <- file
   mylist$type <- "Stock_Synthesis_forecast_file"
   mylist$SSversion <- version
-
 
   # get numbers (could be better integrated with function above)
   allnums <- NULL
@@ -92,10 +91,20 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas = 1,
         cat("Forecast selectivity option: ", mylist$Fcast_selex, "\n")
       }
     }
+
     mylist$ControlRuleMethod <- allnums[i]; i <- i+1
     mylist$BforconstantF <- allnums[i]; i <- i+1
     mylist$BfornoF <- allnums[i]; i <- i+1
     mylist$Flimitfraction <- allnums[i]; i <- i+1
+    if (mylist$Flimitfraction < 0) {
+      ii <- i
+      while (allnums[ii] > 0) ii <- ii + 1
+      mylist$Flimitfraction_m <- data.frame(matrix(allnums[i:(ii + 1)],
+                                                   ncol = 2, byrow = TRUE))
+      colnames(mylist$Flimitfraction_m) <- c("Year", "Fraction")
+      i <- ii + 2
+      remove(ii)
+    }
     mylist$N_forecast_loops <- allnums[i]; i <- i+1
     mylist$First_forecast_loop_with_stochastic_recruitment <- allnums[i]; i <- i+1
     mylist$Forecast_loop_control_3 <- allnums[i]; i <- i+1
@@ -108,7 +117,7 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas = 1,
     mylist$Yinit <- allnums[i]; i <- i+1
     mylist$fleet_relative_F <- allnums[i]; i <- i+1
     # if(mylist$fleet_relative_F==2){
-    #   stop("SS_readforecast doesn't yet support option 2 for 'fleet relative F'")
+      # stop("SS_readforecast doesn't yet support option 2 for 'fleet relative F'")
     # }
     mylist$basis_for_fcast_catch_tuning <- allnums[i]; i <- i+1
     if(version==3.24){
@@ -214,3 +223,4 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas = 1,
   # all done
   return(mylist)
 }
+
