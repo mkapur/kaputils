@@ -35,7 +35,7 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
     stop('version must be either 3.24 or 3.30')
   }
 
-  if(verbose) cat("running SS_readforecast\n")
+  if(verbose) cat("running SS_readforecastMK\n")
   forecast <- readLines(file,warn=F)
 
   mylist <- list()
