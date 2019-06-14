@@ -34,15 +34,40 @@ SS_autoForecast <- function(rootdir,
 
   for(t in 1:foreyrs){
 
-    base_temp <- paste0("forecasts/forecast", (t-1)+forecast_start)
+    base_temp <- paste0(rootdir,"/forecasts/forecast", (t-1)+forecast_start)
     setwd(rootdir); if(exists(base_temp)) unlink(  paste0(rootdir,"/",base_temp), force = TRUE)
     dir.create(base_temp)
+
+    setwd(base_temp)
+
     ## copy original files into new forecast folder
     if(t == 1){
       file.copy(from = list.files(
         paste0(rootdir,"/",basedir),
         full.names = TRUE,
-        recursive = TRUE), to = paste0(rootdir,"/",base_temp), overwrite = TRUE)
+        recursive = TRUE),
+        to = base_temp, overwrite = TRUE)
+      ## change init_src to 1 (read from .par)
+      strt <- SS_readstarter(file = "starter.ss")
+      strt$init_values_src <- 1
+      strt$last_estimation_phase <- 10 ## could go as high as 20
+      SS_writestarter(strt, file = "starter.ss", overwrite = TRUE)
+
+      ## add zeroes to end of par file
+      mpar <- readLines("ss3.par")
+      LOI <- grep("Fcast",mpar)+1 ## get line(s) containing data after fcast
+      NewLine <- strsplit(mpar[LOI],"0 ") ## split elements
+      length(NewLine[[1]]);length(NewLine[[2]])
+
+      for(a in 1:length(NewLine)){
+        ltemp <- length(NewLine[[a]])
+        NewLine[[a]][1:ltemp] <- " "
+        NewLine[[a]][1:(ltemp+(forecast_start-2-replist0$endyr))] <- 0.000000000000 ## ! need to custom this 5
+        mpar[LOI][a] = paste0(NewLine[[a]], collapse = " ")
+      }
+      NewLine <- strsplit(mpar[LOI],"0 ") ## split elements
+      length(NewLine[[1]]);length(NewLine[[2]])
+      writeLines(text=mpar, con="ss3.par") ## save it
     }
     # list.files(
       #   paste0(rootdir,"/",base_temp),
@@ -51,48 +76,34 @@ SS_autoForecast <- function(rootdir,
 ## copy from previous year so as to retain proper catches
     if(t>1){
       file.copy(list.files(
-        paste0(rootdir,"/",paste0("forecasts/forecast", (t-2)+forecast_start)),
+        paste0(rootdir,"/",paste0("forecasts/forecast2021")),
         full.names = TRUE,
-        recursive = TRUE), to = paste0(rootdir,"/",base_temp), overwrite = TRUE)
+        recursive = TRUE), to = base_temp, overwrite = TRUE)
+
+      ## now get previous forecast only
+      file.copy(list.files(
+        paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
+        full.names = TRUE,
+        recursive = TRUE)[grep('forecast.ss',list.files(
+          paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
+          full.names = TRUE,
+          recursive = TRUE))], to = base_temp, overwrite = TRUE)
     }
-    setwd(base_temp)
-
-    ## change init_src to 1 (read from .par)
-    strt <- SS_readstarter(file = "starter.ss")
-    strt$init_values_src <- 1
-    strt$last_estimation_phase <- 10 ## could go as high as 20
-    SS_writestarter(strt, file = "starter.ss", overwrite = TRUE)
-
-    ## add zeroes to end of par file
-    mpar <- readLines("ss3.par")
-    LOI <- grep("Fcast",mpar)+1 ## get line(s) containing data after fcast
-    NewLine <- strsplit(mpar[LOI],"0 ") ## split elements
-    length(NewLine[[1]]);length(NewLine[[2]])
-
-    for(a in 1:length(NewLine)){
-      ltemp <- length(NewLine[[a]])
-      NewLine[[a]][1:ltemp] <- " "
-      NewLine[[a]][1:(ltemp+(forecast_start-2-replist0$endyr))] <- 0.000000000000 ## ! need to custom this 5
-      mpar[LOI][a] = paste0(NewLine[[a]], collapse = " ")
-    }
-    NewLine <- strsplit(mpar[LOI],"0 ") ## split elements
-    length(NewLine[[1]]);length(NewLine[[2]])
-    writeLines(text=mpar, con="ss3.par") ## save it
 
     ## Step 4a. Add catch/projections through 2020. -- this will likely need to revert to MK version to 'build on' prev
-    # fore <- kaputils:::SS_readforecastMK(file = './forecast.ss',
-    #                         Nareas = replist0$nareas,
-    #                         Nfleets = replist0$nfishfleets,
-    #                       nseas = 1,
-    #                         version = paste(replist0$SS_versionNumeric),
-    #                         readAll = TRUE)
+    fore <- SS_readforecastMK(file = './forecast.ss',
+                              Nareas = replist0$nareas,
+                              Nfleets = replist0$nfishfleets,
+                              nseas = 1,
+                              version = paste(replist0$SS_versionNumeric),
+                              readAll = TRUE)
 
-  fore <-  SS_readforecast(file = './forecast.ss',
-                    Nareas = replist0$nareas,
-                    Nfleets = replist0$nfishfleets,
-                    nseas = replist0$nseasons,
-                    version = paste(replist0$SS_versionNumeric),
-                    readAll = TRUE)
+    # fore <-  SS_readforecast(file = './forecast.ss',
+    #                          Nareas = replist0$nareas,
+    #                          Nfleets = replist0$nfishfleets,
+    #                          nseas = replist0$nseasons,
+    #                          version = paste(replist0$SS_versionNumeric),
+    #                          readAll = TRUE)
     fore$Nforecastyrs <- forecast_end-replist0$endyr
     fore$FirstYear_for_caps_and_allocations <- forecast_start+(t-1)
     fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
@@ -100,16 +111,18 @@ SS_autoForecast <- function(rootdir,
 
     ## Now Add Catch data/projections thru the year before forecast_start.
     ## This acts similarly to SS_ForeCatch except it reads directly from your inputs.
-    inityr <- max(fore$ForeCatch$Year)
-    for(k in 1:(forecast_start-1-inityr)){
-      term <- nrow(fore$ForeCatch) ## intital final row
-      for(i in 1:replist0$nfishfleets){
-        fore$ForeCatch[term+i,'Year'] <- inityr+k
-        fore$ForeCatch[term+i,'Seas'] <- 1
-        fore$ForeCatch[term+i,'Fleet'] <- i
-        fore$ForeCatch[term+i,'Catch_or_F'] <- fixed_catches[k,i]
-      } ## end nfleets
-    } ## end yrs to 2020
+    if(t == 1){
+      inityr <- max(fore$ForeCatch$Year)
+      for(k in 1:(forecast_start-1-inityr)){
+        term <- nrow(fore$ForeCatch) ## intital final row
+        for(i in 1:replist0$nfishfleets){
+          fore$ForeCatch[term+i,'Year'] <- inityr+k
+          fore$ForeCatch[term+i,'Seas'] <- 1
+          fore$ForeCatch[term+i,'Fleet'] <- i
+          fore$ForeCatch[term+i,'Catch_or_F'] <- fixed_catches[k,i]
+        } ## end nfleets
+      } ## end yrs to 2020
+    }
 
 
 
@@ -117,7 +130,7 @@ SS_autoForecast <- function(rootdir,
     fore$Bmark_years[1:6] <- 0
     fore$Fcast_years[1:4] <- 0
     ## Fix trawl relative F to reflect proportional catch amounts by fleet in forecast.
-    # fore$fleet_relative_F <- 2 ## will cause original r4ss write_forecast to fail
+    fore$fleet_relative_F <- 2 ## will cause original r4ss write_forecast to fail
     fore$vals_fleet_relative_f <- paste(paste0(catch_proportions, collapse = " "))
     fore$basis_for_fcast_catch_tuning <- 2 ## dead biomass
 
@@ -132,19 +145,19 @@ SS_autoForecast <- function(rootdir,
       # if(t == 2)
       ## get previous model
       mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast",(forecast_start+(t-2))), covar = FALSE) ## just load once
-      # predOFLs_startForecast <-  mod1$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod1$derived_quants$Label),"Value"]
+      foreCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
 
       # modX <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_start+(t-1)), covar = FALSE) ## just load once
-      predOFLs_startForecast <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-1)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
+      # predOFLs_startForecast <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
 
       # tempForeCatch <- SS_ForeCatch(mod1,
       #                               yrs = 2021:(2021+(t-2)), ## just do THIS year
       #                               average = FALSE,
       #                               total = predOFLs_startForecast)
       tempForeCatch <- SS_ForeCatch(mod_prev,
-                                    yrs = 2021+(t-1), ## just do THIS year
+                                    yrs = forecast_start+(t-2), ## just do THIS year
                                     average = FALSE,
-                                    total = predOFLs_startForecast)
+                                    total = foreCatch_thisyear)
 
                                     # total = df$PredOFL[df$Year %in% (forecast_start+(t-2))]) ## total are the total catches for each year, given by OFLcatch
 
@@ -154,23 +167,23 @@ SS_autoForecast <- function(rootdir,
       }
     } ## end forecast if t > 1
 
-    cat(paste0('Added forecast catch thru year ',forecast_start+(t-1),"\n"))
+    cat(paste0('Added forecast catch thru year ',forecast_start+(t-2),"\n"))
 
     ## save file
     SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE)
     ## execute model
     ## manual overwrite fleetrelF
-    fore2 <- readLines("./forecast.ss")
-    fore2[32] <- "2 #_fleet_relative_F"
-    writeLines(fore2,"./forecast.ss")
+    # fore2 <- readLines("./forecast.ss")
+    # fore2[32] <- "2 #_fleet_relative_F"
+    # writeLines(fore2,"./forecast.ss")
     system('ss3 -nohess') ## works
-    if(t < 10){
+    # if(t < 10){
       ## manual re-write so the SS_read funcs will work
-      fore2 <- readLines("./forecast.ss")
-      fore2[32] <- "1 #_fleet_relative_F"
-      writeLines(fore2,"./forecast.ss")
+      # fore2 <- readLines("./forecast.ss")
+      # fore2[32] <- "1 #_fleet_relative_F"
+      # writeLines(fore2,"./forecast.ss")
 
-    }
+    # }
 
     if(t == 10){
 
@@ -210,4 +223,17 @@ SS_autoForecast <- function(rootdir,
 } ## end function
 
 
+
+## not run testers
+# compname = c('mkapur','maia kapur')[1]
+# rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth")
+# catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
+# rootdir = rootdir.temp
+# basedir = "base2015"
+# catch_proportions = catch_projections[5,5:ncol(catch_projections)]
+# # catch_proportions = c(0.5,0.08426184,0.4157382),
+# forecast_start = 2021
+# forecast_end = 2031
+# fixed_catches = catch_projections[1:4,5:ncol(catch_projections)]
+# Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
 
