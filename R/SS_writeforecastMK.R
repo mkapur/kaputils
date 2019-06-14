@@ -86,6 +86,7 @@ SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",
     wl("Ydecl")
     wl("Yinit")
     wl("fleet_relative_F")
+    # wl()
     # if(mylist$fleet_relative_F==2) stop("SS_readforecast doesn't yet support option 2 for 'fleet relative F'") !MK
     wl("basis_for_fcast_catch_tuning")
     wl("vals_fleet_relative_f") #!
