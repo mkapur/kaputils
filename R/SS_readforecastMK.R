@@ -18,6 +18,15 @@
 #' \code{\link{SS_writestarter}},
 #' \code{\link{SS_writeforecast}}, \code{\link{SS_writedat}},
 
+## not run testing
+file = './forecast.ss'
+Nareas = replist0$nareas
+Nfleets = replist0$nfishfleets
+nseas = 1
+version = paste(replist0$SS_versionNumeric)
+readAll = TRUE
+verbose = T
+
 SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
                              version="3.30", readAll=FALSE, verbose=TRUE){
   # function to read Stock Synthesis forecast files
@@ -105,21 +114,23 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
       i <- ii + 2
       remove(ii)
     }
-    mylist$N_forecast_loops <- allnums[i]; i <- i+1
+    mylist$N_forecast_loops <- allnums[i]; i <- i+1 ## i = 22
     mylist$First_forecast_loop_with_stochastic_recruitment <- allnums[i]; i <- i+1
     mylist$Forecast_loop_control_3 <- allnums[i]; i <- i+1
     mylist$Forecast_loop_control_4 <- allnums[i]; i <- i+1
     mylist$Forecast_loop_control_5 <- allnums[i]; i <- i+1
-    mylist$FirstYear_for_caps_and_allocations <- allnums[i]; i <- i+1
+    mylist$FirstYear_for_caps_and_allocations <- allnums[i]; i <- i+1 ## I = 28
     mylist$stddev_of_log_catch_ratio <- allnums[i]; i <- i+1
     mylist$Do_West_Coast_gfish_rebuilder_output <- allnums[i]; i <- i+1
     mylist$Ydecl <- allnums[i]; i <- i+1
     mylist$Yinit <- allnums[i]; i <- i+1
-    mylist$fleet_relative_F <- allnums[i]; i <- i+1
-    # if(mylist$fleet_relative_F==2){
-      # stop("SS_readforecast doesn't yet support option 2 for 'fleet relative F'")
-    # }
+    mylist$fleet_relative_F <- allnums[i]; i <- i+1 ## i = 33 before 34 after
     mylist$basis_for_fcast_catch_tuning <- allnums[i]; i <- i+1
+
+    if(mylist$fleet_relative_F==2){ ## START 35
+      mylist$vals_fleet_relative_f <- allnums[i:(i+Nfleets-1)]; i <- i+Nfleets
+    # stop("SS_readforecast doesn't yet support option 2 for 'fleet relative F'")
+    }
     if(version==3.24){
       if(verbose){
         cat('reading section on fleet- and area-specific inputs based on 3.24 format\n')
