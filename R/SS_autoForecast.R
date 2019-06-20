@@ -108,6 +108,7 @@ SS_autoForecast <- function(rootdir,
     fore$FirstYear_for_caps_and_allocations <- forecast_start+(t-1)
     fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
     fore$InputBasis <- 2 ## discards
+    fore$ControlRuleMethod <- 3
 
     ## Now Add Catch data/projections thru the year before forecast_start.
     ## This acts similarly to SS_ForeCatch except it reads directly from your inputs.
@@ -134,7 +135,7 @@ SS_autoForecast <- function(rootdir,
     fore$vals_fleet_relative_f <- paste(paste0(catch_proportions, collapse = " "))
     fore$basis_for_fcast_catch_tuning <- 2 ## dead biomass
 
-    ##  Input correct buffer fraction for this year
+    ##  Input correct buffer fraction for this year -- won't matter if CTL rule method == 3
     fore$Flimitfraction <- Flimitfraction[t]
 
     # Step 5b. Iterate the forecast file -- only if not first iter
@@ -145,8 +146,10 @@ SS_autoForecast <- function(rootdir,
       # if(t == 2)
       ## get previous model
       mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast",(forecast_start+(t-2))), covar = FALSE) ## just load once
-      foreCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
-
+      # foreCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
+      OFLCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
+      ## manually multiply OFL for this year by the buffer
+      input_forecatch <- OFLCatch_thisyear*Flimitfraction[t]
       # modX <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_start+(t-1)), covar = FALSE) ## just load once
       # predOFLs_startForecast <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
 
@@ -225,7 +228,7 @@ SS_autoForecast <- function(rootdir,
 
 
 ## not run testers
-# compname = c('mkapur','maia kapur')[1]
+# compname = c('mkapur','maia kapur')[2]
 # rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth")
 # catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
 # rootdir = rootdir.temp
