@@ -58,14 +58,14 @@ SS_autoForecast <- function(rootdir,
 
       ## update CTL file with state of nature low/base/high (all fixed, reading from par)
       if(state != 'base'){
-        mctl <- readLines(list.files(newdir.temp)[grep('_control', list.files(newdir.temp))])
+        mctl <- readLines(list.files(base_temp)[grep('_control', list.files(base_temp))])
         LOI <- grep("NatM_p_1_Fem_GP_1",mctl)[1] ## get line(s) containing data after natm, ignoring comment
         NewLine <- strsplit(mctl[LOI],"   ") ## split elements
 
         NewLine[[1]][3] <- ifelse(state == 'low', 0.05, ifelse(state == 'high', 0.08, 0.07))
         mctl[LOI][1] = paste0(NewLine[[1]], collapse = " ")
 
-        writeLines(text=mctl, con= paste(list.files(newdir.temp)[grep('_control', list.files(newdir.temp))])) ## save it
+        writeLines(text=mctl, con= paste(list.files(base_temp)[grep('_control', list.files(base_temp))])) ## save it
       }
       ## add zeroes to end of par file
       mpar <- readLines("ss3.par")
