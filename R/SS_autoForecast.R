@@ -234,23 +234,23 @@ SS_autoForecast <- function(rootdir,
 ## not run testers
 # compname = c('mkapur','maia kapur')[2]
 
-for(r in c('North','Central','South')){
-  for(state in c('low','base','high')){
-
-    rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_ABC_",state)
-    catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_",r,".csv"))
-
-    kaputils:::SS_autoForecast(rootdir = rootdir.temp,
-                               basedir = "base2015",
-                               catch_proportions = catch_projections[5,5:ncol(catch_projections)],
-                               state = state,
-                               forecast_start = 2021,
-                               forecast_end = 2031,
-                               fixed_catches = catch_projections[1:4,5:ncol(catch_projections)],
-                               Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020])
-    # read.csv(paste0(rootdir,"/forecasts/decision_table_base.csv"))
-  }
-}
+# for(r in c('North','Central','South')){
+#   for(state in c('low','base','high')){
+#
+#     rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_ABC_",state)
+#     catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_",r,".csv"))
+#
+#     kaputils:::SS_autoForecast(rootdir = rootdir.temp,
+#                                basedir = "base2015",
+#                                catch_proportions = catch_projections[5,5:ncol(catch_projections)],
+#                                state = state,
+#                                forecast_start = 2021,
+#                                forecast_end = 2031,
+#                                fixed_catches = catch_projections[1:4,5:ncol(catch_projections)],
+#                                Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020])
+#     # read.csv(paste0(rootdir,"/forecasts/decision_table_base.csv"))
+#   }
+# }
 
 
 
