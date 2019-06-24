@@ -3,6 +3,7 @@
 #' hopefully port to r4ss when ready
 #' @param rootdir  somewhere you'd like several models in folders created
 #' @param basedir directory with executed base-case model
+#' @param state one of low/med/high
 #' @param catch_proportions  a single or vector of values denoting the allocation proportiosn for each fleet in order matching .dat file; assuming F_relative opt 2
 #' @param forecast_start the first year to forecast; assume inputs before this
 #' @param forecast_end last year to forecast
@@ -11,6 +12,7 @@
 # devtools::install_github("r4ss/r4ss@2663227")
 SS_autoForecast <- function(rootdir,
                             basedir,
+                            state = 'base',
                             catch_proportions = c(0.5,0.08426184,0.4157382),
                             forecast_start = 2021,
                             forecast_end = 2031,
@@ -53,6 +55,18 @@ SS_autoForecast <- function(rootdir,
       strt$last_estimation_phase <- 10 ## could go as high as 20
       SS_writestarter(strt, file = "starter.ss", overwrite = TRUE)
 
+
+      ## update CTL file with state of nature low/base/high (all fixed, reading from par)
+      if(state != 'base'){
+        mctl <- readLines(list.files(newdir.temp)[grep('_control', list.files(newdir.temp))])
+        LOI <- grep("NatM_p_1_Fem_GP_1",mctl)[1] ## get line(s) containing data after natm, ignoring comment
+        NewLine <- strsplit(mctl[LOI],"   ") ## split elements
+
+        NewLine[[1]][3] <- ifelse(state == 'low', 0.05, ifelse(state == 'high', 0.08, 0.07))
+        mctl[LOI][1] = paste0(NewLine[[1]], collapse = " ")
+
+        writeLines(text=mctl, con= paste(list.files(newdir.temp)[grep('_control', list.files(newdir.temp))])) ## save it
+      }
       ## add zeroes to end of par file
       mpar <- readLines("ss3.par")
       LOI <- grep("Fcast",mpar)+1 ## get line(s) containing data after fcast
@@ -108,7 +122,7 @@ SS_autoForecast <- function(rootdir,
     fore$FirstYear_for_caps_and_allocations <- forecast_start+(t-1)
     fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
     fore$InputBasis <- 2 ## discards
-    fore$ControlRuleMethod <- 3
+    fore$ControlRuleMethod <- 3 ## 3: ramp does catch=f(SSB), buffer on catch
 
     ## Now Add Catch data/projections thru the year before forecast_start.
     ## This acts similarly to SS_ForeCatch except it reads directly from your inputs.
@@ -124,8 +138,6 @@ SS_autoForecast <- function(rootdir,
         } ## end nfleets
       } ## end yrs to 2020
     }
-
-
 
     ## Fix forecast file to end year selectivity
     fore$Bmark_years[1:6] <- 0
@@ -160,7 +172,7 @@ SS_autoForecast <- function(rootdir,
       tempForeCatch <- SS_ForeCatch(mod_prev,
                                     yrs = forecast_start+(t-2), ## just do THIS year
                                     average = FALSE,
-                                    total = foreCatch_thisyear)
+                                    total = input_forecatch)
 
                                     # total = df$PredOFL[df$Year %in% (forecast_start+(t-2))]) ## total are the total catches for each year, given by OFLcatch
 
@@ -176,16 +188,8 @@ SS_autoForecast <- function(rootdir,
     SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE)
     ## execute model
     ## manual overwrite fleetrelF
-    # fore2 <- readLines("./forecast.ss")
-    # fore2[32] <- "2 #_fleet_relative_F"
-    # writeLines(fore2,"./forecast.ss")
-    system('ss3 -nohess') ## works
-    # if(t < 10){
-      ## manual re-write so the SS_read funcs will work
-      # fore2 <- readLines("./forecast.ss")
-      # fore2[32] <- "1 #_fleet_relative_F"
-      # writeLines(fore2,"./forecast.ss")
-
+    # if(execute == TRUE){
+      system('ss3 -nohess') ## works
     # }
 
     if(t == 10){
