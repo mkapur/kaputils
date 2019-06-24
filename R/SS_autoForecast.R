@@ -95,16 +95,16 @@ SS_autoForecast <- function(rootdir,
         recursive = TRUE), to = base_temp, overwrite = TRUE)
 
       ## now get previous forecast only
-      file.copy(list.files(
-        paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
-        full.names = TRUE,
-        recursive = TRUE)[grep('forecast.ss',list.files(
-          paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
-          full.names = TRUE,
-          recursive = TRUE))], to = base_temp, overwrite = TRUE)
+      # file.copy(list.files(
+      #   paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
+      #   full.names = TRUE,
+      #   recursive = TRUE)[grep('forecast.ss',list.files(
+      #     paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
+      #     full.names = TRUE,
+      #     recursive = TRUE))], to = base_temp, overwrite = TRUE)
     }
 
-    ## Step 4a. Add catch/projections through 2020. -- this will likely need to revert to MK version to 'build on' prev
+    ## Step 4a. Add catch/projections through given year. -- this will likely need to revert to MK version to 'build on' prev
     fore <- SS_readforecastMK(file = './forecast.ss',
                               Nareas = replist0$nareas,
                               Nfleets = replist0$nfishfleets,
@@ -178,7 +178,7 @@ SS_autoForecast <- function(rootdir,
 
       fore$ForeCatch[(nrow(fore$ForeCatch)+1):(nrow(fore$ForeCatch)+nrow(tempForeCatch)),] <- tempForeCatch[,1:4]
       if(t == 10){
-        write.csv(tempForeCatch, file = "./tempForeCatch.csv",row.names = FALSE) ## save final year ABC catch
+        write.csv(fore$ForeCatch, file = "./tempForeCatch.csv",row.names = FALSE) ## save final year ABC catch
       }
     } ## end forecast if t > 1
 
@@ -192,37 +192,37 @@ SS_autoForecast <- function(rootdir,
       system('ss3 -nohess') ## works
     # }
 
-    if(t == 10){
-
-      mod10 <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_end-1), covar = FALSE)
-      YOI <- (replist0$endyr+1):(forecast_end); lYOI <- length(YOI)
-      ## this will read the output of the first model and save the OFLs
-      ## which will get used to comptue subsequent mods
-      ## https://github.com/melmonk/StockAssessment_template/blob/master/8a_Tables.Rmd
-      df[1:lYOI,"Year"] <- YOI
-      df[1:lYOI,"PredOFL"] <-  mod10$derived_quants[grep(paste0("OFLCatch_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
-      df[1:lYOI,"ForeCatch_ABC"] <- mod10$derived_quants[grep(paste0("ForeCatch_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
-      endyrABC <- read.csv(paste0(rootdir,'/forecasts/forecast',forecast_end-1,"/tempForeCatch.csv")) ## the ABC which was used
-      # df[1:lYOI,"ABC"] <-   endyrABC %>% filter(X.Year %in% YOI) %>% group_by(X.Year) %>% summarise(sumCatch = sum(dead.B.))
-      ForecastC.dead = mod10$timeseries[, grepl('Yr|dead[(]B', names(mod10$timeseries))]
-      ForecastC.dead$total = rowSums(ForecastC.dead[, -1])
-      # ForecastC.ret = mod10$timeseries[, grepl('Yr|retain[(]B', names(mod10$timeseries))]
-      # ForecastC.ret$total = rowSums(ForecastC.dead[, -1])
-      df[1:lYOI,"ForecastC.dead"] <- subset(ForecastC.dead, Yr %in% YOI)$total ## should equal ForeCatch ABC
-      # df[1:lYOI,"ForecastC.ret"] <- subset(ForecastC.ret, Yr %in% YOI)$total
-      # df[1:lYOI,"ForecastC.dead+ret"] <- rowSums(cbind(df$ForecastC.dead,df$ForecastC.ret))
-      df[1:lYOI,"Age10+Biomass"] <- subset(mod10$timeseries[, c('Yr', 'Bio_smry')], Yr %in% YOI)$Bio_smry
-      df[1:lYOI,"SpawnBio"] <-mod10$derived_quants[grep(paste0("SSB_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
-      df[1:lYOI,"Depletion"] <- paste0(round(mod10$derived_quants[grep(paste0("Bratio_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"],3)*100,"%")
-      for(i in YOI){ ## grab ovserved and/or forecast catch for all fleets f
-        df$FiveYrAvgCatch[df$Year == i] <- mean(c(mod10$catch$Obs[mod10$catch$Yr %in% c(i:(i-5))],
-                                                  mod10$derived_quants[grep(paste0("ForeCatch_",i:(i-5),collapse = "|"), mod10$derived_quants$Label),"Value"]))
-      } ## end 5yr avg
-      df$PredOFL[df$Year < forecast_start] <- df$ForeCatch_ABC[df$Year < forecast_start]<- NA
-      df[,2:4] <- round(df[,2:4],2)
-      write.csv(df,file =paste0(rootdir,"/forecasts/decision_table_base.csv"),row.names = FALSE)
-    }
-    cat(paste0('Executed model with forecast thru year ',forecast_start+(t-1),"\n"))
+    # if(t == 10){
+    #
+    #   mod10 <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_end-1), covar = FALSE)
+    #   YOI <- (replist0$endyr+1):(forecast_end); lYOI <- length(YOI)
+    #   ## this will read the output of the first model and save the OFLs
+    #   ## which will get used to comptue subsequent mods
+    #   ## https://github.com/melmonk/StockAssessment_template/blob/master/8a_Tables.Rmd
+    #   df[1:lYOI,"Year"] <- YOI
+    #   df[1:lYOI,"PredOFL"] <-  mod10$derived_quants[grep(paste0("OFLCatch_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
+    #   df[1:lYOI,"ForeCatch_ABC"] <- mod10$derived_quants[grep(paste0("ForeCatch_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
+    #   endyrABC <- read.csv(paste0(rootdir,'/forecasts/forecast',forecast_end-1,"/tempForeCatch.csv")) ## the ABC which was used
+    #   # df[1:lYOI,"ABC"] <-   endyrABC %>% filter(X.Year %in% YOI) %>% group_by(X.Year) %>% summarise(sumCatch = sum(dead.B.))
+    #   ForecastC.dead = mod10$timeseries[, grepl('Yr|dead[(]B', names(mod10$timeseries))]
+    #   ForecastC.dead$total = rowSums(ForecastC.dead[, -1])
+    #   # ForecastC.ret = mod10$timeseries[, grepl('Yr|retain[(]B', names(mod10$timeseries))]
+    #   # ForecastC.ret$total = rowSums(ForecastC.dead[, -1])
+    #   df[1:lYOI,"ForecastC.dead"] <- subset(ForecastC.dead, Yr %in% YOI)$total ## should equal ForeCatch ABC
+    #   # df[1:lYOI,"ForecastC.ret"] <- subset(ForecastC.ret, Yr %in% YOI)$total
+    #   # df[1:lYOI,"ForecastC.dead+ret"] <- rowSums(cbind(df$ForecastC.dead,df$ForecastC.ret))
+    #   df[1:lYOI,"Age10+Biomass"] <- subset(mod10$timeseries[, c('Yr', 'Bio_smry')], Yr %in% YOI)$Bio_smry
+    #   df[1:lYOI,"SpawnBio"] <-mod10$derived_quants[grep(paste0("SSB_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
+    #   df[1:lYOI,"Depletion"] <- paste0(round(mod10$derived_quants[grep(paste0("Bratio_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"],3)*100,"%")
+    #   for(i in YOI){ ## grab ovserved and/or forecast catch for all fleets f
+    #     df$FiveYrAvgCatch[df$Year == i] <- mean(c(mod10$catch$Obs[mod10$catch$Yr %in% c(i:(i-5))],
+    #                                               mod10$derived_quants[grep(paste0("ForeCatch_",i:(i-5),collapse = "|"), mod10$derived_quants$Label),"Value"]))
+    #   } ## end 5yr avg
+    #   df$PredOFL[df$Year < forecast_start] <- df$ForeCatch_ABC[df$Year < forecast_start]<- NA
+    #   df[,2:4] <- round(df[,2:4],2)
+    #   write.csv(df,file =paste0(rootdir,"/forecasts/decision_table_base.csv"),row.names = FALSE)
+    # }
+    # cat(paste0('Executed model with forecast thru year ',forecast_start+(t-1),"\n"))
 
     # Step 5c. Iterate through 2030 -- the loop will continue making a new folder each time
 
@@ -233,6 +233,29 @@ SS_autoForecast <- function(rootdir,
 
 ## not run testers
 # compname = c('mkapur','maia kapur')[2]
+
+for(r in c('North','Central','South')){
+  for(state in c('low','base','high')){
+
+    rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_ABC_",state)
+    catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_",r,".csv"))
+
+    kaputils:::SS_autoForecast(rootdir = rootdir.temp,
+                               basedir = "base2015",
+                               catch_proportions = catch_projections[5,5:ncol(catch_projections)],
+                               state = state,
+                               forecast_start = 2021,
+                               forecast_end = 2031,
+                               fixed_catches = catch_projections[1:4,5:ncol(catch_projections)],
+                               Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020])
+    # read.csv(paste0(rootdir,"/forecasts/decision_table_base.csv"))
+  }
+}
+
+
+
+
+
 # rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth")
 # catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
 # rootdir = rootdir.temp
