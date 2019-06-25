@@ -24,15 +24,32 @@ SS_autoForecast <- function(rootdir,
 
   # source("C:/Users/mkapur/Dropbox/kaputils/R/SS_writeforecastMK.R")
 
-  df <- data.frame()
-  foreyrs <- forecast_end-forecast_start
-  if(!exists(paste0(rootdir,"/forecasts"))) dir.create(paste0(rootdir,"/forecasts"))
-  replist0 <- SS_output(paste0(rootdir,"/",basedir))
 
   ## error trapping
   if(length(catch_proportions) != replist0$nfishfleets) stop('catch_proportions should have a value for each fleet')
   # if(nrow(fixed_catches) != (forecast_start-1-inityr)) stop('fixed_catches should have a value for years before forecast_start')
   if(ncol(fixed_catches) != replist0$nfishfleets) stop('fixed_catches should have a value for each fleet')
+
+
+  if(state != 'base'){
+    ## copy from base 2030; everything should be updated
+    base_temp <- rootdir
+    file.copy(list.files(
+      paste0( dirname(rootdir),"/cr",r,"_ABC_base/forecasts/forecast2030"),
+      full.names = TRUE,
+      recursive = TRUE), to = base_temp, overwrite = TRUE)
+
+    ## update CTL file with state of nature low/base/high (all fixed, reading from par)
+    mctl <- readLines(list.files(base_temp)[grep('_control', list.files(base_temp))])
+    LOI <- grep("NatM_p_1_Fem_GP_1",mctl)[1] ## get line(s) containing data after natm, ignoring comment
+    NewLine <- strsplit(mctl[LOI],"   ") ## split elements
+
+    NewLine[[1]][3] <- ifelse(state == 'low', 0.05, ifelse(state == 'high', 0.09, 0.07))
+    mctl[LOI][1] = paste0(NewLine[[1]], collapse = " ")
+
+    writeLines(text=mctl, con= paste(list.files(base_temp)[grep('_control', list.files(base_temp))])) ## save it
+    setwd(base_temp); system('ss3 - nohess')
+    } else{
 
   for(t in 1:foreyrs){
 
@@ -56,17 +73,7 @@ SS_autoForecast <- function(rootdir,
       SS_writestarter(strt, file = "starter.ss", overwrite = TRUE)
 
 
-      ## update CTL file with state of nature low/base/high (all fixed, reading from par)
-      if(state != 'base'){
-        mctl <- readLines(list.files(base_temp)[grep('_control', list.files(base_temp))])
-        LOI <- grep("NatM_p_1_Fem_GP_1",mctl)[1] ## get line(s) containing data after natm, ignoring comment
-        NewLine <- strsplit(mctl[LOI],"   ") ## split elements
 
-        NewLine[[1]][3] <- ifelse(state == 'low', 0.05, ifelse(state == 'high', 0.09, 0.07))
-        mctl[LOI][1] = paste0(NewLine[[1]], collapse = " ")
-
-        writeLines(text=mctl, con= paste(list.files(base_temp)[grep('_control', list.files(base_temp))])) ## save it
-      }
       ## add zeroes to end of par file
       mpar <- readLines("ss3.par")
       LOI <- grep("Fcast",mpar)+1 ## get line(s) containing data after fcast
@@ -89,10 +96,10 @@ SS_autoForecast <- function(rootdir,
       #   recursive = TRUE), overwrite = TRUE)
 ## copy from previous year so as to retain proper catches
     if(t>1){
-      # file.copy(list.files(
-      #   paste0(rootdir,"/",paste0("forecasts/forecast2021")),
-      #   full.names = TRUE,
-      #   recursive = TRUE), to = base_temp, overwrite = TRUE)
+      file.copy(list.files(
+        paste0(rootdir,"/",paste0("forecasts/forecast2021")),
+        full.names = TRUE,
+        recursive = TRUE), to = base_temp, overwrite = TRUE)
 
       ## now get previous forecast only
       file.copy(list.files(
@@ -158,7 +165,7 @@ SS_autoForecast <- function(rootdir,
       # if(t == 2)
       ## get previous model
       mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast",(forecast_start+(t-2))), covar = FALSE) ## just load once
-      # foreCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
+      foreCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
       OFLCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
       ## manually multiply OFL for this year by the buffer
       input_forecatch <- OFLCatch_thisyear*Flimitfraction[t]
@@ -191,6 +198,7 @@ SS_autoForecast <- function(rootdir,
     # if(execute == TRUE){
       system('ss3 -nohess') ## works
     # }
+
 
     # if(t == 10){
     #
@@ -227,6 +235,11 @@ SS_autoForecast <- function(rootdir,
     # Step 5c. Iterate through 2030 -- the loop will continue making a new folder each time
 
   } ## end t loop
+  } ## end if state == base
+
+
+
+
 } ## end function
 
 
@@ -256,7 +269,7 @@ SS_autoForecast <- function(rootdir,
 
 
 # compname = c('mkapur','Maia Kapur')[2]
-# rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_low")
+# rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_high")
 # catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
 # rootdir = rootdir.temp
 # basedir = "base2015"
