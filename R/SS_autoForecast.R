@@ -25,12 +25,6 @@ SS_autoForecast <- function(rootdir,
   # source("C:/Users/mkapur/Dropbox/kaputils/R/SS_writeforecastMK.R")
 
 
-  ## error trapping
-  if(length(catch_proportions) != replist0$nfishfleets) stop('catch_proportions should have a value for each fleet')
-  # if(nrow(fixed_catches) != (forecast_start-1-inityr)) stop('fixed_catches should have a value for years before forecast_start')
-  if(ncol(fixed_catches) != replist0$nfishfleets) stop('fixed_catches should have a value for each fleet')
-
-
 
   if(state != 'base'){
     ## copy from base 2030; everything should be updated
@@ -50,11 +44,16 @@ SS_autoForecast <- function(rootdir,
 
     writeLines(text=mctl, con= paste(list.files(base_temp)[grep('_control', list.files(base_temp))])) ## save it
     setwd(base_temp); system('ss3 - nohess')
+
   } else{
     df <- data.frame()
     foreyrs <- forecast_end-forecast_start
     if(!exists(paste0(rootdir,"/forecasts"))) dir.create(paste0(rootdir,"/forecasts"))
     replist0 <- SS_output(paste0(rootdir,"/",basedir))
+    ## error trapping
+    if(length(catch_proportions) != replist0$nfishfleets) stop('catch_proportions should have a value for each fleet')
+    # if(nrow(fixed_catches) != (forecast_start-1-inityr)) stop('fixed_catches should have a value for years before forecast_start')
+    if(ncol(fixed_catches) != replist0$nfishfleets) stop('fixed_catches should have a value for each fleet')
     for(t in 1:foreyrs){
 
       base_temp <- paste0(rootdir,"/forecasts/forecast", (t-1)+forecast_start)
@@ -240,10 +239,6 @@ SS_autoForecast <- function(rootdir,
 
     } ## end t loop
   } ## end if state == base
-
-
-
-
 } ## end function
 
 
