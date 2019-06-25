@@ -51,7 +51,7 @@ SS_autoForecast <- function(rootdir,
         to = base_temp, overwrite = TRUE)
       ## change init_src to 1 (read from .par)
       strt <- SS_readstarter(file = "starter.ss")
-      strt$init_values_src <- 1
+      strt$init_values_src <- ifelse(state == 'base',1,0)
       strt$last_estimation_phase <- 10 ## could go as high as 20
       SS_writestarter(strt, file = "starter.ss", overwrite = TRUE)
 
