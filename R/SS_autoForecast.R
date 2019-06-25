@@ -43,7 +43,13 @@ SS_autoForecast <- function(rootdir,
     mctl[LOI][1] = paste0(NewLine[[1]], collapse = " ")
 
     writeLines(text=mctl, con= paste(list.files(base_temp)[grep('_control', list.files(base_temp))])) ## save it
-    setwd(base_temp); system('ss3 - nohess')
+    ## change init_src to 0 (read from .par)
+    strt <- SS_readstarter(file = "starter.ss")
+    strt$init_values_src <- ifelse(state == 'base',1,0)
+    SS_writestarter(strt, file = "starter.ss", overwrite = TRUE)
+
+
+     setwd(base_temp); system('ss3 - nohess')
 
   } else{
     df <- data.frame()
