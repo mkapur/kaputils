@@ -89,19 +89,19 @@ SS_autoForecast <- function(rootdir,
       #   recursive = TRUE), overwrite = TRUE)
 ## copy from previous year so as to retain proper catches
     if(t>1){
-      file.copy(list.files(
-        paste0(rootdir,"/",paste0("forecasts/forecast2021")),
-        full.names = TRUE,
-        recursive = TRUE), to = base_temp, overwrite = TRUE)
+      # file.copy(list.files(
+      #   paste0(rootdir,"/",paste0("forecasts/forecast2021")),
+      #   full.names = TRUE,
+      #   recursive = TRUE), to = base_temp, overwrite = TRUE)
 
       ## now get previous forecast only
-      # file.copy(list.files(
-      #   paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
-      #   full.names = TRUE,
-      #   recursive = TRUE)[grep('forecast.ss',list.files(
-      #     paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
-      #     full.names = TRUE,
-      #     recursive = TRUE))], to = base_temp, overwrite = TRUE)
+      file.copy(list.files(
+        paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
+        full.names = TRUE,
+        recursive = TRUE)[grep('forecast.ss',list.files(
+          paste0(rootdir,"/",paste0("forecasts/forecast",(forecast_start+t-2))),
+          full.names = TRUE,
+          recursive = TRUE))], to = base_temp, overwrite = TRUE)
     }
 
     ## Step 4a. Add catch/projections through given year. -- this will likely need to revert to MK version to 'build on' prev
@@ -255,13 +255,13 @@ SS_autoForecast <- function(rootdir,
 
 
 
-
-# rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth")
+# compname = c('mkapur','Maia Kapur')[2]
+# rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_low")
 # catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
 # rootdir = rootdir.temp
 # basedir = "base2015"
-# catch_proportions = catch_projections[5,5:ncol(catch_projections)]
-# # catch_proportions = c(0.5,0.08426184,0.4157382),
+catch_proportions = catch_projections[7,5:ncol(catch_projections)]
+# catch_proportions = c(0.5,0.08426184,0.4157382),
 # forecast_start = 2021
 # forecast_end = 2031
 # fixed_catches = catch_projections[1:4,5:ncol(catch_projections)]
