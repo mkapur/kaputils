@@ -260,8 +260,8 @@ SS_autoForecast <- function(rootdir,
 # catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
 # rootdir = rootdir.temp
 # basedir = "base2015"
-catch_proportions = catch_projections[7,5:ncol(catch_projections)]
-# catch_proportions = c(0.5,0.08426184,0.4157382),
+# catch_proportions = catch_projections[7,5:ncol(catch_projections)]
+# # catch_proportions = c(0.5,0.08426184,0.4157382),
 # forecast_start = 2021
 # forecast_end = 2031
 # fixed_catches = catch_projections[1:4,5:ncol(catch_projections)]
