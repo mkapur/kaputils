@@ -47,9 +47,7 @@ SS_autoForecast <- function(rootdir,
     strt <- SS_readstarter(file = "starter.ss")
     strt$init_values_src <- ifelse(state == 'base',1,0)
     SS_writestarter(strt, file = "starter.ss", overwrite = TRUE)
-
-
-     setwd(base_temp); system('ss3 - nohess')
+    setwd(base_temp); system('ss3 -nohess')
 
   } else{
     df <- data.frame()
