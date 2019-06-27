@@ -202,9 +202,11 @@ SS_autoForecast <- function(rootdir,
       SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE)
       ## execute model
       ## manual overwrite fleetrelF
-      # if(execute == TRUE){
+      if(t < foreyrs){
       system('ss3 -nohess') ## works
-      # }
+      } else if(t==foreyrs){
+        system('ss3') ## run w hessian last time
+      }
 
 
       # if(t == 10){
