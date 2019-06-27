@@ -5,12 +5,20 @@
 \title{plotKobe_compare
 terminal kobe plot. check out FLR.}
 \usage{
-plotKobe_compare(rootdir, mq_csv = NA, b.name = NA, f.name = NA,
-  pattern = NA, subpattern = NA, saveplot = T, plotloc = NA,
+plotKobe_compare(rootdir, axes.limits = c(2, 2),
+  terminal_year = c(2017, 2017, 2016, 2017), kobe.type = c(NA,
+  "ISC")[1], mq_csv = NA, b.name = NA, f.name = NA, pattern = NA,
+  subpattern = NA, saveplot = T, plotloc = NA, doDistrib = FALSE,
   doLegend = T)
 }
 \arguments{
 \item{rootdir}{home directory}
+
+\item{axes.limits}{x and y maximums for kobe plot, default to 2}
+
+\item{terminal_year}{Either a value or vector corresponding to the terminal year in each model.}
+
+\item{kobe.type}{if 'ISC', will have pale orange coloring in place of orange/yellow}
 
 \item{mq_csv}{optional; if you already generated a MQ csv using extractResults it will read from that, otherwise need pattern/subpattern}
 
@@ -25,6 +33,8 @@ plotKobe_compare(rootdir, mq_csv = NA, b.name = NA, f.name = NA,
 \item{saveplot}{logical, do you want to save the plot}
 
 \item{plotloc}{where to save plot}
+
+\item{doDistrib}{logical. Do you want to have FLR style distributions on outer margins? Only works if models run with hessian.}
 
 \item{doLegend}{logical. do you want to write a legend (not advised for huge rep sets)}
 }

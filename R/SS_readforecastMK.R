@@ -14,11 +14,11 @@
 #' \code{\link{SS_writeforecast}}, \code{\link{SS_writedat}},
 
 # ## not run testing
-# file = './forecast.ss'
-# Nareas = replist0$nareas
-# Nfleets = replist0$nfishfleets
+# file = "C:/Users/Maia Kapur/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_constant_low/forecast.ss"
+# Nareas = 1
+# Nfleets = 11
 # nseas = 1
-# version = paste(replist0$SS_versionNumeric)
+# version = "3.30"
 # readAll = TRUE
 # verbose = T
 
@@ -230,3 +230,4 @@ SS_readforecastMK <-  function(file='forecast.ss', Nfleets, Nareas, nseas,
   return(mylist)
 }
 
+# SS_readforecastMK(file = "C:/Users/Maia Kapur/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_constant_low/forecast.ss")
