@@ -9,7 +9,7 @@
 #' @param forecast_end last year to forecast
 #' @param fixed_catches a matrix of input fixed catches from the end of the original model to forecast_start
 #' @param Flimitfraction a value or fector of same length as forecast period with P* values corresponding to a given year
-# devtools::install_github("r4ss/r4ss@2663227")
+#' @export
 SS_autoForecast <- function(rootdir,
                             basedir,
                             state = 'base',

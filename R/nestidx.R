@@ -16,6 +16,7 @@
 #'    }
 #'  }
 #' }
+#' @export
 
 nestidx <-
   function(vals = list(a, b, b.vector, c = 0, c.vector = 0)) {

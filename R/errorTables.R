@@ -5,7 +5,7 @@
 #' @param write logical. should plots be saved to model directory
 #' @param type type of file to be saved
 #' @seealso \code{\link[r4ss]}
-
+#' @export
 
 errorTables <- function(refList, write = T){
   ## extract OM

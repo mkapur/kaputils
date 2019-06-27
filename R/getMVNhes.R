@@ -11,7 +11,7 @@
 #' @param saveplot logical, do you want to save the plot
 #' @param plotloc where to save plot
 #' @param doLegend logical. do you want to write a legend (not advised for huge rep sets)
-
+#' @export
 
 
 getMVNhes <- function(data=out,pars=c('Bratio','F'),yr=2017,yr.cov=NULL,mc=10000){

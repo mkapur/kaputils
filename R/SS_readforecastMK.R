@@ -12,6 +12,8 @@
 #' @seealso \code{\link{SS_readstarter}}, \code{\link{SS_readdat}},
 #' \code{\link{SS_writestarter}},
 #' \code{\link{SS_writeforecast}}, \code{\link{SS_writedat}},
+#' @export
+
 
 # ## not run testing
 # file = "C:/Users/Maia Kapur/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_constant_low/forecast.ss"

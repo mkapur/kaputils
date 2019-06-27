@@ -7,7 +7,7 @@
 #' @param dFmax 1st order directory character
 #' @param bb 2nd order directory character
 #' @param scale scaling for median F
-
+#' @export
 
 getF <- function(nsim,Esd,nyears,dFmin,dFmax,bb,scale){
   ne<-nsim*10

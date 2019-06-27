@@ -11,7 +11,7 @@
 #' @param dates Two dates in YYYY-MM-DD format, between which all SST values will be averaged.
 #' @param buffer Number in decimal degrees that will be added to each location when searching for data
 #' @seealso \code{\link[rerddap]{ed_search(query = "OCEANWATCH SST GOES-POES")}}
-#'
+#' @export
 getSST <-
   function(df,
            lat = "LAT",

@@ -9,7 +9,7 @@
 ## kapurm@uw.edu
 ## Adapted from https://rdrr.io/cran/r4ss/src/R/SSplotMnwt.R
 ## and https://rdrr.io/cran/r4ss/src/R/SSMethod.TA1.8.R
-
+#' @export
 
 
 

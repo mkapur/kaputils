@@ -7,7 +7,7 @@
 #' @param writeTables logical. Should a csv of results be saved?
 #' @param FleetName optional vector of fleet names for which data should be extracted; all means all
 #' @seealso \code{\link[r4ss]}
-
+#' @export
 extractResults <- function(rootdir,
                            terminal_year = 2015,
                             pattern = NA,

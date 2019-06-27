@@ -1,3 +1,18 @@
+#' read Stock Synthesis forecast file into list object in R
+#' @param file Filename either with full path or relative to working directory.
+#' @param Nfleets Number of fleets (not required in 3.30).
+#' @param Nareas Number of areas (not required in 3.30).
+#' @param nseas number of seasons (not required in 3.30).
+#' @param version SS version number. Currently only "3.24" or "3.30" are supported,
+#' either as character or numeric values (noting that numeric 3.30  = 3.3).
+#' @param readAll Should the function continue even if Forecast=0
+#' (at which point SS stops reading)
+#' @param verbose Should there be verbose output while running the file?
+#' @author Ian Taylor
+#' @seealso \code{\link{SS_readstarter}}, \code{\link{SS_readdat}},
+#' \code{\link{SS_writestarter}},
+#' \code{\link{SS_writeforecast}}, \code{\link{SS_writedat}},
+#' @export
 
 ## SS WRITE FORECAST with the rel#2 off
 SS_writeforecastMK <-  function(mylist, dir=NULL, file="forecast.ss",

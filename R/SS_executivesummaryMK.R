@@ -17,7 +17,6 @@
 #' @return A csv files containing executive summary tables.
 #' @author Chantel Wetzel
 #' @export
-#'
 
 SS_executivesummaryMK <- function(dir, plotdir = 'default', quant = 0.95, es.only = FALSE, nsex = FALSE){
   basemod1  <- SS_output(dir, covar = TRUE)
