@@ -1,8 +1,4 @@
-#' read forecast file
-#'
 #' read Stock Synthesis forecast file into list object in R
-#'
-#'
 #' @param file Filename either with full path or relative to working directory.
 #' @param Nfleets Number of fleets (not required in 3.30).
 #' @param Nareas Number of areas (not required in 3.30).
@@ -13,7 +9,6 @@
 #' (at which point SS stops reading)
 #' @param verbose Should there be verbose output while running the file?
 #' @author Ian Taylor
-#' @export
 #' @seealso \code{\link{SS_readstarter}}, \code{\link{SS_readdat}},
 #' \code{\link{SS_writestarter}},
 #' \code{\link{SS_writeforecast}}, \code{\link{SS_writedat}},
