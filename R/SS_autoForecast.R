@@ -176,7 +176,8 @@ SS_autoForecast <- function(rootdir,
 
         ## get what that model indicated for the terminal year in question
         OFLCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
-        ## manually multiply OFL for this year by the buffer
+
+         ## manually multiply OFL for this year by the buffer
         input_forecatch <- OFLCatch_thisyear*Flimitfraction[t-1]
         # modX <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_start+(t-1)), covar = FALSE) ## just load once
         # predOFLs_startForecast <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
@@ -197,14 +198,14 @@ SS_autoForecast <- function(rootdir,
           ## fill in last row even though not used
 
           writecatch <- fore$ForeCatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_or_F))
-          writecatch[nrow(writecatch)+1,'Year'] <- 2030
+          idx = nrow(writecatch)
           # mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast2029"), covar = FALSE) ## find what
           # mod prev should still be 2029 (vals thru 2028); find what it says about 2030
           OFLCatch_thisyear <-  mod_prev$derived_quants[grep("OFLCatch_2030", mod_prev$derived_quants$Label),"Value"] #
-          writecatch[nrow(writecatch)+1,'Year'] <- 2030
-          writecatch[nrow(writecatch)+1,'Catch_or_F'] <- OFLCatch_thisyear*Flimitfraction[10]
-
-          write.csv(writecatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_Used)),
+          writecatch[idx+1,'Year'] <- 2030
+          writecatch[idx+1,'Catch_Used'] <- OFLCatch_thisyear*Flimitfraction[10]
+          rm(idx)
+          write.csv(writecatch,
                     file = "./tempForeCatch.csv",row.names = FALSE) ## save final year ABC catch
         }
       } ## end forecast if t > 1
