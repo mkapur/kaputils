@@ -194,8 +194,17 @@ SS_autoForecast <- function(rootdir,
 
         fore$ForeCatch[(nrow(fore$ForeCatch)+1):(nrow(fore$ForeCatch)+nrow(tempForeCatch)),] <- tempForeCatch[,1:4]
         if(t == 10){
+          ## fill in last row even though not used
 
-          write.csv(fore$ForeCatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_or_F)),
+          writecatch <- fore$ForeCatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_or_F))
+          writecatch[nrow(writecatch)+1,'Year'] <- 2030
+          # mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast2029"), covar = FALSE) ## find what
+          # mod prev should still be 2029 (vals thru 2028); find what it says about 2030
+          OFLCatch_thisyear <-  mod_prev$derived_quants[grep("OFLCatch_2030", mod_prev$derived_quants$Label),"Value"] #
+          writecatch[nrow(writecatch)+1,'Year'] <- 2030
+          writecatch[nrow(writecatch)+1,'Catch_Used'] <- OFLCatch_thisyear*Flimitfraction[10]
+
+          write.csv(writecatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_or_F)),
                     file = "./tempForeCatch.csv",row.names = FALSE) ## save final year ABC catch
         }
       } ## end forecast if t > 1
