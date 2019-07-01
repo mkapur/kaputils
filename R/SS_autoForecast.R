@@ -173,7 +173,8 @@ SS_autoForecast <- function(rootdir,
         # if(t == 2)
         ## get previous model
         mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast",(forecast_start+(t-2))), covar = FALSE) ## just load once
-        # foreCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
+
+        ## get what that model indicated for the terminal year in question
         OFLCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
         ## manually multiply OFL for this year by the buffer
         input_forecatch <- OFLCatch_thisyear*Flimitfraction[t-1]
@@ -193,7 +194,9 @@ SS_autoForecast <- function(rootdir,
 
         fore$ForeCatch[(nrow(fore$ForeCatch)+1):(nrow(fore$ForeCatch)+nrow(tempForeCatch)),] <- tempForeCatch[,1:4]
         if(t == 10){
-          write.csv(fore$ForeCatch, file = "./tempForeCatch.csv",row.names = FALSE) ## save final year ABC catch
+
+          write.csv(fore$ForeCatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_or_F)),
+                    file = "./tempForeCatch.csv",row.names = FALSE) ## save final year ABC catch
         }
       } ## end forecast if t > 1
 
