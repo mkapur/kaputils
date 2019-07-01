@@ -176,7 +176,7 @@ SS_autoForecast <- function(rootdir,
         # foreCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
         OFLCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
         ## manually multiply OFL for this year by the buffer
-        input_forecatch <- OFLCatch_thisyear*Flimitfraction[t]
+        input_forecatch <- OFLCatch_thisyear*Flimitfraction[t-1]
         # modX <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_start+(t-1)), covar = FALSE) ## just load once
         # predOFLs_startForecast <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
 
@@ -274,9 +274,9 @@ SS_autoForecast <- function(rootdir,
 
 
 
-# compname = c('mkapur','Maia Kapur')[2]
+# compname = c('mkapur','Maia Kapur')[1]
 # rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_base")
-# # catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
+# catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
 # rootdir = rootdir.temp
 # state = 'high'
 # basedir = "base2015"
