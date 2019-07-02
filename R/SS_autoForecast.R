@@ -213,10 +213,10 @@ SS_autoForecast <- function(rootdir,
       SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE)
       ## execute model
       ## manual overwrite fleetrelF
-      # if(t < foreyrs){
-      system('ss3 -nohess') ## works
+      if(t < foreyrs){
+        system('ss3 -nohess') ## works
       } else if(t==foreyrs){
-      system('ss3') ## run w hessian last time
+        system('ss3') ## run w hessian last time
       }
 
 
@@ -258,16 +258,16 @@ SS_autoForecast <- function(rootdir,
   } ## end if state == base
 } ## end function
 
-if(catch != 'ABC'  | state != 'base'){
-  tempdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_",catch,"_",state)
-} else if(catch == 'ABC'){
-  tempdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_",catch,"_",state,"/forecasts/forecast2030")
-}
-mod <- SS_output(tempdir, covar = F)
-
-mod$derived_quants[grep(paste0("SSB_",YOI,collapse = "|"),
-                        mod$derived_quants$Label),"Value"]
-## not run testers
+# if(catch != 'ABC'  | state != 'base'){
+#   tempdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_",catch,"_",state)
+# } else if(catch == 'ABC'){
+#   tempdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_",catch,"_",state,"/forecasts/forecast2030")
+# }
+# mod <- SS_output(tempdir, covar = F)
+#
+# mod$derived_quants[grep(paste0("SSB_",YOI,collapse = "|"),
+#                         mod$derived_quants$Label),"Value"]
+# ## not run testers
 # compname = c('mkapur','maia kapur')[1]
 
 # for(r in c('North','Central','South')){
