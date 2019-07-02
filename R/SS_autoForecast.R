@@ -21,14 +21,11 @@ SS_autoForecast <- function(rootdir,
   devtools::source_url("https://raw.githubusercontent.com/r4ss/r4ss/development/R/SS_ForeCatch.R") ## use dev version
   devtools::source_url("https://raw.githubusercontent.com/mkapur/kaputils/master/R/SS_writeforecastMK.R") ## use dev version
 
-
-  # source("C:/Users/mkapur/Dropbox/kaputils/R/SS_writeforecastMK.R")
-
-
-
   if(state != 'base'){
     ## copy from base 2030; everything should be updated
+
     base_temp <- rootdir
+    if(!exists(base_temp)) dir.create(base_temp)
     file.copy(list.files(
       paste0(dirname(rootdir),"/cr",r,"_ABC_base/forecasts/forecast2030"),
       full.names = TRUE,
@@ -216,10 +213,10 @@ SS_autoForecast <- function(rootdir,
       SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE)
       ## execute model
       ## manual overwrite fleetrelF
-      if(t < foreyrs){
+      # if(t < foreyrs){
       system('ss3 -nohess') ## works
       } else if(t==foreyrs){
-        system('ss3') ## run w hessian last time
+      system('ss3') ## run w hessian last time
       }
 
 
@@ -261,10 +258,17 @@ SS_autoForecast <- function(rootdir,
   } ## end if state == base
 } ## end function
 
+if(catch != 'ABC'  | state != 'base'){
+  tempdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_",catch,"_",state)
+} else if(catch == 'ABC'){
+  tempdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/cr",r,"_",catch,"_",state,"/forecasts/forecast2030")
+}
+mod <- SS_output(tempdir, covar = F)
 
-
+mod$derived_quants[grep(paste0("SSB_",YOI,collapse = "|"),
+                        mod$derived_quants$Label),"Value"]
 ## not run testers
-# compname = c('mkapur','maia kapur')[2]
+# compname = c('mkapur','maia kapur')[1]
 
 # for(r in c('North','Central','South')){
 #   for(state in c('low','base','high')){
@@ -288,13 +292,12 @@ SS_autoForecast <- function(rootdir,
 
 
 # compname = c('mkapur','Maia Kapur')[1]
-# rootdir.temp <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_base")
-# catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
+# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crCentral_ABC_base")
+# catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_Central.csv"))
 # rootdir = rootdir.temp
 # state = 'high'
 # basedir = "base2015"
 # catch_proportions = catch_projections[7,5:ncol(catch_projections)]
-# # catch_proportions = c(0.5,0.08426184,0.4157382),
 # forecast_start = 2021
 # forecast_end = 2031
 # fixed_catches = catch_projections[1:4,5:ncol(catch_projections)]
