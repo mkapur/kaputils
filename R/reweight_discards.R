@@ -58,7 +58,7 @@ reweight_discards <- function(ncs,cs,fleet, fleetno = 1, month = 7,years,units,w
 # cs <- read.csv("sablefish_OB_DisRatios_cs_2019_Coastwide_trawl_fixed_2019-06-27.csv")
 # ncs <- read.csv("sablefish_OB_DisRatios_ncs_2019_Coastwide_trawl_fixed_2019-06-27.csv")
 #
-reweight_discards(ncs,cs,fleet = 'HLandPot', fleetno = 1, month = 7,years,writeTable = F,
+# reweight_discards(ncs,cs,fleet = 'HLandPot', fleetno = 1, month = 7,years,writeTable = F,
                   # writeloc = getwd(), years = 2009:2015)
 
 
