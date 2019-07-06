@@ -37,8 +37,11 @@ reweight_discards <- function(ncs,cs,fleet, fleetno = 1, month = 7,years,units,w
     discard[discard$yr > 2010 ,"OBS"] <- discard_late$total_disrate
 
     ## format to match SS
-    discard <- discard %>% mutate(fleet = fleetno, month = month, OBS = round(OBS,6), sd = round(sd,6),
-                                  note = paste0("#",fleet[i]) ) %>% select(yr, month, fleet, OBS,sd, note)
+    discard <- discard %>%
+      mutate(fleet = fleetno, month = month, OBS = round(OBS,6), sd = round(sd,6),
+                                  note = paste0("#",fleet[i]) ) %>%
+      select(yr, month, fleet, OBS,sd, note) %>%
+      filter(yr %in% years)
     if(writeTable){
       write.table(discard,file = paste0(writeloc,"/discard_rates_SS_",Sys.Date(),"_",fleet,".csv"),row.names = FALSE, sep = " ", quote = F)
       cat(paste0('wrote discard rate table for ', fleet[i],' to ',writeloc,"\n"))
@@ -55,8 +58,8 @@ reweight_discards <- function(ncs,cs,fleet, fleetno = 1, month = 7,years,units,w
 # cs <- read.csv("sablefish_OB_DisRatios_cs_2019_Coastwide_trawl_fixed_2019-06-27.csv")
 # ncs <- read.csv("sablefish_OB_DisRatios_ncs_2019_Coastwide_trawl_fixed_2019-06-27.csv")
 #
-# reweight_discards(ncs,cs,fleet = 'HLandPot', fleetno = 1, month = 7,years,units,writeTable = T,
-#                   writeloc = getwd())
+reweight_discards(ncs,cs,fleet = 'HLandPot', fleetno = 1, month = 7,years,writeTable = F,
+                  # writeloc = getwd(), years = 2009:2015)
 
 
 
