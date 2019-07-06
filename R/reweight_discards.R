@@ -9,7 +9,6 @@
 #' @param fleetno optional; fill in any number to the "FltSvy" column of the resultant table
 #' @param month optional; fill in a month into the month column of the resultant table
 #' @param years optional; if you'd like to only take a subset of years from the final dataframe
-#' @param units  one of lbs or kg, if kg LBS will be converted
 #' @param writeTable logical. if T, requires writeloc
 #' @param writeloc a filepath to where you want the table saved.
 #' @export
