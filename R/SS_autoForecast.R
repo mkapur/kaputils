@@ -3,7 +3,9 @@
 #' hopefully port to r4ss when ready
 #' @param rootdir  somewhere you'd like several models in folders created
 #' @param basedir directory with executed base-case model
-#' @param state one of low/med/high
+#' @param state one of low/med/high -- only works for natural mortality at present
+#' @param stateaex  0, 1 or 2 for female, male or both
+#' @param statevals a dataframe with columns corresponding to state, and optionally rows corresponding to Female and Male values
 #' @param catch_proportions  a single or vector of values denoting the allocation proportiosn for each fleet in order matching .dat file; assuming F_relative opt 2
 #' @param forecast_start the first year to forecast; assume inputs before this
 #' @param forecast_end last year to forecast
@@ -13,34 +15,54 @@
 SS_autoForecast <- function(rootdir,
                             basedir,
                             state = 'base',
+                            stateSex = 1,
+                            statevals = 0.05,
                             catch_proportions = c(0.5,0.08426184,0.4157382),
                             forecast_start = 2021,
                             forecast_end = 2031,
                             fixed_catches = catch_projections[1:4,5:7],
                             Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]){
   devtools::source_url("https://raw.githubusercontent.com/r4ss/r4ss/development/R/SS_ForeCatch.R") ## use dev version
-  devtools::source_url("https://raw.githubusercontent.com/mkapur/kaputils/master/R/SS_writeforecastMK.R") ## use dev version
+  # devtools::source_url("https://raw.githubusercontent.com/mkapur/kaputils/master/R/SS_writeforecastMK.R") ## use dev version
 
   if(state != 'base'){
     ## copy from base 2030; everything should be updated
 
     base_temp <- rootdir
     if(!exists(base_temp)) dir.create(base_temp)
+
     file.copy(list.files(
       paste0(dirname(rootdir),"/cr",r,"_ABC_base/forecasts/forecast2030"),
       full.names = TRUE,
       recursive = TRUE), to = base_temp, overwrite = TRUE)
 
     ## update CTL file with state of nature low/base/high (all fixed, reading from par)
+
     setwd(base_temp)
-    mctl <- readLines(list.files(base_temp)[grep('_control', list.files(base_temp))])
-    LOI <- grep("NatM_p_1_Fem_GP_1",mctl)[1] ## get line(s) containing data after natm, ignoring comment
-    NewLine <- strsplit(mctl[LOI],"   ") ## split elements
+    terms <- c("NatM_p_1_Fem_GP_1","NatM_p_1_Mal_GP_1")
+    mctl <- readLines(list.files(base_temp)[grep('.ctl', list.files(base_temp))])
+    if(statesex == 0  | statesex == 1){
+     term <- terms[stateSex+1]
+     LOI <- grep(term,mctl)[1] ## get line(s) containing data after natm, ignoring comment
+     NewLine <- strsplit(mctl[LOI],"   ") ## split elements
+     NewLine[[1]][3] <-  statevals[1,state] ## there will only be 1 row if 1 sex is specified
+     # NewLine[[1]][3] <- ifelse(state == 'low', 0.05, ifelse(state == 'high', 0.09, 0.07))
+     mctl[LOI][1] = paste0(NewLine[[1]], collapse = " ")
 
-    NewLine[[1]][3] <- ifelse(state == 'low', 0.05, ifelse(state == 'high', 0.09, 0.07))
-    mctl[LOI][1] = paste0(NewLine[[1]], collapse = " ")
 
-    writeLines(text=mctl, con= paste(list.files(base_temp)[grep('_control', list.files(base_temp))])) ## save it
+
+    } else if(statesex == 2){ ## do both sequentially
+      for(t in 1:length(terms)){
+        LOI <- grep(terms[t],mctl)[1] ## get line(s) containing data after natm, ignoring comment
+        NewLine <- strsplit(mctl[LOI], "\\s+")[[1]] ## split elements by any amt of whitespace
+        NewLine[3] <-  statevals[t,state] ## select by sex and state
+        mctl[LOI] <- paste0(NewLine, collapse = "\t")
+      } ## end loop t over sexes
+
+    } ## end if stateSex == 2
+
+    writeLines(text=mctl, con= paste(list.files(base_temp)[grep('.ctl', list.files(base_temp))])) ## save it
+
     ## change init_src to 0 (read from .par)
     strt <- SS_readstarter(file = "starter.ss")
     strt$init_values_src <- ifelse(state == 'base',1,0)
@@ -292,10 +314,11 @@ SS_autoForecast <- function(rootdir,
 
 
 # compname = c('mkapur','Maia Kapur')[1]
-# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crCentral_ABC_base")
-# catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_Central.csv"))
+# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update")
+# catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
 # rootdir = rootdir.temp
 # state = 'high'
+# statesex = 2
 # basedir = "base2015"
 # catch_proportions = catch_projections[7,5:ncol(catch_projections)]
 # forecast_start = 2021
