@@ -40,9 +40,9 @@ SS_autoForecast <- function(rootdir,
 
     setwd(base_temp)
     terms <- c("NatM_p_1_Fem_GP_1","NatM_p_1_Mal_GP_1")
-    mctl <- readLines(list.files(base_temp)[grep('.ctl', list.files(base_temp))])
+    mctl <- readLines(list.files(base_temp)[grep('_control', list.files(base_temp))])
     if(statesex == 0  | statesex == 1){
-     term <- terms[stateSex+1]
+     term <- terms[statesex+1]
      LOI <- grep(term,mctl)[1] ## get line(s) containing data after natm, ignoring comment
      NewLine <- strsplit(mctl[LOI],"   ") ## split elements
      NewLine[[1]][3] <-  statevals[1,state] ## there will only be 1 row if 1 sex is specified
@@ -61,7 +61,7 @@ SS_autoForecast <- function(rootdir,
 
     } ## end if stateSex == 2
 
-    writeLines(text=mctl, con= paste(list.files(base_temp)[grep('.ctl', list.files(base_temp))])) ## save it
+    writeLines(text=mctl, con= paste(list.files(base_temp)[grep('_control', list.files(base_temp))])) ## save it
 
     ## change init_src to 0 (read from .par)
     strt <- SS_readstarter(file = "starter.ss")
@@ -318,11 +318,11 @@ SS_autoForecast <- function(rootdir,
 # catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
 # basedir = "base_2015"
 
-# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_base")
+# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_low")
 # catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
 # rootdir = rootdir.temp
-# state = 'base'
-# statesex = 2
+# state = 'low'
+# statesex = 1
 # basedir = "base2015"
 # catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
 # forecast_start = 2021
