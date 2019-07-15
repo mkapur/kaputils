@@ -1,11 +1,12 @@
 #' SS_autoForecast
-#' beta version of tool to automate catch-only update iterations and development of decision tables
+#'
+#' #' \code{SS_autoForecast} beta version of tool to automate catch-only update iterations and development of decision tables
 #' hopefully port to r4ss when ready
 #' @param rootdir  somewhere you'd like several models in folders created, eg forecast202X
 #' @param basedir directory with executed base-case model -- right now, assumed to be inside rootdir
 #' @param state one of low/med/high -- only works for natural mortality at present
 #' @param statesex  0, 1 or 2 for female, male or both
-#' @param statevals a dataframe with columns corresponding to state, and optionally rows corresponding to Female and Male values
+#' @param statevals a dataframe with columns corresponding to state (labeled low/medium/high), and optionally rows corresponding to Female and Male values
 #' @param catch_proportions  a single or vector of values denoting the allocation proportiosn for each fleet in order matching .dat file; assuming F_relative opt 2
 #' @param forecast_start the first year to forecast; assume inputs before this
 #' @param forecast_end last year to forecast
