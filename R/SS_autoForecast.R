@@ -157,7 +157,7 @@ SS_autoForecast <- function(rootdir,
       ## This acts similarly to SS_ForeCatch except it reads directly from your inputs.
       if(t == 1){
         # inityr <- max(fore$ForeCatch$Year)
-        inityr <- min(catch_projections$YEAR)
+        inityr <- min(catch_projections$YEAR)-1
         if(inityr == Inf   | inityr == -Inf) inityr <- catch_projections$YEAR[1]-1 ## overwrite if INF
         fore$ForeCatch <- data.frame('Year' = NA, 'Seas' = NA,'Fleet' = NA, 'Catch_or_F' =NA) ## overwrite entire forecatch
         for(k in 1:(forecast_start-1-inityr)){
