@@ -25,8 +25,6 @@ reweight_discards(ncs, cs, fleet, fleetno = 1, month = 7, years, units,
 
 \item{years}{optional; if you'd like to only take a subset of years from the final dataframe}
 
-\item{units}{one of lbs or kg, if kg LBS will be converted}
-
 \item{writeTable}{logical. if T, requires writeloc}
 
 \item{writeloc}{a filepath to where you want the table saved.}

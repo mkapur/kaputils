@@ -6,8 +6,8 @@
 beta version of tool to automate catch-only update iterations and development of decision tables
 hopefully port to r4ss when ready}
 \usage{
-SS_autoForecast(rootdir, basedir, state = "base",
-  catch_proportions = c(0.5, 0.08426184, 0.4157382),
+SS_autoForecast(rootdir, basedir, state = "base", stateSex = 1,
+  statevals = 0.05, catch_proportions = c(0.5, 0.08426184, 0.4157382),
   forecast_start = 2021, forecast_end = 2031,
   fixed_catches = catch_projections[1:4, 5:7],
   Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >
@@ -18,7 +18,9 @@ SS_autoForecast(rootdir, basedir, state = "base",
 
 \item{basedir}{directory with executed base-case model}
 
-\item{state}{one of low/med/high}
+\item{state}{one of low/med/high -- only works for natural mortality at present}
+
+\item{statevals}{a dataframe with columns corresponding to state, and optionally rows corresponding to Female and Male values}
 
 \item{catch_proportions}{a single or vector of values denoting the allocation proportiosn for each fleet in order matching .dat file; assuming F_relative opt 2}
 
@@ -29,6 +31,8 @@ SS_autoForecast(rootdir, basedir, state = "base",
 \item{fixed_catches}{a matrix of input fixed catches from the end of the original model to forecast_start}
 
 \item{Flimitfraction}{a value or fector of same length as forecast period with P* values corresponding to a given year}
+
+\item{stateaex}{0, 1 or 2 for female, male or both}
 }
 \description{
 SS_autoForecast
