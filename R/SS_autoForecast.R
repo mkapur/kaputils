@@ -28,11 +28,11 @@ SS_autoForecast <- function(rootdir,
   if(state != 'base'){
     ## copy from base 2030; everything should be updated
 
-    base_temp <- paste0(rootdir,"bg_ABC_",state)
+    base_temp <- paste0(rootdir,"ABC_",state)
     if(!exists(base_temp)) dir.create(base_temp)
 
     file.copy(list.files(
-      paste0(rootdir,"/bg_ABC_base/forecasts/forecast2030"),
+      paste0(rootdir,"/ABC_base/forecasts/forecast2030"),
       full.names = TRUE,
       recursive = TRUE), to = base_temp, overwrite = TRUE)
 
