@@ -153,14 +153,16 @@ SS_autoForecast <- function(rootdir,
       fore$ControlRuleMethod <- 3 ## 3: ramp does catch=f(SSB), buffer on catch
 
       ## Now Add Catch data/projections thru the year before forecast_start.
+      ## We want to overwrite everything because the 2015 etc catches are no longer projections, they are known
       ## This acts similarly to SS_ForeCatch except it reads directly from your inputs.
       if(t == 1){
         inityr <- max(fore$ForeCatch$Year)
         if(inityr == Inf   | inityr == -Inf) inityr <- catch_projections$YEAR[1]-1 ## overwrite if INF
         if(class( fore$ForeCatch) =='NULL')  fore$ForeCatch <- data.frame('Year' = NA, 'Seas' = NA,'Fleet' = NA, 'Catch_or_F' =NA)
         for(k in 1:(forecast_start-1-inityr)){
-          term <- nrow(fore$ForeCatch) ## intital final row
-          if(class(term) =='NULL') term <- 0
+          # term <- nrow(fore$ForeCatch) ## intital final row
+          # if(class(term) =='NULL') term <- 0
+          term <- 0
 
           for(i in 1:replist0$nfishfleets){
             fore$ForeCatch[term+i,'Year'] <- inityr+k
