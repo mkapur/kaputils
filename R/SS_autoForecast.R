@@ -156,13 +156,13 @@ SS_autoForecast <- function(rootdir,
       ## We want to overwrite everything because the 2015 etc catches are no longer projections, they are known
       ## This acts similarly to SS_ForeCatch except it reads directly from your inputs.
       if(t == 1){
-        inityr <- max(fore$ForeCatch$Year)
+        # inityr <- max(fore$ForeCatch$Year)
+        inityr <- replist0$endyr
         if(inityr == Inf   | inityr == -Inf) inityr <- catch_projections$YEAR[1]-1 ## overwrite if INF
-        if(class( fore$ForeCatch) =='NULL')  fore$ForeCatch <- data.frame('Year' = NA, 'Seas' = NA,'Fleet' = NA, 'Catch_or_F' =NA)
+        fore$ForeCatch <- data.frame('Year' = NA, 'Seas' = NA,'Fleet' = NA, 'Catch_or_F' =NA) ## overwrite entire forecatch
         for(k in 1:(forecast_start-1-inityr)){
-          # term <- nrow(fore$ForeCatch) ## intital final row
           # if(class(term) =='NULL') term <- 0
-          term <- 0
+          term <-  ifelse(k == 1, 0, nrow(fore$ForeCatch) ) ## start from zero first time
 
           for(i in 1:replist0$nfishfleets){
             fore$ForeCatch[term+i,'Year'] <- inityr+k
@@ -313,16 +313,20 @@ SS_autoForecast <- function(rootdir,
 
 
 
-# compname = c('mkapur','Maia Kapur')[1]
+compname = c('mkapur','Maia Kapur')[1]
 # rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update")
 # catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
-# rootdir = rootdir.temp
-# state = 'high'
-# statesex = 2
 # basedir = "base_2015"
-# catch_proportions = catch_projections[7,5:ncol(catch_projections)]
-# forecast_start = 2021
-# forecast_end = 2031
-# fixed_catches = catch_projections[1:4,5:ncol(catch_projections)]
-# Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
+
+rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_base")
+catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
+rootdir = rootdir.temp
+state = 'base'
+statesex = 2
+basedir = "base2015"
+catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
+forecast_start = 2021
+forecast_end = 2031
+fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
+Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
 
