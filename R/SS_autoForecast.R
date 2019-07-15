@@ -1,8 +1,8 @@
 #' SS_autoForecast
 #' beta version of tool to automate catch-only update iterations and development of decision tables
 #' hopefully port to r4ss when ready
-#' @param rootdir  somewhere you'd like several models in folders created
-#' @param basedir directory with executed base-case model
+#' @param rootdir  somewhere you'd like several models in folders created, eg forecast202X
+#' @param basedir directory with executed base-case model -- right now, assumed to be inside rootdir
 #' @param state one of low/med/high -- only works for natural mortality at present
 #' @param statesex  0, 1 or 2 for female, male or both
 #' @param statevals a dataframe with columns corresponding to state, and optionally rows corresponding to Female and Male values
@@ -73,7 +73,7 @@ SS_autoForecast <- function(rootdir,
     df <- data.frame()
     foreyrs <- forecast_end-forecast_start
     if(!exists(paste0(rootdir,"/forecasts"))) dir.create(paste0(rootdir,"/forecasts"))
-    replist0 <- SS_output(paste0(rootdir,"/",basedir))
+    replist0 <- SS_output(paste0(rootdir,"/",basedir), covar = F)
     ## error trapping
     if(length(catch_proportions) != replist0$nfishfleets) stop('catch_proportions should have a value for each fleet')
     # if(nrow(fixed_catches) != (forecast_start-1-inityr)) stop('fixed_catches should have a value for years before forecast_start')
@@ -139,19 +139,13 @@ SS_autoForecast <- function(rootdir,
       }
 
       ## Step 4a. Add catch/projections through given year. -- this will likely need to revert to MK version to 'build on' prev
-      fore <- SS_readforecastMK(file = './forecast.ss',
+      fore <- SS_readforecast(file = './forecast.ss',
                                 Nareas = replist0$nareas,
                                 Nfleets = replist0$nfishfleets,
                                 nseas = 1,
                                 version = paste(replist0$SS_versionNumeric),
                                 readAll = TRUE)
 
-      # fore <-  SS_readforecast(file = './forecast.ss',
-      #                          Nareas = replist0$nareas,
-      #                          Nfleets = replist0$nfishfleets,
-      #                          nseas = replist0$nseasons,
-      #                          version = paste(replist0$SS_versionNumeric),
-      #                          readAll = TRUE)
       fore$Nforecastyrs <- forecast_end-replist0$endyr
       fore$FirstYear_for_caps_and_allocations <- forecast_start+(t-1)
       fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
@@ -162,8 +156,12 @@ SS_autoForecast <- function(rootdir,
       ## This acts similarly to SS_ForeCatch except it reads directly from your inputs.
       if(t == 1){
         inityr <- max(fore$ForeCatch$Year)
+        if(inityr == Inf   | inityr == -Inf) inityr <- catch_projections$YEAR[1]-1 ## overwrite if INF
+        if(class( fore$ForeCatch) =='NULL')  fore$ForeCatch <- data.frame('Year' = NA, 'Seas' = NA,'Fleet' = NA, 'Catch_or_F' =NA)
         for(k in 1:(forecast_start-1-inityr)){
           term <- nrow(fore$ForeCatch) ## intital final row
+          if(class(term) =='NULL') term <- 0
+
           for(i in 1:replist0$nfishfleets){
             fore$ForeCatch[term+i,'Year'] <- inityr+k
             fore$ForeCatch[term+i,'Seas'] <- 1
@@ -319,7 +317,7 @@ SS_autoForecast <- function(rootdir,
 # rootdir = rootdir.temp
 # state = 'high'
 # statesex = 2
-# basedir = "base2015"
+# basedir = "base_2015"
 # catch_proportions = catch_projections[7,5:ncol(catch_projections)]
 # forecast_start = 2021
 # forecast_end = 2031
