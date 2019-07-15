@@ -28,11 +28,11 @@ SS_autoForecast <- function(rootdir,
   if(state != 'base'){
     ## copy from base 2030; everything should be updated
 
-    base_temp <- paste0(rootdir,"ABC_",state)
+    base_temp <- paste0(dirname(rootdir),"/ABC_",state)
     if(!exists(base_temp)) dir.create(base_temp)
 
     file.copy(list.files(
-      paste0(rootdir,"/ABC_base/forecasts/forecast2030"),
+      paste0(dirname(rootdir),"/ABC_base/forecasts/forecast2030"),
       full.names = TRUE,
       recursive = TRUE), to = base_temp, overwrite = TRUE)
 
@@ -313,10 +313,18 @@ SS_autoForecast <- function(rootdir,
 
 
 
-# compname = c('mkapur','Maia Kapur')[1]
-# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update")
-# catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
-# basedir = "base_2015"
+compname = c('mkapur','Maia Kapur')[1]
+rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update/ABC_base")
+catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
+rootdir = rootdir.temp
+state = 'high'
+statesex = 2
+basedir = "base_2015"
+catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
+forecast_start = 2021
+forecast_end = 2031
+fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
+Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
 
 # cr.statevals <- data.frame(matrix(NA, ncol = 3, nrow = 1))
 # colnames(cr.statevals) <- c('low','base','high')

@@ -15,21 +15,6 @@
                 "path" : "C:/Users/mkapur/Dropbox/UW/sab-growth/functions/vb_params_R1.R",
                 "state" : 1,
                 "type" : 1
-            },
-            {
-                "editor_line_number" : 16,
-                "editor_state" : 2,
-                "function_name" : "reweight_discards",
-                "function_steps" : "",
-                "id" : 4,
-                "is_package_breakpoint" : true,
-                "is_pending_debug_completion" : false,
-                "line_number" : 16,
-                "needs_updated_steps" : true,
-                "package_name" : "kaputils",
-                "path" : "C:/Users/mkapur/Dropbox/kaputils/R/reweight_discards.R",
-                "state" : 2,
-                "type" : 0
             }
         ]
     }
