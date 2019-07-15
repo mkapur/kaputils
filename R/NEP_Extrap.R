@@ -15,17 +15,17 @@
 #' @param part # partition codes:  (0=combined; 1=discard; 2=retained) will be written to table
 #' @param writeTable logical. if T, requires writeloc
 #' @param writeloc a filepath to where you want the table saved.
-#' @export
 
 
 
-EBS_extrap = make_extrapolation_info( Region = "Eastern_Bering_Sea", strata.limits = strata.limits, zone = 32, flip_around_dateline = F )
-NBS_extrap = make_extrapolation_info( Region = "Northern_Bering_Sea", strata.limits = strata.limits, zone = 32, flip_around_dateline = F )
-GOA_extrap = make_extrapolation_info( Region = "gulf_of_alaska", strata.limits = strata.limits, zone = 32, flip_around_dateline = T )
-BC_extrap = make_extrapolation_info( Region = "british_columbia", strata.limits = strata.limits, zone = 32, flip_around_dateline = F )
-BC_extrap$Data_Extrap$Area_km2 <- BC_extrap$Area_km2_x
-names(BC_extrap$a_el) <- "All_areas"
-CC_extrap = make_extrapolation_info( Region = "california_current", strata.limits = strata.limits, zone = 32, flip_around_dateline = TRUE )
-CC_extrap$Data_Extrap$Area_km2 <- CC_extrap$Area_km2_x
 
-Extrapolation_List = combine_extrapolation_info("EBS" = EBS_extrap, "NBS" = NBS_extrap, "GOA" = GOA_extrap, "BC" = BC_extrap, "CC" = CC_extrap)
+# EBS_extrap = make_extrapolation_info( Region = "Eastern_Bering_Sea", strata.limits = strata.limits, zone = 32, flip_around_dateline = F )
+# NBS_extrap = make_extrapolation_info( Region = "Northern_Bering_Sea", strata.limits = strata.limits, zone = 32, flip_around_dateline = F )
+# GOA_extrap = make_extrapolation_info( Region = "gulf_of_alaska", strata.limits = strata.limits, zone = 32, flip_around_dateline = T )
+# BC_extrap = make_extrapolation_info( Region = "british_columbia", strata.limits = strata.limits, zone = 32, flip_around_dateline = F )
+# BC_extrap$Data_Extrap$Area_km2 <- BC_extrap$Area_km2_x
+# names(BC_extrap$a_el) <- "All_areas"
+# CC_extrap = make_extrapolation_info( Region = "california_current", strata.limits = strata.limits, zone = 32, flip_around_dateline = TRUE )
+# CC_extrap$Data_Extrap$Area_km2 <- CC_extrap$Area_km2_x
+#
+# Extrapolation_List = combine_extrapolation_info("EBS" = EBS_extrap, "NBS" = NBS_extrap, "GOA" = GOA_extrap, "BC" = BC_extrap, "CC" = CC_extrap)
