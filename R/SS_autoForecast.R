@@ -313,18 +313,18 @@ SS_autoForecast <- function(rootdir,
 
 
 
-compname = c('mkapur','Maia Kapur')[1]
-rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update/ABC_base")
-catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
-rootdir = rootdir.temp
-state = 'high'
-statesex = 2
-basedir = "base_2015"
-catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
-forecast_start = 2021
-forecast_end = 2031
-fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
-Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
+# compname = c('mkapur','Maia Kapur')[1]
+# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update/ABC_base")
+# catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
+# rootdir = rootdir.temp
+# state = 'high'
+# statesex = 2
+# basedir = "base_2015"
+# catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
+# forecast_start = 2021
+# forecast_end = 2031
+# fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
+# Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
 
 # cr.statevals <- data.frame(matrix(NA, ncol = 3, nrow = 1))
 # colnames(cr.statevals) <- c('low','base','high')
