@@ -4,7 +4,7 @@
 #' @param rootdir  somewhere you'd like several models in folders created
 #' @param basedir directory with executed base-case model
 #' @param state one of low/med/high -- only works for natural mortality at present
-#' @param stateaex  0, 1 or 2 for female, male or both
+#' @param statesex  0, 1 or 2 for female, male or both
 #' @param statevals a dataframe with columns corresponding to state, and optionally rows corresponding to Female and Male values
 #' @param catch_proportions  a single or vector of values denoting the allocation proportiosn for each fleet in order matching .dat file; assuming F_relative opt 2
 #' @param forecast_start the first year to forecast; assume inputs before this
@@ -15,7 +15,7 @@
 SS_autoForecast <- function(rootdir,
                             basedir,
                             state = 'base',
-                            stateSex = 1,
+                            statesex = 1,
                             statevals = 0.05,
                             catch_proportions = c(0.5,0.08426184,0.4157382),
                             forecast_start = 2021,
