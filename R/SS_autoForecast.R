@@ -14,7 +14,7 @@
 #' @export
 SS_autoForecast <- function(rootdir,
                             basedir,
-                            state = 'base',
+                            state = state,
                             statesex = 1,
                             statevals = 0.05,
                             catch_proportions = c(0.5,0.08426184,0.4157382),
@@ -318,10 +318,17 @@ SS_autoForecast <- function(rootdir,
 # catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
 # basedir = "base_2015"
 
-# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_low")
-# catch_projections <- read.csv(paste0(rootdir.temp,"/cproj_North.csv"))
+# cr.statevals <- data.frame(matrix(NA, ncol = 3, nrow = 1))
+# colnames(cr.statevals) <- c('low','base','high')
+# row.names(cr.statevals) <- c('Fem')
+# cr.statevals$low <- c(0.05)
+# cr.statevals$base <- c(0.07)
+# cr.statevals$high <- c(0.09)
+# statevals <- cr.statevals
+# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_high")
+# catch_projections <- read.csv(paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_base/cproj_North.csv"))
 # rootdir = rootdir.temp
-# state = 'low'
+# state = 'high'
 # statesex = 1
 # basedir = "base2015"
 # catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
