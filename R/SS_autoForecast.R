@@ -1,13 +1,13 @@
 #' SS_autoForecast
 #'
-#' #' \code{SS_autoForecast} beta version of tool to automate catch-only update iterations and development of decision tables
+#' \code{SS_autoForecast} beta version of tool to automate catch-only update iterations
 #' hopefully port to r4ss when ready
-#' @param rootdir  somewhere you'd like several models in folders created, eg forecast202X
-#' @param basedir directory with executed base-case model -- right now, assumed to be inside rootdir
+#' @param rootdir  somewhere you'd like the forecasting iteration in folders created, eg forecast202X
+#' @param basedir directory with executed base-case model -- right now, assumed to be inside \code{rootdir}
 #' @param state one of low/med/high -- only works for natural mortality at present
 #' @param statesex  0, 1 or 2 for female, male or both
 #' @param statevals a dataframe with columns corresponding to state (labeled low/medium/high), and optionally rows corresponding to Female and Male values
-#' @param catch_proportions  a single or vector of values denoting the allocation proportiosn for each fleet in order matching .dat file; assuming F_relative opt 2
+#' @param catch_proportions  a single or vector of values denoting the allocation proportions for each fleet in order matching .dat file; assuming \code{_fleet_relative_F == 2}
 #' @param forecast_start the first year to forecast; assume inputs before this
 #' @param forecast_end last year to forecast
 #' @param fixed_catches a matrix of input fixed catches from the end of the original model to forecast_start
@@ -84,7 +84,6 @@ SS_autoForecast <- function(rootdir,
       base_temp <- paste0(rootdir,"/forecasts/forecast", (t-1)+forecast_start)
       setwd(rootdir); if(exists(base_temp)) unlink(  paste0(rootdir,"/",base_temp), force = TRUE)
       dir.create(base_temp)
-
       setwd(base_temp)
 
       ## copy original files into new forecast folder
@@ -99,8 +98,6 @@ SS_autoForecast <- function(rootdir,
         strt$init_values_src <- ifelse(state == 'base',1,0)
         strt$last_estimation_phase <- 10 ## could go as high as 20
         SS_writestarter(strt, file = "starter.ss", overwrite = TRUE)
-
-
 
         ## add zeroes to end of par file
         mpar <- readLines("ss3.par")
@@ -118,10 +115,7 @@ SS_autoForecast <- function(rootdir,
         length(NewLine[[1]]);length(NewLine[[2]])
         writeLines(text=mpar, con="ss3.par") ## save it
       }
-      # list.files(
-      #   paste0(rootdir,"/",base_temp),
-      #   full.names = TRUE,
-      #   recursive = TRUE), overwrite = TRUE)
+
       ## copy from previous year so as to retain proper catches
       if(t>1){
         file.copy(list.files(
@@ -190,7 +184,6 @@ SS_autoForecast <- function(rootdir,
       ## Allocate this catch among the fleets according to the given proportions
       ## add this to forecast file in increments
       if(t > 1){ ## add a single year of catch
-        # if(t == 2)
         ## get previous model
         mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast",(forecast_start+(t-2))), covar = FALSE) ## just load once
 
@@ -199,13 +192,7 @@ SS_autoForecast <- function(rootdir,
 
          ## manually multiply OFL for this year by the buffer
         input_forecatch <- OFLCatch_thisyear*Flimitfraction[t-1]
-        # modX <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_start+(t-1)), covar = FALSE) ## just load once
-        # predOFLs_startForecast <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
 
-        # tempForeCatch <- SS_ForeCatch(mod1,
-        #                               yrs = 2021:(2021+(t-2)), ## just do THIS year
-        #                               average = FALSE,
-        #                               total = predOFLs_startForecast)
         tempForeCatch <- SS_ForeCatch(mod_prev,
                                       yrs = forecast_start+(t-2), ## just do THIS year
                                       average = FALSE,
@@ -216,7 +203,6 @@ SS_autoForecast <- function(rootdir,
         fore$ForeCatch[(nrow(fore$ForeCatch)+1):(nrow(fore$ForeCatch)+nrow(tempForeCatch)),] <- tempForeCatch[,1:4]
         if(t == 10){
           ## fill in last row even though not used
-
           writecatch <- fore$ForeCatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_or_F))
           idx = nrow(writecatch)
           # mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast2029"), covar = FALSE) ## find what
@@ -314,11 +300,11 @@ SS_autoForecast <- function(rootdir,
 
 
 
-# compname = c('mkapur','Maia Kapur')[1]
+# compname = c('mkapur','Maia Kapur')[2]
 # rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update/ABC_base")
 # catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
 # rootdir = rootdir.temp
-# state = 'high'
+# state = 'base'
 # statesex = 2
 # basedir = "base_2015"
 # catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
