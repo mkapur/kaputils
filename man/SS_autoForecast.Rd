@@ -12,9 +12,9 @@ SS_autoForecast(rootdir, basedir, state = state, statesex = 1,
   2020])
 }
 \arguments{
-\item{rootdir}{somewhere you'd like several models in folders created, eg forecast202X}
+\item{rootdir}{somewhere you'd like the forecasting iteration in folders created, eg forecast202X}
 
-\item{basedir}{directory with executed base-case model -- right now, assumed to be inside rootdir}
+\item{basedir}{directory with executed base-case model -- right now, assumed to be inside \code{rootdir}}
 
 \item{state}{one of low/med/high -- only works for natural mortality at present}
 
@@ -22,7 +22,7 @@ SS_autoForecast(rootdir, basedir, state = state, statesex = 1,
 
 \item{statevals}{a dataframe with columns corresponding to state (labeled low/medium/high), and optionally rows corresponding to Female and Male values}
 
-\item{catch_proportions}{a single or vector of values denoting the allocation proportiosn for each fleet in order matching .dat file; assuming F_relative opt 2}
+\item{catch_proportions}{a single or vector of values denoting the allocation proportions for each fleet in order matching .dat file; assuming \code{_fleet_relative_F == 2}}
 
 \item{forecast_start}{the first year to forecast; assume inputs before this}
 
@@ -33,6 +33,6 @@ SS_autoForecast(rootdir, basedir, state = state, statesex = 1,
 \item{Flimitfraction}{a value or fector of same length as forecast period with P* values corresponding to a given year}
 }
 \description{
-#' \code{SS_autoForecast} beta version of tool to automate catch-only update iterations and development of decision tables
+\code{SS_autoForecast} beta version of tool to automate catch-only update iterations
 hopefully port to r4ss when ready
 }
