@@ -24,8 +24,8 @@ makeDecTable <- function(rootdir,state_names = c("low","base","high"),  catch_na
   if(length(baseCatch) != length(years) | length(row1Catch) != length(years)   |length(row3Catch) != length(years)) {
     stop("length of input catch vectors must match length of input years \n")
   }
-  if(dir(rootdir)) {
-    stop("length of input catch vectors must match length of input years \n")
+  if(length(dir(rootdir)) < 9) {
+    stop("there are less than 9 directories in your root directory, not enough to fill table \n")
   }
 
   YOI <- years
