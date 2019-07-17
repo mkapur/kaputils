@@ -2,7 +2,8 @@
 % Please edit documentation in R/compareNA.R
 \name{compareNA}
 \alias{compareNA}
-\title{compareNA}
+\title{compareNA
+\code{compareNA} taken from R cookbook -- enables comparison of two things (strings/numbers/whatever) that may or may not contain NA. Will return TRUE if both  are equal, including if both are NA.}
 \usage{
 compareNA(v1, v2)
 }
@@ -12,6 +13,7 @@ compareNA(v1, v2)
 \item{v2}{second thing, can be NA}
 }
 \description{
+compareNA
 \code{compareNA} taken from R cookbook -- enables comparison of two things (strings/numbers/whatever) that may or may not contain NA. Will return TRUE if both  are equal, including if both are NA.
 }
 \seealso{
