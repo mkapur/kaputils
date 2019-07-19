@@ -20,7 +20,7 @@ extractResults(rootdir, terminal_year = 2015, pattern = NA,
 \item{FleetName}{optional vector of fleet names for which data should be extracted; all means all}
 }
 \description{
-\code{extract_results} custom wrapper of \code{\link{SS_summarize}} to extract reference points nested SS3 simulations
+\code{extract_results} custom wrapper of \code{SS_summarize} to extract reference points nested SS3 simulations
 }
 \seealso{
 \code{\link[r4ss]}

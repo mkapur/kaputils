@@ -15,5 +15,5 @@ compareNA(v1, v2)
 compareNA
 }
 \seealso{
-\link[ http://www.cookbook-r.com/Manipulating_data/Comparing_vectors_or_factors_with_NA/]
+\link["http://www.cookbook-r.com/Manipulating_data/Comparing_vectors_or_factors_with_NA/"]
 }

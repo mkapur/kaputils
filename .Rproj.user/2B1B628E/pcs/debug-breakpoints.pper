@@ -15,6 +15,21 @@
                 "path" : "C:/Users/mkapur/Dropbox/UW/sab-growth/functions/vb_params_R1.R",
                 "state" : 1,
                 "type" : 1
+            },
+            {
+                "editor_line_number" : 7,
+                "editor_state" : 1,
+                "function_name" : "compareNA",
+                "function_steps" : "2",
+                "id" : 3,
+                "is_package_breakpoint" : true,
+                "is_pending_debug_completion" : false,
+                "line_number" : 7,
+                "needs_updated_steps" : false,
+                "package_name" : "kaputils",
+                "path" : "C:/Users/mkapur/Dropbox/kaputils/R/compareNA.R",
+                "state" : 1,
+                "type" : 0
             }
         ]
     }

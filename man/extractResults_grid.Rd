@@ -17,7 +17,7 @@ extractResults_grid(rootdir, pattern = NA, writeTables = T,
 \item{FleetName}{optional vector of fleet names for which data should be extracted; all means all}
 }
 \description{
-\code{extractResults_grid} custom wrapper for Mako simulation studyof \code{\link{SS_summarize}} to extract reference points nested SS3 simulations
+\code{extractResults_grid} custom wrapper for Mako simulation studyof \code{SS_summarize} to extract reference points nested SS3 simulations
 }
 \seealso{
 \code{\link[r4ss]}
