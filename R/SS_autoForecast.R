@@ -219,7 +219,8 @@ SS_autoForecast <- function(rootdir,
       cat(paste0('Added forecast catch thru year ',forecast_start+(t-2),"\n"))
 
       ## save file
-      SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE)
+      # SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE) ## load this if needed!
+      SS_writeforecast(fore, file = './forecast.ss', overwrite = TRUE)
       ## execute model
       ## manual overwrite fleetrelF
       if(t < foreyrs){
