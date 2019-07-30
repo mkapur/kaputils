@@ -57,4 +57,4 @@ plotMnwtMatrix <- function(summaryoutput, surveydata, fleet = 1, maxage = 30, fi
 }
 
 
-plotMnwtMatrix(summaryoutput, surveydata = Data)
+# plotMnwtMatrix(summaryoutput, fleet = 8, surveydata = Data)
