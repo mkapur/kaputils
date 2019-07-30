@@ -13,7 +13,7 @@ plotMnwtMatrix <- function(summaryoutput, surveydata, fleet = 1, maxage = 30, pn
   survey_summary <- surveydata %>%
     filter(!is.na(Sex) & !is.na(Age) & !is.na(Weight)) %>%
     group_by(Sex, Year, Age, Project) %>%
-    summarise(survey_meanwt = mean(Weight))
+    dplyr::summarise(survey_meanwt = mean(Weight))
 
   model_summary <- summaryoutput$wtatage %>%
     filter(Fleet == fleet) %>%
@@ -34,13 +34,16 @@ plotMnwtMatrix <- function(summaryoutput, surveydata, fleet = 1, maxage = 30, pn
   p <- ggplot(fulldat, aes(x = Year, y = Age)) +
     theme_bw()+
     theme(panel.grid = element_blank(),
-          legend.position = 'bottom') +
+          legend.position = 'bottom',
+          axis.text = element_text(size = 14),
+          axis.title  = element_text(size = 14)) +
     geom_tile(aes(fill = surv_minus_SS)) +
     scale_fill_gradient2() +
     # scale_fill_gradient(low = "white", high = "red") +
-    labs(fill = "Survey Mean Weight - SS mean Weight") +
+    labs(fill = "Survey Mean Weight - SS mean Weight",
+         title = paste0('Survey Mean Weight - Predicted Mean Weight, ',summaryoutput$FleetNames[fleet])) +
     coord_flip() +
-    scale_y_continuous(breaks = seq(0,30,5), sec.axis = dup_axis()) +
+    scale_y_continuous(breaks = seq(0,maxage,5), sec.axis = dup_axis()) +
     scale_x_reverse() +
     geom_text(size = 2, aes(label = round(surv_minus_SS, 2))) +
     facet_wrap(~Sex)
@@ -48,3 +51,5 @@ plotMnwtMatrix <- function(summaryoutput, surveydata, fleet = 1, maxage = 30, pn
   if(png) ggsave(plot = p, filename = file.path(printfolder, "/meanweight_plot.png"))
   return(fulldat)
 }
+
+
