@@ -7,9 +7,13 @@
 #' @param print do you want the plot to save in y
 #' @export
 
-plotMnwtMatrix <- function(summaryoutput, surveydata, fleet = 1, maxage = 30, png = F, printfolder){
+plotMnwtMatrix <- function(summaryoutput, surveydata, fleet = 1, maxage = 30, fillNA = F, png = F, printfolder){
   ## for each age-year-sex combo, compute the difference between SS mean and rawdat
   ## will drop NA sex/age/weights likely losing years, leading to blank
+
+  if(missing(maxage)) warning('maxage not provided; defaulting to 30 years')
+  if(missing(fleet)) warning('fleet not provided; defaulting to 1')
+
   survey_summary <- surveydata %>%
     filter(!is.na(Sex) & !is.na(Age) & !is.na(Weight)) %>%
     group_by(Sex, Year, Age, Project) %>%
@@ -53,3 +57,4 @@ plotMnwtMatrix <- function(summaryoutput, surveydata, fleet = 1, maxage = 30, pn
 }
 
 
+plotMnwtMatrix(summaryoutput, surveydata = Data)
