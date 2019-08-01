@@ -29,11 +29,11 @@ simpleIBM(nboot = 50, simu_year = 100, burn_yr = 20, Inst_M = 0.2,
 
 \item{lw_a}{coefficient of length-weight exponential equation}
 
-\item{lw_b}{exponent of length-weight exponential equation#'}
+\item{lw_b}{exponent of length-weight exponential equation}
 
 \item{r_mat}{slope of maturity ogive}
 
-\item{L50}{length at 50% maturity}
+\item{L50}{length at 50 maturity}
 
 \item{steepBH}{Beverton-holt steepness}
 
