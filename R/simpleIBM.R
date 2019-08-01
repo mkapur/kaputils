@@ -9,10 +9,10 @@
 #' @param L2 terminal length
 #' @param a2 terminal age
 #' @param lw_a coefficient of length-weight exponential equation
-#' @param lw_b exponent of length-weight exponential equation#'
+#' @param lw_b exponent of length-weight exponential equation
 #' @param r_mat slope of maturity ogive
 #' @param lw_b exponent of length-weight exponential equation
-#' @param L50 length at 50% maturity
+#' @param L50 length at 50 maturity
 #' @param steepBH Beverton-holt steepness
 #' @param VBGF_K K as in the von bertalanffy growth function
 #' @export
