@@ -17,8 +17,7 @@
 #' @param steepBH Beverton-holt steepness
 #' @param VBGF_K K as in the von bertalanffy growth function
 #' @export
-simpleIBM <-
-  function(nboot = 50,
+simpleIBM <- function(nboot = 50,
            simu_year = 100,
            burn_yr = 20,
            Inst_M = 0.2,

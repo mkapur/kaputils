@@ -1,5 +1,4 @@
 #' plotKobe_panel
-#'
 #' \code{plotKobe_panel} custom wrapper to loop through nested operating/estimation models and plot using r4ss
 #' @param rootdir master location of all models and (optional) replicates; will search for Report.sso files therein
 #' @param pattern either a pattern to match many models or the full directory name for a single model.
@@ -7,8 +6,7 @@
 #' @param plotcols number of cols per page of PDF
 #' @param saveplot logical. should plots be saved to model directory
 #' @param plotloc folder to save plots; if NA, will save in location of cpue_results
-#' @seealso \code{\link[r4ss]}
-#'
+#' @export
 plotKobe_panel <- function(rootdir,
                        pattern = NA,
                        plotloc = NA,

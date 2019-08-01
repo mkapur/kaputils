@@ -4,6 +4,7 @@
 #' @param saveplot logical. should plots be saved to model directory
 #' @param mods vector of model names as they appear in the cpue_results CSV to use; NA will use all
 #' @param plotloc folder to save plots; if NA, will save in location of cpue_results
+#' @export
 plotCPUE_panel <-
   function(cpue_results,
            saveplot = T,

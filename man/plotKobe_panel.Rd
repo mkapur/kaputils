@@ -2,7 +2,8 @@
 % Please edit documentation in R/plotKobe_panel.R
 \name{plotKobe_panel}
 \alias{plotKobe_panel}
-\title{plotKobe_panel}
+\title{plotKobe_panel
+\code{plotKobe_panel} custom wrapper to loop through nested operating/estimation models and plot using r4ss}
 \usage{
 plotKobe_panel(rootdir, pattern = NA, plotloc = NA, plotrows = 1,
   plotcols = 2, saveplot = T)
@@ -21,8 +22,6 @@ plotKobe_panel(rootdir, pattern = NA, plotloc = NA, plotrows = 1,
 \item{saveplot}{logical. should plots be saved to model directory}
 }
 \description{
+plotKobe_panel
 \code{plotKobe_panel} custom wrapper to loop through nested operating/estimation models and plot using r4ss
-}
-\seealso{
-\code{\link[r4ss]}
 }

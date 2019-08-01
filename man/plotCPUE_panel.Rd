@@ -2,7 +2,8 @@
 % Please edit documentation in R/plotCPUE_panel.R
 \name{plotCPUE_panel}
 \alias{plotCPUE_panel}
-\title{plotCPUE_panel}
+\title{plotCPUE_panel
+\code{plotCPUE_panel} panel plot illustrating fitted CPUE from model(s) and observed/CI}
 \usage{
 plotCPUE_panel(cpue_results, saveplot = T, mods = NA, plotloc = NA,
   pdfrows = 4, pdfcols = 2)
@@ -17,8 +18,6 @@ plotCPUE_panel(cpue_results, saveplot = T, mods = NA, plotloc = NA,
 \item{plotloc}{folder to save plots; if NA, will save in location of cpue_results}
 }
 \description{
+plotCPUE_panel
 \code{plotCPUE_panel} panel plot illustrating fitted CPUE from model(s) and observed/CI
-}
-\seealso{
-\code{\link[r4ss]}
 }

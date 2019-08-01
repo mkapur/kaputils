@@ -2,7 +2,8 @@
 % Please edit documentation in R/plotInputSel.R
 \name{plotInputSel}
 \alias{plotInputSel}
-\title{plotInputSel}
+\title{plotInputSel
+\code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-Sex curves as proposed in SS3 Control File}
 \usage{
 plotInputSel(rootdir, pattern = NA, year = 2016, seltype = c("age",
   "length")[1], plotloc = NA, lmin = 35, lmax = 350, linc = 5,
@@ -16,8 +17,6 @@ plotInputSel(rootdir, pattern = NA, year = 2016, seltype = c("age",
 \item{type}{type of file to be saved}
 }
 \description{
+plotInputSel
 \code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-Sex curves as proposed in SS3 Control File
-}
-\seealso{
-\code{\link[r4ss]}
 }

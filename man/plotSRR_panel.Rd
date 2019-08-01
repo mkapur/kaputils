@@ -37,11 +37,7 @@ plotSRR_panel(rootdir, pattern = NA, saveplot = T, plotloc = NA,
 }
 \description{
 \code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
-
-\code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
 }
 \seealso{
-\code{\link[r4ss]}
-
 \code{\link[r4ss]}
 }
