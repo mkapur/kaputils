@@ -1,17 +1,12 @@
 #' getFrancisLen
-#'
 #' \code{getFrancisLen} straight up copy-paste of https://rdrr.io/cran/r4ss/src/R/SSMethod.TA1.8.R, hacked to generate and save the dataframe
 #' @param fit object generated from SS_output
 #' @param type one of c('age','len','size','con')
-#' @seealso \code{\link[r4ss]}
-#'
-#' ## Code to prep data as used in SSlotMnwt
+#' @export
+## Code to prep data as used in SSlotMnwt
 ## kapurm@uw.edu
 ## Adapted from https://rdrr.io/cran/r4ss/src/R/SSplotMnwt.R
 ## and https://rdrr.io/cran/r4ss/src/R/SSMethod.TA1.8.R
-#' @export
-
-
 
 getFrancisLen <- function(fit,
                               type,

@@ -1,11 +1,9 @@
 #' plotF
-#'
 #' \code{plotF} plots vector of F_std from SS3 report file, with optional overlay of multiple models
 #' @param SPRseries csv
 #' @param saveplot logical. should plots be saved
 #' @param plotloc folder to save plots; if NA, will save in location of cpue_results
-#' @seealso \code{\link[r4ss]}
-
+#' @export
 plotF <- function(SPRseries,
                   saveplot = T,
                   mods = NA,

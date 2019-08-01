@@ -2,7 +2,8 @@
 % Please edit documentation in R/errorTables.R
 \name{errorTables}
 \alias{errorTables}
-\title{errorTables}
+\title{errorTables
+parsing of input selectivity plots to show by-fleet, by-sex curves as proposed in SS3 Control File}
 \usage{
 errorTables(refList, write = T)
 }
@@ -14,8 +15,6 @@ errorTables(refList, write = T)
 \item{type}{type of file to be saved}
 }
 \description{
-\code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-sex curves as proposed in SS3 Control File
-}
-\seealso{
-\code{\link[r4ss]}
+errorTables
+parsing of input selectivity plots to show by-fleet, by-sex curves as proposed in SS3 Control File
 }

@@ -1,12 +1,10 @@
 #' extract_results
-#'
-#' \code{extract_results} custom wrapper of \code{SS_summarize} to extract reference points nested SS3 simulations
+#' \code{extract_results} custom wrapper of to extract reference points nested SS3 simulations
 #' @param rootdir root filepath where all subdirectories containing Report.sso are stored
 #' @param pattern a string that specifically matches all directories with report files of interest.
 #' @param subpattern type of file to be saved
 #' @param writeTables logical. Should a csv of results be saved?
 #' @param FleetName optional vector of fleet names for which data should be extracted; all means all
-#' @seealso \code{\link[r4ss]}
 #' @export
 extractResults <- function(rootdir,
                            terminal_year = 2015,

@@ -1,12 +1,9 @@
 #' plotCPUE_panel
-#'
 #' \code{plotCPUE_panel} panel plot illustrating fitted CPUE from model(s) and observed/CI
 #' @param cpue_results a data frame generated using extract_results()
 #' @param saveplot logical. should plots be saved to model directory
 #' @param mods vector of model names as they appear in the cpue_results CSV to use; NA will use all
 #' @param plotloc folder to save plots; if NA, will save in location of cpue_results
-#' @seealso \code{\link[r4ss]}
-#'
 plotCPUE_panel <-
   function(cpue_results,
            saveplot = T,

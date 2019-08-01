@@ -2,7 +2,8 @@
 % Please edit documentation in R/extractResults_grid.R
 \name{extractResults_grid}
 \alias{extractResults_grid}
-\title{extractResults_grid}
+\title{extractResults_grid
+\code{extractResults_grid} custom wrapper for Mako simulation study to extract reference points nested SS3 simulations}
 \usage{
 extractResults_grid(rootdir, pattern = NA, writeTables = T,
   FleetName = c("S4_JPN_SS", "S7_JPN_GEO", NA)[1])
@@ -17,8 +18,6 @@ extractResults_grid(rootdir, pattern = NA, writeTables = T,
 \item{FleetName}{optional vector of fleet names for which data should be extracted; all means all}
 }
 \description{
-\code{extractResults_grid} custom wrapper for Mako simulation studyof \code{SS_summarize} to extract reference points nested SS3 simulations
-}
-\seealso{
-\code{\link[r4ss]}
+extractResults_grid
+\code{extractResults_grid} custom wrapper for Mako simulation study to extract reference points nested SS3 simulations
 }

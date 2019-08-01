@@ -2,7 +2,8 @@
 % Please edit documentation in R/extractResults.R
 \name{extractResults}
 \alias{extractResults}
-\title{extract_results}
+\title{extract_results
+\code{extract_results} custom wrapper of to extract reference points nested SS3 simulations}
 \usage{
 extractResults(rootdir, terminal_year = 2015, pattern = NA,
   subpattern = NA, writeTables = T, FleetName = c("S4_JPN_SS",
@@ -20,8 +21,6 @@ extractResults(rootdir, terminal_year = 2015, pattern = NA,
 \item{FleetName}{optional vector of fleet names for which data should be extracted; all means all}
 }
 \description{
-\code{extract_results} custom wrapper of \code{SS_summarize} to extract reference points nested SS3 simulations
-}
-\seealso{
-\code{\link[r4ss]}
+extract_results
+\code{extract_results} custom wrapper of to extract reference points nested SS3 simulations
 }

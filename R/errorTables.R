@@ -1,12 +1,9 @@
 #' errorTables
-#'
-#' \code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-sex curves as proposed in SS3 Control File
+#' parsing of input selectivity plots to show by-fleet, by-sex curves as proposed in SS3 Control File
 #' @param moddir filepath where Report.sso is stored
 #' @param write logical. should plots be saved to model directory
 #' @param type type of file to be saved
-#' @seealso \code{\link[r4ss]}
 #' @export
-
 errorTables <- function(refList, write = T){
   ## extract OM
   opmod <- refList[grepl("OM", refList$MOD), ] %>%    melt(id = c("MOD","REP"))

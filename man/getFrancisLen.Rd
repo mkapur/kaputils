@@ -2,7 +2,8 @@
 % Please edit documentation in R/getFrancisLen.R
 \name{getFrancisLen}
 \alias{getFrancisLen}
-\title{getFrancisLen}
+\title{getFrancisLen
+\code{getFrancisLen} straight up copy-paste of https://rdrr.io/cran/r4ss/src/R/SSMethod.TA1.8.R, hacked to generate and save the dataframe}
 \usage{
 getFrancisLen(fit, type, fleet, part = 0:2, pick.gender = 0:3,
   seas = NULL, method = NULL, plotit = TRUE, maxpanel = 1000)
@@ -13,10 +14,6 @@ getFrancisLen(fit, type, fleet, part = 0:2, pick.gender = 0:3,
 \item{type}{one of c('age','len','size','con')}
 }
 \description{
+getFrancisLen
 \code{getFrancisLen} straight up copy-paste of https://rdrr.io/cran/r4ss/src/R/SSMethod.TA1.8.R, hacked to generate and save the dataframe
-}
-\seealso{
-\code{\link[r4ss]}
-
-## Code to prep data as used in SSlotMnwt
 }

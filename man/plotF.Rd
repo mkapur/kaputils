@@ -2,7 +2,8 @@
 % Please edit documentation in R/plotF.R
 \name{plotF}
 \alias{plotF}
-\title{plotF}
+\title{plotF
+\code{plotF} plots vector of F_std from SS3 report file, with optional overlay of multiple models}
 \usage{
 plotF(SPRseries, saveplot = T, mods = NA, plotloc = NA,
   pdfrows = 4, pdfcols = 2)
@@ -15,8 +16,6 @@ plotF(SPRseries, saveplot = T, mods = NA, plotloc = NA,
 \item{plotloc}{folder to save plots; if NA, will save in location of cpue_results}
 }
 \description{
+plotF
 \code{plotF} plots vector of F_std from SS3 report file, with optional overlay of multiple models
-}
-\seealso{
-\code{\link[r4ss]}
 }
