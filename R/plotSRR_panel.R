@@ -1,5 +1,5 @@
 #' plotSRR
-#' \code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
+#' reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
 #' @param rootdir root filepath where all subdirectories containing Report.sso are stored
 #' @param pattern a string that specifically matches all directories with report files of interest.
 #' @param saveplot logical. should plots be saved to model directory

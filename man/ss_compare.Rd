@@ -2,7 +2,8 @@
 % Please edit documentation in R/ss_compare.R
 \name{ss_compare}
 \alias{ss_compare}
-\title{ss_compare}
+\title{ss_compare
+custom wrapper to loop through nested operating/estimation models and plot using r4ss}
 \usage{
 ss_compare(rootdir, subplots = 1:20, plotloc = NA, pattern = "Rep",
   llabels = c(paste0("OMR", 1:2), paste0("EMR", 1:2)), likeCSV = T,
@@ -20,8 +21,6 @@ ss_compare(rootdir, subplots = 1:20, plotloc = NA, pattern = "Rep",
 \item{subpattern}{can be NA; a secondary string by which models will be grouped, e.g. "Replicate"}
 }
 \description{
-\code{ss_compare} custom wrapper to loop through nested operating/estimation models and plot using r4ss
-}
-\seealso{
-\code{\link[r4ss]}
+ss_compare
+custom wrapper to loop through nested operating/estimation models and plot using r4ss
 }

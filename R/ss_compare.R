@@ -1,12 +1,10 @@
 #' ss_compare
-#'
-#' \code{ss_compare} custom wrapper to loop through nested operating/estimation models and plot using r4ss
+#' custom wrapper to loop through nested operating/estimation models and plot using r4ss
 #' @param rootdir master location of all models and (optional) replicates; will search for Report.sso files therein
 #' @param pattern a string which identifies the first-order folders, e.g "EM" "OM" -- applicable to grep().
 #' @param subpattern can be NA; a secondary string by which models will be grouped, e.g. "Replicate"
 #' @param llabels logical. If T, will write a CSV with results.
-#' @seealso \code{\link[r4ss]}
-
+#' @export
 ss_compare <- function(rootdir,
                        subplots = 1:20,
                        plotloc = NA,
