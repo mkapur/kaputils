@@ -1,4 +1,4 @@
-#' plotSRR
+#' plotSRR_panel
 #' reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
 #' @param rootdir root filepath where all subdirectories containing Report.sso are stored
 #' @param pattern a string that specifically matches all directories with report files of interest.
@@ -6,7 +6,6 @@
 #' @param plotloc folder to save plots; if NA, will save in rootdir/plots
 #' @param pdfrows number of rows per page of PDF
 #' @param pdfcols number of cols per page of PDF
-#' @export
 plotSRR_panel <- function(rootdir,
                           pattern = NA,
                           saveplot = T,
@@ -110,26 +109,3 @@ plotSRR_panel <- function(rootdir,
   }
 
 }
-
-## not run
-
-## test with one
-# plotSRR_panel(
-#   rootdir = "G:/MAKO/mako_sim/",
-#   saveplot = T,
-#   pattern = '39',
-#   plotloc = NA,
-#   pdfrows = 1,
-#   pdfcols = 1
-# )
-
-
-## test with all
-# plotSRR_panel(
-#   rootdir = "G:\\MAKO\\mako_sim",
-#   saveplot = T,
-#   pattern = NA,
-#   plotloc = NA,
-#   pdfrows = 2,
-#   pdfcols = 2
-# )

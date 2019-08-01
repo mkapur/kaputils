@@ -1,6 +1,5 @@
 #' simpleIBM
-#' generalized version of IBM used for Kapur et al. growth study (Submitted to Fisheries Research). Right now this has constant M,
-#' and is not set-up to intake fishing mortality (therefore there is no selectivity). The population is initialized at equilibrium.
+#' generalized version of IBM used for Kapur et al. growth study (Submitted to Fisheries Research). Right now this has constant M, and is not set-up to intake fishing mortality (therefore there is no selectivity). The population is initialized at equilibrium.
 #' @param nboot  the number of unique simulations of length simu_year you'd like to generate
 #' @param simu_year number of years to conduct simulation
 #' @param burn_year can be zero; number of year's youd like to remove from the beginning of the simulation

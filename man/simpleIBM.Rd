@@ -3,8 +3,7 @@
 \name{simpleIBM}
 \alias{simpleIBM}
 \title{simpleIBM
-generalized version of IBM used for Kapur et al. growth study (Submitted to Fisheries Research). Right now this has constant M,
-and is not set-up to intake fishing mortality (therefore there is no selectivity). The population is initialized at equilibrium.}
+generalized version of IBM used for Kapur et al. growth study (Submitted to Fisheries Research). Right now this has constant M, and is not set-up to intake fishing mortality (therefore there is no selectivity). The population is initialized at equilibrium.}
 \usage{
 simpleIBM(nboot = 50, simu_year = 100, burn_yr = 20, Inst_M = 0.2,
   L1 = 10, a1 = 1, L2 = 100, a2 = 15, VBGF_K = 0.25,
@@ -44,6 +43,5 @@ simpleIBM(nboot = 50, simu_year = 100, burn_yr = 20, Inst_M = 0.2,
 }
 \description{
 simpleIBM
-generalized version of IBM used for Kapur et al. growth study (Submitted to Fisheries Research). Right now this has constant M,
-and is not set-up to intake fishing mortality (therefore there is no selectivity). The population is initialized at equilibrium.
+generalized version of IBM used for Kapur et al. growth study (Submitted to Fisheries Research). Right now this has constant M, and is not set-up to intake fishing mortality (therefore there is no selectivity). The population is initialized at equilibrium.
 }
