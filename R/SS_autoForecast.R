@@ -71,7 +71,7 @@ SS_autoForecast <- function(rootdir,
     system('ss3 -nohess')
 
   } else{
-    df <- data.frame()
+    # df <- data.frame()
     foreyrs <- forecast_end-forecast_start
     if(!exists(paste0(rootdir,"/forecasts"))) dir.create(paste0(rootdir,"/forecasts"))
     replist0 <- SS_output(paste0(rootdir,"/",basedir), covar = F)
@@ -79,7 +79,7 @@ SS_autoForecast <- function(rootdir,
     if(length(catch_proportions) != replist0$nfishfleets) stop('catch_proportions should have a value for each fleet')
     # if(nrow(fixed_catches) != (forecast_start-1-inityr)) stop('fixed_catches should have a value for years before forecast_start')
     if(ncol(fixed_catches) != replist0$nfishfleets) stop('fixed_catches should have a value for each fleet')
-    for(t in 1:foreyrs){
+    for(t in 1:foreyrs7){
 
       base_temp <- paste0(rootdir,"/forecasts/forecast", (t-1)+forecast_start)
       setwd(rootdir); if(exists(base_temp)) unlink(  paste0(rootdir,"/",base_temp), force = TRUE)
@@ -240,11 +240,11 @@ SS_autoForecast <- function(rootdir,
           # iterOFL[i,'MOD'] <- paste0(basename(list.dirs(rd, recursive = F)[l]))
           iterOFL[i,'YEAR'] <- y
           iterOFL[i,'OFL'] <- ifelse(y > 2020, mod.2030$derived_quants[grep(paste0("OFLCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"],NA)
-          iterOFL[i,'ABC'] <- ABC[i-2020] #ifelse(y > 2020,round(iterOFL[i,'OFL']*c(1,1,Flimitfraction)[y-2018],5),NA)
-          iterOFL[i,'FORECATCH_ACL'] <- FORECATCH[i-2020] #mod.2030$derived_quants[grep(paste0("ForeCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
+          iterOFL[i,'ABC'] <- ABC[i] #ifelse(y > 2020,round(iterOFL[i,'OFL']*c(1,1,Flimitfraction)[y-2018],5),NA)
+          iterOFL[i,'FORECATCH_ACL'] <- FORECATCH[i] #mod.2030$derived_quants[grep(paste0("ForeCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
 
           iterOFL[i,'DEADBIO'] <-  mod.2030$timeseries[, grepl('Yr|dead[(]B', names(mod.2030$timeseries))] %>% filter(Yr == y) %>% select(-Yr) %>% rowSums(.) %>% round(.,2)
-          iterOFL[i,'TRUEBUFFER_045'] <- c(1,1,Flimitfraction)[y-2018]
+          iterOFL[i,'TRUEBUFFER_045'] <- c(1,1,Flimitfraction)[i]
 
           iterOFL[i,'REALIZEDBUFFER'] <-    round(iterOFL[i,'ABC']/iterOFL[i,'OFL'],3)
           iterOFL[i,'SUMMARYBIO'] <- mod.2030$timeseries[mod.2030$timeseries$Yr == y,"Bio_smry"]
