@@ -187,11 +187,15 @@ SS_autoForecast <- function(rootdir,
         ## get previous model
         mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast",(forecast_start+(t-2))), covar = FALSE) ## just load once
 
-        ## get what that model indicated for the terminal year in question
+        ## get what that model indicated for the terminal year in question. This is computed using buffer AND control rule
         OFLCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
+        ForeCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
 
-         ## manually multiply OFL for this year by the buffer
-        input_forecatch <- OFLCatch_thisyear*Flimitfraction[t-1]
+         ## manually multiply OFL for this year by the buffer -- this is the ABC, to save it
+        ABC <- OFLCatch_thisyear*Flimitfraction[t-1]
+
+        input_forecatch <- ForeCatch_thisyear
+
 
         tempForeCatch <- SS_ForeCatch(mod_prev,
                                       yrs = forecast_start+(t-2), ## just do THIS year
@@ -204,7 +208,7 @@ SS_autoForecast <- function(rootdir,
         if(t == 10){
           ## fill in last row even though not used
           writecatch <- fore$ForeCatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_or_F))
-          idx = nrow(writecatch)
+          idx <- nrow(writecatch)
           # mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast2029"), covar = FALSE) ## find what
           # mod prev should still be 2029 (vals thru 2028); find what it says about 2030
           OFLCatch_thisyear <-  mod_prev$derived_quants[grep("OFLCatch_2030", mod_prev$derived_quants$Label),"Value"] #
@@ -212,7 +216,7 @@ SS_autoForecast <- function(rootdir,
           writecatch[idx+1,'Catch_Used'] <- OFLCatch_thisyear*Flimitfraction[10]
           rm(idx)
           write.csv(writecatch,
-                    file = "./tempForeCatch.csv",row.names = FALSE) ## save final year ABC catch
+                    file = "./tempForeCatch_ABC.csv",row.names = FALSE) ## save final year ABC catch. Can manually extract ACL later
         }
       } ## end forecast if t > 1
 
@@ -220,7 +224,8 @@ SS_autoForecast <- function(rootdir,
 
       ## save file
       # SS_writeforecastMK(fore, file = './forecast.ss', overwrite = TRUE) ## load this if needed!
-      SS_writeforecast(fore, file = './forecast.ss', overwrite = TRUE)
+      SS_writeforecastMK(fore, file = './forecast.ss',
+                       overwrite = TRUE)
       ## execute model
       ## manual overwrite fleetrelF
       if(t < foreyrs){
