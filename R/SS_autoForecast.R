@@ -235,7 +235,7 @@ SS_autoForecast <- function(rootdir,
                               'DEPL' = NA) ## sigma 45)
         i <- 1
         ABC[1] <-  mod.2030$derived_quants[grep(paste0("OFLCatch_",2021,collapse = "|"), mod.2030$derived_quants$Label),"Value"]*Flimitfraction[1]
-        FORECATCH_ACL[1] <- mod.2030$derived_quants[grep(paste0("ForeCatch_",2021,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
+        FORECATCH[1] <- mod.2030$derived_quants[grep(paste0("ForeCatch_",2021,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
         for(y in 2021:2030){
           # iterOFL[i,'MOD'] <- paste0(basename(list.dirs(rd, recursive = F)[l]))
           iterOFL[i,'YEAR'] <- y
