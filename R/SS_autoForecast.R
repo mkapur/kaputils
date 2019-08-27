@@ -206,7 +206,7 @@ SS_autoForecast <- function(rootdir,
         # total = df$PredOFL[df$Year %in% (forecast_start+(t-2))]) ## total are the total catches for each year, given by OFLcatch
 
         fore$ForeCatch[(nrow(fore$ForeCatch)+1):(nrow(fore$ForeCatch)+nrow(tempForeCatch)),] <- tempForeCatch[,1:4]
-
+      }
       cat(paste0('Added forecast catch thru year ',forecast_start+(t-2),"\n"))
 
       ## save file
@@ -261,7 +261,7 @@ SS_autoForecast <- function(rootdir,
         write.csv(.,
                   file = "./tempForeCatch_OFL_ABC_ACL.csv",row.names = FALSE) ## save final year ABC catch. Can manually extract ACL later
       }
-      } ## end forecast if t > 1
+      # } ## end forecast if t > 1
 
 
       # if(t == 10){
