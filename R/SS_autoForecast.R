@@ -25,7 +25,7 @@ SS_autoForecast <- function(rootdir,
                             Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]){
   devtools::source_url("https://raw.githubusercontent.com/r4ss/r4ss/development/R/SS_ForeCatch.R") ## use dev version
   # devtools::source_url("https://raw.githubusercontent.com/mkapur/kaputils/master/R/SS_writeforecastMK.R") ## use dev version
-
+  ABC <- FORECATCH <- NULL
   if(state != 'base'){
     ## copy from base 2030; everything should be updated
 
@@ -191,10 +191,11 @@ SS_autoForecast <- function(rootdir,
         OFLCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("OFLCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
         ForeCatch_thisyear <-  mod_prev$derived_quants[grep(paste0("ForeCatch_",(forecast_start+(t-2)),collapse = "|"), mod_prev$derived_quants$Label),"Value"]
 
-         ## manually multiply OFL for this year by the buffer -- this is the ABC, to save it
-        ABC <- OFLCatch_thisyear*Flimitfraction[t-1]
+         ## manually multiply OFL for this year by the buffer -- this is the ABC, for records only
+        ABC[t] <- OFLCatch_thisyear*Flimitfraction[t-1]
 
-        input_forecatch <- ForeCatch_thisyear
+        ## input forecatch -- treated as gospel; save because rounding can distort
+        input_forecatch <- FORECATCH[t] <- ForeCatch_thisyear
 
 
         tempForeCatch <- SS_ForeCatch(mod_prev,
@@ -205,20 +206,6 @@ SS_autoForecast <- function(rootdir,
         # total = df$PredOFL[df$Year %in% (forecast_start+(t-2))]) ## total are the total catches for each year, given by OFLcatch
 
         fore$ForeCatch[(nrow(fore$ForeCatch)+1):(nrow(fore$ForeCatch)+nrow(tempForeCatch)),] <- tempForeCatch[,1:4]
-        if(t == 10){
-          ## fill in last row even though not used
-          writecatch <- fore$ForeCatch %>% filter(Year > 2020) %>% group_by(Year) %>% dplyr::summarise(Catch_Used = sum(Catch_or_F))
-          idx <- nrow(writecatch)
-          # mod_prev <- SS_output(paste0(rootdir,"/forecasts/forecast2029"), covar = FALSE) ## find what
-          # mod prev should still be 2029 (vals thru 2028); find what it says about 2030
-          OFLCatch_thisyear <-  mod_prev$derived_quants[grep("OFLCatch_2030", mod_prev$derived_quants$Label),"Value"] #
-          writecatch[idx+1,'Year'] <- 2030
-          writecatch[idx+1,'Catch_Used'] <- OFLCatch_thisyear*Flimitfraction[10]
-          rm(idx)
-          write.csv(writecatch,
-                    file = "./tempForeCatch_ABC.csv",row.names = FALSE) ## save final year ABC catch. Can manually extract ACL later
-        }
-      } ## end forecast if t > 1
 
       cat(paste0('Added forecast catch thru year ',forecast_start+(t-2),"\n"))
 
@@ -233,6 +220,48 @@ SS_autoForecast <- function(rootdir,
       } else if(t==foreyrs){
         system('ss3') ## run w hessian last time
       }
+
+      ## after all have run, save csv with catch values
+      if(t == 10){
+
+        mod.2030 <- SS_output(getwd())
+        iterOFL <- data.frame('MOD' = NA,'YEAR' = NA, 'OFL' = NA, 'FORECATCH_ACL' = NA,
+                              'DEADBIO' = NA,
+                              'REALIZEDBUFFER' = NA,
+                              'TRUEBUFFER_045' =  NA,
+                              'TRUEBUFFER_025' = NA,
+                              "SUMMARYBIO" = NA,
+                              'SPAWNBIO' = NA,
+                              'DEPL' = NA) ## sigma 45)
+        i <- 1
+        ABC[1] <-  mod.2030$derived_quants[grep(paste0("OFLCatch_",2021,collapse = "|"), mod.2030$derived_quants$Label),"Value"]*Flimitfraction[1]
+        FORECATCH_ACL[1] <- mod.2030$derived_quants[grep(paste0("ForeCatch_",2021,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
+        for(y in 2021:2030){
+          # iterOFL[i,'MOD'] <- paste0(basename(list.dirs(rd, recursive = F)[l]))
+          iterOFL[i,'YEAR'] <- y
+          iterOFL[i,'OFL'] <- ifelse(y > 2020, mod.2030$derived_quants[grep(paste0("OFLCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"],NA)
+          iterOFL[i,'ABC'] <- ABC[i-2020] #ifelse(y > 2020,round(iterOFL[i,'OFL']*c(1,1,Flimitfraction)[y-2018],5),NA)
+          iterOFL[i,'FORECATCH_ACL'] <- FORECATCH[i-2020] #mod.2030$derived_quants[grep(paste0("ForeCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
+
+          iterOFL[i,'DEADBIO'] <-  mod.2030$timeseries[, grepl('Yr|dead[(]B', names(mod.2030$timeseries))] %>% filter(Yr == y) %>% select(-Yr) %>% rowSums(.) %>% round(.,2)
+          iterOFL[i,'TRUEBUFFER_045'] <- c(1,1,Flimitfraction)[y-2018]
+
+          iterOFL[i,'REALIZEDBUFFER'] <-    round(iterOFL[i,'ABC']/iterOFL[i,'OFL'],3)
+          iterOFL[i,'SUMMARYBIO'] <- mod.2030$timeseries[mod.2030$timeseries$Yr == y,"Bio_smry"]
+
+          ## FOR 2019
+          iterOFL[i,'SPAWNBIO'] <-      round(mod.2030$derived_quants[grep(paste0("SSB_",y,collapse = "|"),mod.2030$derived_quants$Label),"Value"],2)
+          iterOFL[i,'DEPL'] <-    round(mod.2030$derived_quants[grep(paste0("Bratio_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"],2) # round(qlnorm(0.25,0,0.5*(1+c(1:10)*0.075)),3)[y-2020]
+
+
+          i <- i+1
+        } ## end yrs
+
+       iterOFL %>% select(YEAR, OFL, ABC, FORECATCH_ACL, TRUEBUFFER_045, DEPL) %>% mutate(isless = (DEPL < .40 & FORECATCH_ACL < ABC)  | DEPL >= 0.4 & FORECATCH_ACL ==ABC)
+        write.csv(.,
+                  file = "./tempForeCatch_OFL_ABC_ACL.csv",row.names = FALSE) ## save final year ABC catch. Can manually extract ACL later
+      }
+      } ## end forecast if t > 1
 
 
       # if(t == 10){
