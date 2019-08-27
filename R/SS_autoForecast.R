@@ -145,7 +145,7 @@ SS_autoForecast <- function(rootdir,
       fore$FirstYear_for_caps_and_allocations <- forecast_start+(t-1)
       fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
       fore$InputBasis <- 2 ## discards
-      fore$ControlRuleMethod <- 3 ## 3: ramp does catch=f(SSB), buffer on catch
+      fore$ControlRuleMethod <- ifelse(replist0$SS_versionNumeric < 3.30,1,3) ## 3: ramp does catch=f(SSB), buffer on catch
 
       ## Now Add Catch data/projections thru the year before forecast_start.
       ## We want to overwrite everything because the 2015 etc catches are no longer projections, they are known
