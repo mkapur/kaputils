@@ -244,7 +244,7 @@ SS_autoForecast <- function(rootdir,
           iterOFL[i,'FORECATCH_ACL'] <- FORECATCH[i] #mod.2030$derived_quants[grep(paste0("ForeCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
 
           iterOFL[i,'DEADBIO'] <-  mod.2030$timeseries[, grepl('Yr|dead[(]B', names(mod.2030$timeseries))] %>% filter(Yr == y) %>% select(-Yr) %>% rowSums(.) %>% round(.,2)
-          iterOFL[i,'TRUEBUFFER_045'] <- c(1,1,Flimitfraction)[i]
+          iterOFL[i,'TRUEBUFFER_045'] <- Flimitfraction[i]
 
           iterOFL[i,'REALIZEDBUFFER'] <-    round(iterOFL[i,'ABC']/iterOFL[i,'OFL'],3)
           iterOFL[i,'SUMMARYBIO'] <- mod.2030$timeseries[mod.2030$timeseries$Yr == y,"Bio_smry"]
