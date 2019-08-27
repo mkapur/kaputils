@@ -240,7 +240,7 @@ SS_autoForecast <- function(rootdir,
           # iterOFL[i,'MOD'] <- paste0(basename(list.dirs(rd, recursive = F)[l]))
           iterOFL[i,'YEAR'] <- y
           iterOFL[i,'OFL'] <- ifelse(y > 2020, mod.2030$derived_quants[grep(paste0("OFLCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"],NA)
-          iterOFL[i,'ABC'] <- mod.2030$derived_quants[grep(paste0("OFLCatch_",2021,collapse = "|"), mod.2030$derived_quants$Label),"Value"]*Flimitfraction[t] #ABC[i] #ifelse(y > 2020,round(iterOFL[i,'OFL']*c(1,1,Flimitfraction)[y-2018],5),NA)
+          iterOFL[i,'ABC'] <- mod.2030$derived_quants[grep(paste0("OFLCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"]*Flimitfraction[i] #ABC[i] #ifelse(y > 2020,round(iterOFL[i,'OFL']*c(1,1,Flimitfraction)[y-2018],5),NA)
           iterOFL[i,'FORECATCH_ACL'] <- FORECATCH[i] #mod.2030$derived_quants[grep(paste0("ForeCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
 
           iterOFL[i,'DEADBIO'] <-  mod.2030$timeseries[, grepl('Yr|dead[(]B', names(mod.2030$timeseries))] %>% filter(Yr == y) %>% select(-Yr) %>% rowSums(.) %>% round(.,2)
