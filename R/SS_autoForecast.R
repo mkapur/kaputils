@@ -257,7 +257,7 @@ SS_autoForecast <- function(rootdir,
           i <- i+1
         } ## end yrs
 
-       iterOFL %>% select(YEAR, OFL, ABC, FORECATCH_ACL, TRUEBUFFER_045, DEPL) %>% mutate(isless = (DEPL < .40 & FORECATCH_ACL < ABC)  | DEPL >= 0.4 & FORECATCH_ACL ==ABC)
+       iterOFL %>% select(YEAR, OFL, ABC, FORECATCH_ACL, TRUEBUFFER_045, DEPL) %>% mutate(isless = (DEPL < .40 & FORECATCH_ACL < ABC)  | DEPL >= 0.4 & FORECATCH_ACL ==ABC) %>%
         write.csv(.,
                   file = "./tempForeCatch_OFL_ABC_ACL.csv",row.names = FALSE) ## save final year ABC catch. Can manually extract ACL later
       }
