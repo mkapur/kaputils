@@ -79,7 +79,7 @@ SS_autoForecast <- function(rootdir,
     if(length(catch_proportions) != replist0$nfishfleets) stop('catch_proportions should have a value for each fleet')
     # if(nrow(fixed_catches) != (forecast_start-1-inityr)) stop('fixed_catches should have a value for years before forecast_start')
     if(ncol(fixed_catches) != replist0$nfishfleets) stop('fixed_catches should have a value for each fleet')
-    for(t in 1:1){
+    for(t in 1:foreyrs){
 
       base_temp <- paste0(rootdir,"/forecasts/forecast", (t-1)+forecast_start)
       setwd(rootdir); if(exists(base_temp)) unlink(  paste0(rootdir,"/",base_temp), force = TRUE)
