@@ -1,7 +1,7 @@
 ## custom GGPLOT2 theme for insertion
 ## adapted from https://jonlefcheck.net/2013/03/11/black-theme-for-ggplot2-2/
 
-theme_black = function(base_size = 12, base_family = "") {
+theme_black <- function(base_size = 12, base_family = "") {
 
   theme_grey(base_size = base_size, base_family = base_family) %+replace%
 
