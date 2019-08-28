@@ -251,7 +251,7 @@ SS_autoForecast <- function(rootdir,
 
           ## FOR 2019
           iterOFL[i,'SPAWNBIO'] <-      round(mod.terminal$derived_quants[grep(paste0("SSB_",y,collapse = "|"),mod.terminal$derived_quants$Label),"Value"],2)
-          iterOFL[i,'DEPL'] <-    round(mod.terminal$derived_quants[grep(paste0("Bratio_",y,collapse = "|"), mod.terminal$derived_quants$Label),"Value"],2) # round(qlnorm(0.25,0,0.5*(1+c(1:10)*0.075)),3)[y-2020]
+          iterOFL[i,'DEPL'] <-    mod.terminal$derived_quants[grep(paste0("Bratio_",y,collapse = "|"), mod.terminal$derived_quants$Label),"Value"] # round(qlnorm(0.25,0,0.5*(1+c(1:10)*0.075)),3)[y-2020]
 
 
           i <- i+1
