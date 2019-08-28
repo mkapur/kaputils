@@ -1,9 +1,13 @@
 {
-    "path" : "C:/Users/mkapur/Dropbox/kaputils/R",
+    "path" : "C:/Users/mkapur/Dropbox/kaputils/man",
     "sortOrder" : [
         {
             "ascending" : true,
             "columnIndex" : 2
+        },
+        {
+            "ascending" : false,
+            "columnIndex" : 4
         }
     ]
 }
