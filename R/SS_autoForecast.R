@@ -222,7 +222,7 @@ SS_autoForecast <- function(rootdir,
       }
 
       ## after all have run, save csv with catch values
-      if(t == 10){
+      if(t == foreyrs){
 
         mod.2030 <- SS_output(getwd())
         iterOFL <- data.frame('MOD' = NA,'YEAR' = NA, 'OFL' = NA, 'FORECATCH_ACL' = NA,
