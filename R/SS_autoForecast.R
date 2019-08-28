@@ -224,7 +224,7 @@ SS_autoForecast <- function(rootdir,
       ## after all have run, save csv with catch values
       if(t == foreyrs){
 
-        mod.2030 <- SS_output(getwd())
+        mod.terminal <- SS_output(getwd())
         iterOFL <- data.frame('MOD' = NA,'YEAR' = NA, 'OFL' = NA, 'FORECATCH_ACL' = NA,
                               'DEADBIO' = NA,
                               'REALIZEDBUFFER' = NA,
@@ -234,24 +234,24 @@ SS_autoForecast <- function(rootdir,
                               'SPAWNBIO' = NA,
                               'DEPL' = NA) ## sigma 45)
         i <- 1
-        # ABC[1] <-  mod.2030$derived_quants[grep(paste0("OFLCatch_",2021,collapse = "|"), mod.2030$derived_quants$Label),"Value"]*Flimitfraction[1]
-        FORECATCH[1] <- mod.2030$derived_quants[grep(paste0("ForeCatch_",2021,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
+        # ABC[1] <-  mod.terminal$derived_quants[grep(paste0("OFLCatch_",2021,collapse = "|"), mod.terminal$derived_quants$Label),"Value"]*Flimitfraction[1]
+        FORECATCH[1] <- mod.terminal$derived_quants[grep(paste0("ForeCatch_",2021,collapse = "|"), mod.terminal$derived_quants$Label),"Value"] %>% round(.,5)
         for(y in 2021:2030){
           # iterOFL[i,'MOD'] <- paste0(basename(list.dirs(rd, recursive = F)[l]))
           iterOFL[i,'YEAR'] <- y
-          iterOFL[i,'OFL'] <- ifelse(y > 2020, mod.2030$derived_quants[grep(paste0("OFLCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"],NA)
-          iterOFL[i,'ABC'] <- mod.2030$derived_quants[grep(paste0("OFLCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"]*Flimitfraction[i] #ABC[i] #ifelse(y > 2020,round(iterOFL[i,'OFL']*c(1,1,Flimitfraction)[y-2018],5),NA)
-          iterOFL[i,'FORECATCH_ACL'] <- FORECATCH[i] #mod.2030$derived_quants[grep(paste0("ForeCatch_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"] %>% round(.,5)
+          iterOFL[i,'OFL'] <- ifelse(y > 2020, mod.terminal$derived_quants[grep(paste0("OFLCatch_",y,collapse = "|"), mod.terminal$derived_quants$Label),"Value"],NA)
+          iterOFL[i,'ABC'] <- mod.terminal$derived_quants[grep(paste0("OFLCatch_",y,collapse = "|"), mod.terminal$derived_quants$Label),"Value"]*Flimitfraction[i] #ABC[i] #ifelse(y > 2020,round(iterOFL[i,'OFL']*c(1,1,Flimitfraction)[y-2018],5),NA)
+          iterOFL[i,'FORECATCH_ACL'] <- FORECATCH[i] #mod.terminal$derived_quants[grep(paste0("ForeCatch_",y,collapse = "|"), mod.terminal$derived_quants$Label),"Value"] %>% round(.,5)
 
-          iterOFL[i,'DEADBIO'] <-  mod.2030$timeseries[, grepl('Yr|dead[(]B', names(mod.2030$timeseries))] %>% filter(Yr == y) %>% select(-Yr) %>% rowSums(.) %>% round(.,2)
+          iterOFL[i,'DEADBIO'] <-  mod.terminal$timeseries[, grepl('Yr|dead[(]B', names(mod.terminal$timeseries))] %>% filter(Yr == y) %>% select(-Yr) %>% rowSums(.) %>% round(.,2)
           iterOFL[i,'TRUEBUFFER_045'] <- Flimitfraction[i]
 
           iterOFL[i,'REALIZEDBUFFER'] <-    round(iterOFL[i,'ABC']/iterOFL[i,'OFL'],3)
-          iterOFL[i,'SUMMARYBIO'] <- mod.2030$timeseries[mod.2030$timeseries$Yr == y,"Bio_smry"]
+          iterOFL[i,'SUMMARYBIO'] <- mod.terminal$timeseries[mod.terminal$timeseries$Yr == y,"Bio_smry"]
 
           ## FOR 2019
-          iterOFL[i,'SPAWNBIO'] <-      round(mod.2030$derived_quants[grep(paste0("SSB_",y,collapse = "|"),mod.2030$derived_quants$Label),"Value"],2)
-          iterOFL[i,'DEPL'] <-    round(mod.2030$derived_quants[grep(paste0("Bratio_",y,collapse = "|"), mod.2030$derived_quants$Label),"Value"],2) # round(qlnorm(0.25,0,0.5*(1+c(1:10)*0.075)),3)[y-2020]
+          iterOFL[i,'SPAWNBIO'] <-      round(mod.terminal$derived_quants[grep(paste0("SSB_",y,collapse = "|"),mod.terminal$derived_quants$Label),"Value"],2)
+          iterOFL[i,'DEPL'] <-    round(mod.terminal$derived_quants[grep(paste0("Bratio_",y,collapse = "|"), mod.terminal$derived_quants$Label),"Value"],2) # round(qlnorm(0.25,0,0.5*(1+c(1:10)*0.075)),3)[y-2020]
 
 
           i <- i+1
