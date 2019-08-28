@@ -224,7 +224,7 @@ SS_autoForecast <- function(rootdir,
       ## after all have run, save csv with catch values
       # if(t == foreyrs){
 
-        mod.terminal <- SS_output(getwd())
+        mod.terminal <- SS_output(base_temp)
         iterOFL <- data.frame('MOD' = NA,'YEAR' = NA, 'OFL' = NA, 'FORECATCH_ACL' = NA,
                               'DEADBIO' = NA,
                               'REALIZEDBUFFER' = NA,
