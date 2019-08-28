@@ -218,11 +218,14 @@ SS_autoForecast <- function(rootdir,
       if(t < foreyrs){
         system('ss3 -nohess') ## works
       } else if(t==foreyrs){
+
+
+
         system('ss3') ## run w hessian last time
-      }
+      # }
 
       ## after all have run, save csv with catch values
-      if(t == foreyrs){
+      # if(t == foreyrs){
 
         mod.terminal <- SS_output(getwd())
         iterOFL <- data.frame('MOD' = NA,'YEAR' = NA, 'OFL' = NA, 'FORECATCH_ACL' = NA,
@@ -264,39 +267,6 @@ SS_autoForecast <- function(rootdir,
       # } ## end forecast if t > 1
 
 
-      # if(t == 10){
-      #
-      #   mod10 <- SS_output(paste0(rootdir,"/forecasts/forecast",forecast_end-1), covar = FALSE)
-      #   YOI <- (replist0$endyr+1):(forecast_end); lYOI <- length(YOI)
-      #   ## this will read the output of the first model and save the OFLs
-      #   ## which will get used to comptue subsequent mods
-      #   ## https://github.com/melmonk/StockAssessment_template/blob/master/8a_Tables.Rmd
-      #   df[1:lYOI,"Year"] <- YOI
-      #   df[1:lYOI,"PredOFL"] <-  mod10$derived_quants[grep(paste0("OFLCatch_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
-      #   df[1:lYOI,"ForeCatch_ABC"] <- mod10$derived_quants[grep(paste0("ForeCatch_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
-      #   endyrABC <- read.csv(paste0(rootdir,'/forecasts/forecast',forecast_end-1,"/tempForeCatch.csv")) ## the ABC which was used
-      #   # df[1:lYOI,"ABC"] <-   endyrABC %>% filter(X.Year %in% YOI) %>% group_by(X.Year) %>% summarise(sumCatch = sum(dead.B.))
-      #   ForecastC.dead = mod10$timeseries[, grepl('Yr|dead[(]B', names(mod10$timeseries))]
-      #   ForecastC.dead$total = rowSums(ForecastC.dead[, -1])
-      #   # ForecastC.ret = mod10$timeseries[, grepl('Yr|retain[(]B', names(mod10$timeseries))]
-      #   # ForecastC.ret$total = rowSums(ForecastC.dead[, -1])
-      #   df[1:lYOI,"ForecastC.dead"] <- subset(ForecastC.dead, Yr %in% YOI)$total ## should equal ForeCatch ABC
-      #   # df[1:lYOI,"ForecastC.ret"] <- subset(ForecastC.ret, Yr %in% YOI)$total
-      #   # df[1:lYOI,"ForecastC.dead+ret"] <- rowSums(cbind(df$ForecastC.dead,df$ForecastC.ret))
-      #   df[1:lYOI,"Age10+Biomass"] <- subset(mod10$timeseries[, c('Yr', 'Bio_smry')], Yr %in% YOI)$Bio_smry
-      #   df[1:lYOI,"SpawnBio"] <-mod10$derived_quants[grep(paste0("SSB_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"]
-      #   df[1:lYOI,"Depletion"] <- paste0(round(mod10$derived_quants[grep(paste0("Bratio_",YOI,collapse = "|"), mod10$derived_quants$Label),"Value"],3)*100,"%")
-      #   for(i in YOI){ ## grab ovserved and/or forecast catch for all fleets f
-      #     df$FiveYrAvgCatch[df$Year == i] <- mean(c(mod10$catch$Obs[mod10$catch$Yr %in% c(i:(i-5))],
-      #                                               mod10$derived_quants[grep(paste0("ForeCatch_",i:(i-5),collapse = "|"), mod10$derived_quants$Label),"Value"]))
-      #   } ## end 5yr avg
-      #   df$PredOFL[df$Year < forecast_start] <- df$ForeCatch_ABC[df$Year < forecast_start]<- NA
-      #   df[,2:4] <- round(df[,2:4],2)
-      #   write.csv(df,file =paste0(rootdir,"/forecasts/decision_table_base.csv"),row.names = FALSE)
-      # }
-      # cat(paste0('Executed model with forecast thru year ',forecast_start+(t-1),"\n"))
-
-      # Step 5c. Iterate through 2030 -- the loop will continue making a new folder each time
 
     } ## end t loop
   } ## end if state == base
@@ -334,36 +304,36 @@ SS_autoForecast <- function(rootdir,
 
 
 
-
+#
 # compname = c('mkapur','Maia Kapur')[2]
-# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update/ABC_base")
-# catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
-# rootdir = rootdir.temp
-# state = 'base'
-# statesex = 2
-# basedir = "base_2015"
-# catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
-# forecast_start = 2021
-# forecast_end = 2031
-# fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
-# Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
-
-# cr.statevals <- data.frame(matrix(NA, ncol = 3, nrow = 1))
-# colnames(cr.statevals) <- c('low','base','high')
-# row.names(cr.statevals) <- c('Fem')
-# cr.statevals$low <- c(0.05)
-# cr.statevals$base <- c(0.07)
-# cr.statevals$high <- c(0.09)
-# statevals <- cr.statevals
-# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_high")
-# catch_projections <- read.csv(paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crNorth_ABC_base/cproj_North.csv"))
+# # rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/blackgill-2019-update/ABC_base")
+# # catch_projections <- read.csv(paste0(rootdir.temp,"/blackgill_proj.csv"))
+# # rootdir = rootdir.temp
+# # state = 'base'
+# # statesex = 2
+# # basedir = "base_2015"
+# # catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
+# # forecast_start = 2021
+# # forecast_end = 2031
+# # fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
+# # Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
+#
+# # cr.statevals <- data.frame(matrix(NA, ncol = 3, nrow = 1))
+# # colnames(cr.statevals) <- c('low','base','high')
+# # row.names(cr.statevals) <- c('Fem')
+# # cr.statevals$low <- c(0.05)
+# # cr.statevals$base <- c(0.07)
+# # cr.statevals$high <- c(0.09)
+# # statevals <- cr.statevals
+# rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crSouth_ABC_base")
+# catch_projections <- read.csv(paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crSouth_ABC_base/cproj_South.csv"))
 # rootdir = rootdir.temp
 # state = 'high'
 # statesex = 1
 # basedir = "base2015"
 # catch_proportions = catch_projections[catch_projections$YEAR == 2021,5:ncol(catch_projections)]
 # forecast_start = 2021
-# forecast_end = 2031
+# forecast_end = 2032
 # fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
 # Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
-
+#
