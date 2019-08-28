@@ -79,7 +79,7 @@ SS_autoForecast <- function(rootdir,
     if(length(catch_proportions) != replist0$nfishfleets) stop('catch_proportions should have a value for each fleet')
     # if(nrow(fixed_catches) != (forecast_start-1-inityr)) stop('fixed_catches should have a value for years before forecast_start')
     if(ncol(fixed_catches) != replist0$nfishfleets) stop('fixed_catches should have a value for each fleet')
-    for(t in 1:foreyrs){
+    for(t in 1:1){
 
       base_temp <- paste0(rootdir,"/forecasts/forecast", (t-1)+forecast_start)
       setwd(rootdir); if(exists(base_temp)) unlink(  paste0(rootdir,"/",base_temp), force = TRUE)
@@ -101,7 +101,7 @@ SS_autoForecast <- function(rootdir,
 
         ## add zeroes to end of par file
         mpar <- readLines("ss3.par")
-        LOI <- grep("Fcast",mpar)+1 ## get line(s) containing data after fcast
+        LOI <- grep("Fcast",mpar)+2 ## get line(s) containing data after fcast
         NewLine <- strsplit(mpar[LOI],"0 ") ## split elements
         length(NewLine[[1]]);length(NewLine[[2]])
 
@@ -218,9 +218,6 @@ SS_autoForecast <- function(rootdir,
       if(t < foreyrs){
         system('ss3 -nohess') ## works
       } else if(t==foreyrs){
-
-
-
         system('ss3') ## run w hessian last time
       # }
 
@@ -318,13 +315,14 @@ SS_autoForecast <- function(rootdir,
 # # fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
 # # Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
 #
-# # cr.statevals <- data.frame(matrix(NA, ncol = 3, nrow = 1))
-# # colnames(cr.statevals) <- c('low','base','high')
-# # row.names(cr.statevals) <- c('Fem')
-# # cr.statevals$low <- c(0.05)
-# # cr.statevals$base <- c(0.07)
-# # cr.statevals$high <- c(0.09)
-# # statevals <- cr.statevals
+# cr.statevals <- data.frame(matrix(NA, ncol = 3, nrow = 1))
+# colnames(cr.statevals) <- c('low','base','high')
+# row.names(cr.statevals) <- c('Fem')
+# cr.statevals$low <- c(0.05)
+# cr.statevals$base <- c(0.07)
+# cr.statevals$high <- c(0.09)
+# statevals <- cr.statevals
+# compname = c('mkapur','Maia Kapur')[2]
 # rootdir.temp <- rootdir <- paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crSouth_ABC_base")
 # catch_projections <- read.csv(paste0("C:/Users/",compname,"/Dropbox/UW/assessments/china_2019_update/chinarock-update-2019/crSouth_ABC_base/cproj_South.csv"))
 # rootdir = rootdir.temp
@@ -336,4 +334,4 @@ SS_autoForecast <- function(rootdir,
 # forecast_end = 2032
 # fixed_catches = catch_projections[catch_projections$YEAR < 2021,5:ncol(catch_projections)]
 # Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >2020]
-#
+# #
