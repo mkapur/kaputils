@@ -1,5 +1,6 @@
-## custom GGPLOT2 theme for insertion
-## adapted from https://jonlefcheck.net/2013/03/11/black-theme-for-ggplot2-2/
+#' custom GGPLOT2 theme for insertion
+#' adapted from https://jonlefcheck.net/2013/03/11/black-theme-for-ggplot2-2/
+#' @export
 
 theme_black <- function(base_size = 12, base_family = "") {
 
