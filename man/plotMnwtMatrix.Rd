@@ -5,8 +5,15 @@
 \title{plotMnwtMatrix
 \code{plotMnwtMatrix} make a colored matrix showing years/sexes where model-estimated mean weight differed from input.}
 \usage{
-plotMnwtMatrix(summaryoutput, surveydata, fleet = 1, maxage = 30,
-  fillNA = F, png = F, printfolder)
+plotMnwtMatrix(
+  summaryoutput,
+  surveydata,
+  fleet = 1,
+  maxage = 30,
+  fillNA = F,
+  png = F,
+  printfolder
+)
 }
 \arguments{
 \item{summaryoutput}{generated via SS_output()}

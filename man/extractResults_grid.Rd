@@ -5,8 +5,12 @@
 \title{extractResults_grid
 \code{extractResults_grid} custom wrapper for Mako simulation study to extract reference points nested SS3 simulations}
 \usage{
-extractResults_grid(rootdir, pattern = NA, writeTables = T,
-  FleetName = c("S4_JPN_SS", "S7_JPN_GEO", NA)[1])
+extractResults_grid(
+  rootdir,
+  pattern = NA,
+  writeTables = T,
+  FleetName = c("S4_JPN_SS", "S7_JPN_GEO", NA)[1]
+)
 }
 \arguments{
 \item{rootdir}{root filepath where all subdirectories containing Report.sso are stored}

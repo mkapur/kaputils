@@ -8,9 +8,20 @@ a function to transpose data from the WCGOP into a usable form for SS.
 returns a table that can be saved/copied into a stock synthesis file.
 are in the traditional format as from the Observer program}
 \usage{
-getWCGOP_len(lcomps, Nsamp = round(runif(13, 113, 554)), fleet,
-  fleetno = 1, lbin_lo = NA, lbin_hi = NA, lbin_inc = NA,
-  month = 1, sex = 0, part, writeTable = F, writeloc = getwd())
+getWCGOP_len(
+  lcomps,
+  Nsamp = round(runif(13, 113, 554)),
+  fleet,
+  fleetno = 1,
+  lbin_lo = NA,
+  lbin_hi = NA,
+  lbin_inc = NA,
+  month = 1,
+  sex = 0,
+  part,
+  writeTable = F,
+  writeloc = getwd()
+)
 }
 \arguments{
 \item{lcomps}{a data frame of length-comps from the WCGOP program}

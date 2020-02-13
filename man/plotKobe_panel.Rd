@@ -5,8 +5,14 @@
 \title{plotKobe_panel
 \code{plotKobe_panel} custom wrapper to loop through nested operating/estimation models and plot using r4ss}
 \usage{
-plotKobe_panel(rootdir, pattern = NA, plotloc = NA, plotrows = 1,
-  plotcols = 2, saveplot = T)
+plotKobe_panel(
+  rootdir,
+  pattern = NA,
+  plotloc = NA,
+  plotrows = 1,
+  plotcols = 2,
+  saveplot = T
+)
 }
 \arguments{
 \item{rootdir}{master location of all models and (optional) replicates; will search for Report.sso files therein}

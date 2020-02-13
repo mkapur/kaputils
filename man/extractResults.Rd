@@ -5,9 +5,14 @@
 \title{extract_results
 \code{extract_results} custom wrapper of to extract reference points nested SS3 simulations}
 \usage{
-extractResults(rootdir, terminal_year = 2015, pattern = NA,
-  subpattern = NA, writeTables = T, FleetName = c("S4_JPN_SS",
-  "S7_JPN_GEO", "All")[3])
+extractResults(
+  rootdir,
+  terminal_year = 2015,
+  pattern = NA,
+  subpattern = NA,
+  writeTables = T,
+  FleetName = c("S4_JPN_SS", "S7_JPN_GEO", "All")[3]
+)
 }
 \arguments{
 \item{rootdir}{root filepath where all subdirectories containing Report.sso are stored}

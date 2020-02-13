@@ -4,9 +4,16 @@
 \alias{makeSeltxt}
 \title{makeSeltxt}
 \usage{
-makeSeltxt(size_csv, size_col = "Measured.Length..cm.",
-  fishery_col = "Fishery", time_col = "Year", sex = F,
-  sex_col = "Sex", sex_vals = c("F", "M"), lBins = seq(50, 250, 5))
+makeSeltxt(
+  size_csv,
+  size_col = "Measured.Length..cm.",
+  fishery_col = "Fishery",
+  time_col = "Year",
+  sex = F,
+  sex_col = "Sex",
+  sex_vals = c("F", "M"),
+  lBins = seq(50, 250, 5)
+)
 }
 \arguments{
 \item{size_csv}{csv with capture information; each row should be a fish, sex optional}

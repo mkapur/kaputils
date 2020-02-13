@@ -5,11 +5,21 @@
 \title{plotKobe_compare
 terminal kobe plot. check out FLR.}
 \usage{
-plotKobe_compare(rootdir, axes.limits = c(2, 2),
-  terminal_year = c(2017, 2017, 2016, 2017), kobe.type = c(NA,
-  "ISC")[1], mq_csv = NA, b.name = NA, f.name = NA, pattern = NA,
-  subpattern = NA, saveplot = T, plotloc = NA, doDistrib = FALSE,
-  doLegend = T)
+plotKobe_compare(
+  rootdir,
+  axes.limits = c(2, 2),
+  terminal_year = c(2017, 2017, 2016, 2017),
+  kobe.type = c(NA, "ISC")[1],
+  mq_csv = NA,
+  b.name = NA,
+  f.name = NA,
+  pattern = NA,
+  subpattern = NA,
+  saveplot = T,
+  plotloc = NA,
+  doDistrib = FALSE,
+  doLegend = T
+)
 }
 \arguments{
 \item{rootdir}{home directory}

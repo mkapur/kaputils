@@ -5,8 +5,14 @@
 \title{plotCPUE_panel
 \code{plotCPUE_panel} panel plot illustrating fitted CPUE from model(s) and observed/CI}
 \usage{
-plotCPUE_panel(cpue_results, saveplot = T, mods = NA, plotloc = NA,
-  pdfrows = 4, pdfcols = 2)
+plotCPUE_panel(
+  cpue_results,
+  saveplot = T,
+  mods = NA,
+  plotloc = NA,
+  pdfrows = 4,
+  pdfcols = 2
+)
 }
 \arguments{
 \item{cpue_results}{a data frame generated using extract_results()}

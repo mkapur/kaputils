@@ -4,9 +4,17 @@
 \alias{getSST}
 \title{GetSST}
 \usage{
-getSST(df, lat = "LAT", lon = "LON", hitrans = T, meanloc = F,
-  grouploc = "Site", info = "erdBAsstamday", dates = c("2012-07-16",
-  "2013-09-16"), buffer = 2)
+getSST(
+  df,
+  lat = "LAT",
+  lon = "LON",
+  hitrans = T,
+  meanloc = F,
+  grouploc = "Site",
+  info = "erdBAsstamday",
+  dates = c("2012-07-16", "2013-09-16"),
+  buffer = 2
+)
 }
 \arguments{
 \item{df}{a dataframe containing latitudes ("LAT") and longitude ("LONG") values, either aggregated by site or individual records}

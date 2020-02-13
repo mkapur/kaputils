@@ -5,9 +5,13 @@
 \title{plotPacific
 A ggplot basemap that is Pacific-centered. Defaults to full North Pacific}
 \usage{
-plotPacific(ew.breaks = c(seq(-120, -170, -10), 180, seq(170, 80, -10)),
-  ns.breaks = seq(0, 60, 10), fillcol = "grey88",
-  bordercol = "skyblue3", alpha = 1)
+plotPacific(
+  ew.breaks = c(seq(-120, -170, -10), 180, seq(170, 80, -10)),
+  ns.breaks = seq(0, 60, 10),
+  fillcol = "grey88",
+  bordercol = "skyblue3",
+  alpha = 1
+)
 }
 \arguments{
 \item{ew.breaks}{in 180-degree centered coordinates, provide your E/W limits and breaks}

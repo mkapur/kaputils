@@ -5,10 +5,24 @@
 \title{simpleIBM
 generalized version of IBM used for Kapur et al. growth study (Submitted to Fisheries Research). Right now this has constant M, and is not set-up to intake fishing mortality (therefore there is no selectivity). The population is initialized at equilibrium.}
 \usage{
-simpleIBM(nboot = 50, simu_year = 100, burn_yr = 20, Inst_M = 0.2,
-  L1 = 10, a1 = 1, L2 = 100, a2 = 15, VBGF_K = 0.25,
-  lw_a = 2e-04, lw_b = 3, r_mat = 0.1, L50 = 44,
-  growth_lognormal_SD = 0.015, steepBH = 0.9, R0 = 10)
+simpleIBM(
+  nboot = 50,
+  simu_year = 100,
+  burn_yr = 20,
+  Inst_M = 0.2,
+  L1 = 10,
+  a1 = 1,
+  L2 = 100,
+  a2 = 15,
+  VBGF_K = 0.25,
+  lw_a = 2e-04,
+  lw_b = 3,
+  r_mat = 0.1,
+  L50 = 44,
+  growth_lognormal_SD = 0.015,
+  steepBH = 0.9,
+  R0 = 10
+)
 }
 \arguments{
 \item{nboot}{the number of unique simulations of length simu_year you'd like to generate}
@@ -38,8 +52,6 @@ simpleIBM(nboot = 50, simu_year = 100, burn_yr = 20, Inst_M = 0.2,
 \item{steepBH}{Beverton-holt steepness}
 
 \item{burn_year}{can be zero; number of year's youd like to remove from the beginning of the simulation}
-
-\item{lw_b}{exponent of length-weight exponential equation}
 }
 \description{
 simpleIBM

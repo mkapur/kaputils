@@ -5,8 +5,16 @@
 \title{plotSens_panel
 a four-panel transparency shade plot for sensitivities}
 \usage{
-plotSens_panel(rootdir, spr_csv = NA, b.name = NA, f.name = NA,
-  pattern = NA, subpattern = NA, plotloc = NA, doLegend = T)
+plotSens_panel(
+  rootdir,
+  spr_csv = NA,
+  b.name = NA,
+  f.name = NA,
+  pattern = NA,
+  subpattern = NA,
+  plotloc = NA,
+  doLegend = T
+)
 }
 \arguments{
 \item{b.name}{the character column name of the biomass ref point; can rename to change y lab}

@@ -4,10 +4,18 @@
 \alias{makeDecTable}
 \title{makeDecTable}
 \usage{
-makeDecTable(rootdir, state_names = c("low", "base", "high"),
-  catch_names = c("constant", "ABC", "upper"), years, baseCatch,
-  row1Catch, row3Catch, round = T, writeTable = F,
-  writeloc = getwd())
+makeDecTable(
+  rootdir,
+  state_names = c("low", "base", "high"),
+  catch_names = c("constant", "ABC", "upper"),
+  years,
+  baseCatch,
+  row1Catch,
+  row3Catch,
+  round = T,
+  writeTable = F,
+  writeloc = getwd()
+)
 }
 \arguments{
 \item{rootdir}{a master folder with all nine executed models.}

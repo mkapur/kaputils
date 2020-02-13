@@ -4,8 +4,13 @@
 \alias{SS_executivesummaryMK}
 \title{A function to create a executive summary tables from an SS Report.sso file}
 \usage{
-SS_executivesummaryMK(dir, plotdir = "default", quant = 0.95,
-  es.only = FALSE, nsex = FALSE)
+SS_executivesummaryMK(
+  dir,
+  plotdir = "default",
+  quant = 0.95,
+  es.only = FALSE,
+  nsex = FALSE
+)
 }
 \arguments{
 \item{dir}{Locates the directory of the files to be read in, double

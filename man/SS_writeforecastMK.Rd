@@ -4,8 +4,14 @@
 \alias{SS_writeforecastMK}
 \title{read Stock Synthesis forecast file into list object in R}
 \usage{
-SS_writeforecastMK(mylist, dir = NULL, file = "forecast.ss",
-  writeAll = FALSE, overwrite = FALSE, verbose = TRUE)
+SS_writeforecastMK(
+  mylist,
+  dir = NULL,
+  file = "forecast.ss",
+  writeAll = FALSE,
+  overwrite = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{file}{Filename either with full path or relative to working directory.}

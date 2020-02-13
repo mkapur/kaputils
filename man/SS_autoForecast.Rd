@@ -4,12 +4,18 @@
 \alias{SS_autoForecast}
 \title{SS_autoForecast}
 \usage{
-SS_autoForecast(rootdir, basedir, state = state, statesex = 1,
-  statevals = 0.05, catch_proportions = c(0.5, 0.08426184, 0.4157382),
-  forecast_start = 2021, forecast_end = 2031,
+SS_autoForecast(
+  rootdir,
+  basedir,
+  state = state,
+  statesex = 1,
+  statevals = 0.05,
+  catch_proportions = c(0.5, 0.08426184, 0.4157382),
+  forecast_start = 2021,
+  forecast_end = 2031,
   fixed_catches = catch_projections[1:4, 5:7],
-  Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR >
-  2020])
+  Flimitfraction = catch_projections$PSTAR_0.45[catch_projections$YEAR > 2020]
+)
 }
 \arguments{
 \item{rootdir}{somewhere you'd like the forecasting iteration in folders created, eg forecast202X}

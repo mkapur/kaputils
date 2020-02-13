@@ -5,11 +5,19 @@
 \title{ss_compare
 custom wrapper to loop through nested operating/estimation models and plot using r4ss}
 \usage{
-ss_compare(rootdir, subplots = 1:20, plotloc = NA, pattern = "Rep",
-  llabels = c(paste0("OMR", 1:2), paste0("EMR", 1:2)), likeCSV = T,
+ss_compare(
+  rootdir,
+  subplots = 1:20,
+  plotloc = NA,
+  pattern = "Rep",
+  llabels = c(paste0("OMR", 1:2), paste0("EMR", 1:2)),
+  likeCSV = T,
   likeLabel = c("Surv_like", "SizeFreq_like:_2"),
   lambdaLabel = c("Surv_lambda", "SizeFreq_lambda:_2"),
-  fishery = "Deep7", fleetIdx = c(2, 3), dolegend = T)
+  fishery = "Deep7",
+  fleetIdx = c(2, 3),
+  dolegend = T
+)
 }
 \arguments{
 \item{rootdir}{master location of all models and (optional) replicates; will search for Report.sso files therein}

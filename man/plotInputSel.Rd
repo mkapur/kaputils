@@ -5,9 +5,18 @@
 \title{plotInputSel
 \code{plotInputSel} parsing of input selectivity plots to show by-fleet, by-Sex curves as proposed in SS3 Control File}
 \usage{
-plotInputSel(rootdir, pattern = NA, year = 2016, seltype = c("age",
-  "length")[1], plotloc = NA, lmin = 35, lmax = 350, linc = 5,
-  pdfrows = 3, pdfcols = 2)
+plotInputSel(
+  rootdir,
+  pattern = NA,
+  year = 2016,
+  seltype = c("age", "length")[1],
+  plotloc = NA,
+  lmin = 35,
+  lmax = 350,
+  linc = 5,
+  pdfrows = 3,
+  pdfcols = 2
+)
 }
 \arguments{
 \item{moddir}{filepath where Report.sso is stored}

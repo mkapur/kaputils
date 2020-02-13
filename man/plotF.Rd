@@ -5,8 +5,14 @@
 \title{plotF
 \code{plotF} plots vector of F_std from SS3 report file, with optional overlay of multiple models}
 \usage{
-plotF(SPRseries, saveplot = T, mods = NA, plotloc = NA,
-  pdfrows = 4, pdfcols = 2)
+plotF(
+  SPRseries,
+  saveplot = T,
+  mods = NA,
+  plotloc = NA,
+  pdfrows = 4,
+  pdfcols = 2
+)
 }
 \arguments{
 \item{SPRseries}{csv}

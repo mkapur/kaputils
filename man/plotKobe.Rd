@@ -5,10 +5,19 @@
 \title{plotKobe
 terminal kobe plot for a singly model. check out FLR.}
 \usage{
-plotKobe(summaryoutput, terminal_only = c(T, F)[1],
-  terminal_year = 2015, axes.limits = c(2, 2), kobe.type = c(NA,
-  "ISC")[1], b.name = NA, f.name = NA, saveplot = T, plotloc = NA,
-  doDistrib = FALSE, doLegend = T)
+plotKobe(
+  summaryoutput,
+  terminal_only = c(T, F)[1],
+  terminal_year = 2015,
+  axes.limits = c(2, 2),
+  kobe.type = c(NA, "ISC")[1],
+  b.name = NA,
+  f.name = NA,
+  saveplot = T,
+  plotloc = NA,
+  doDistrib = FALSE,
+  doLegend = T
+)
 }
 \arguments{
 \item{terminal_only}{Do you only want to show the final year or the whole timeseries?}

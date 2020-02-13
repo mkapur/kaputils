@@ -8,9 +8,17 @@ a function to re-weight observed discard rates from WCGOP data based on pre/post
 returns a table that can be saved/copied into a stock synthesis file. Assumes the ncs/cs dataframes
 are in the traditional format as from the Observer program}
 \usage{
-reweight_discards(ncs, cs, fleet, fleetno = 1, month = 7, years, units,
-  writeTable = F, writeloc = paste0(getwd(), "discard_rates_ss_",
-  Sys.Date(), ".csv"))
+reweight_discards(
+  ncs,
+  cs,
+  fleet,
+  fleetno = 1,
+  month = 7,
+  years,
+  units,
+  writeTable = F,
+  writeloc = paste0(getwd(), "discard_rates_ss_", Sys.Date(), ".csv")
+)
 }
 \arguments{
 \item{ncs}{a data frame of non-catch-shares observer data}

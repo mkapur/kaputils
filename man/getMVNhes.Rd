@@ -5,8 +5,13 @@
 \title{get_mvnhes
 Function to generate mvn from var and corr of log (F/Fmsy) and log(SSB/SSBmsy) extracted from the hessian. Author: Felipe Carvalho}
 \usage{
-getMVNhes(data = out, pars = c("Bratio", "F"), yr = 2017,
-  yr.cov = NULL, mc = 10000)
+getMVNhes(
+  data = out,
+  pars = c("Bratio", "F"),
+  yr = 2017,
+  yr.cov = NULL,
+  mc = 10000
+)
 }
 \arguments{
 \item{rootdir}{home directory}

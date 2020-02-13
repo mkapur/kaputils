@@ -4,25 +4,25 @@
 \alias{plotSRR_panel}
 \title{plotSRR}
 \usage{
-plotSRR_panel(rootdir, pattern = NA, saveplot = T, plotloc = NA,
-  pdfrows = 4, pdfcols = 2)
+plotSRR_panel(
+  rootdir,
+  pattern = NA,
+  saveplot = T,
+  plotloc = NA,
+  pdfrows = 4,
+  pdfcols = 2
+)
 
-plotSRR_panel(rootdir, pattern = NA, saveplot = T, plotloc = NA,
-  pdfrows = 4, pdfcols = 2)
+plotSRR_panel(
+  rootdir,
+  pattern = NA,
+  saveplot = T,
+  plotloc = NA,
+  pdfrows = 4,
+  pdfcols = 2
+)
 }
 \arguments{
-\item{rootdir}{root filepath where all subdirectories containing Report.sso are stored}
-
-\item{pattern}{a string that specifically matches all directories with report files of interest.}
-
-\item{saveplot}{logical. should plots be saved to model directory}
-
-\item{plotloc}{folder to save plots; if NA, will save in rootdir/plots}
-
-\item{pdfrows}{number of rows per page of PDF}
-
-\item{pdfcols}{number of cols per page of PDF}
-
 \item{rootdir}{root filepath where all subdirectories containing Report.sso are stored}
 
 \item{pattern}{a string that specifically matches all directories with report files of interest.}
@@ -38,4 +38,6 @@ plotSRR_panel(rootdir, pattern = NA, saveplot = T, plotloc = NA,
 \description{
 \code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
 }
-
+\seealso{
+\code{\link[r4ss]}
+}
