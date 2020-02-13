@@ -59,13 +59,16 @@ plotInputSel <- function(rootdir,
 
   if(seltype == 'length') {
     seldf0 <-  summaryoutput$sizeselex
+    # if('Seas' %in% names(seldf0))   dropList
 
     seldf <- seldf0 %>%
       plyr::rename(c('Factor'='fctr')) %>% ## breaks if factor
       dplyr::filter(fctr == "Lsel" & Yr == year) %>%
-      dplyr::select(-Yr,-fctr,-Label,-Seas,-Morph) %>%
+      dplyr::select(-fctr,  -Label ) %>%
       reshape2::melt(id = c('Fleet', 'Sex')) %>%
-      dplyr::mutate(variable = as.numeric(as.character(variable)))
+      dplyr::mutate(variable = as.numeric(as.character(variable))) %>%
+      filter(complete.cases(.))
+
   }
 
   if(seltype == 'age'){
