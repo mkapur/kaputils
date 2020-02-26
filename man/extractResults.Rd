@@ -8,14 +8,18 @@
 extractResults(
   rootdir,
   terminal_year = 2015,
+  suffix = NA,
   pattern = NA,
   subpattern = NA,
-  writeTables = T,
-  FleetName = c("S4_JPN_SS", "S7_JPN_GEO", "All")[3]
+  writeTables = T
 )
 }
 \arguments{
 \item{rootdir}{root filepath where all subdirectories containing Report.sso are stored}
+
+\item{terminal_year}{last year for reference pt extraction}
+
+\item{suffix}{optional tag appended to end of CSV filenames; defaults to subpattern or pattern}
 
 \item{pattern}{a string that specifically matches all directories with report files of interest.}
 
