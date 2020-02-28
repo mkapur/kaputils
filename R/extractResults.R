@@ -104,20 +104,18 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
       select(MOD, REP, everything(),-variable)
 
 
-
-
-    if(writeTables == TRUE){
-      write.csv(
-        mqs,
-        paste0(rootdir, "./results/management_quantities_", suff, ".csv"),
-        row.names = FALSE
-      )
-      write.csv(mls,
-                paste0(rootdir, "/results/likelihoods_", suff, ".csv"),
-                row.names = FALSE)
-    }   else{
-      return(list(mqs,mls))
-    }
+   if(writeTables == TRUE){
+     write.csv(
+       mqs,
+       paste0(rootdir, "./results/management_quantities_", suff, ".csv"),
+       row.names = FALSE
+     )
+     write.csv(mls,
+               paste0(rootdir, "/results/likelihoods_", suff, ".csv"),
+               row.names = FALSE)
+   }   else{
+     return(list(mqs,mls))
+   }
 
 
     # SSplotComparisons(mtemp, print = T, plotdir = paste0(rootdir,"/plots/"))
