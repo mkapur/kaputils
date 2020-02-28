@@ -2,7 +2,8 @@
 % Please edit documentation in R/plotSRR.R
 \name{plotSRR}
 \alias{plotSRR}
-\title{plotSRR}
+\title{plotSRR
+\code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model}
 \usage{
 plotSRR(
   rootdir,
@@ -27,6 +28,7 @@ plotSRR(
 \item{pdfcols}{number of cols per page of PDF}
 }
 \description{
+plotSRR
 \code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
 }
 \seealso{
