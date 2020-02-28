@@ -41,6 +41,26 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
     names(mtemp$quants)[1:length(mods)] <- basename(mods)
     names(mtemp$likelihoods)[1:length(mods)] <- basename(mods)
 
+    refList <-  mtemp$quants %>%
+      melt(id = c('Yr', 'Label')) %>%
+      filter(is.na(.$Yr)) %>%
+      # mutate(Label2 = gsub("_.*", "", Label) ,
+      #        idcol  = paste0(variable, Label)) %>%
+      pivot_wider(
+        .,
+        names_from = Label,
+        # id_cols = idcol,
+        values_from = value
+      ) %>%
+      mutate(
+        'Yr' = NA,
+        'MOD' = suff,
+        "IDX" = NA,
+        "REP" = paste0(suff,str_sub(variable, 6, -1))
+      ) %>%
+      select(-Yr, -MOD, REP, -IDX, everything(), -variable)
+
+
  mtemp$quants %>%
       melt(id = c('Yr', 'Label')) %>%
       filter(!is.na(.$Yr)) %>%
@@ -71,24 +91,6 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         row.names = FALSE
       )
 
-   refList <-  mtemp$quants %>%
-      melt(id = c('Yr', 'Label')) %>%
-      filter(is.na(.$Yr)) %>%
-      # mutate(Label2 = gsub("_.*", "", Label) ,
-      #        idcol  = paste0(variable, Label)) %>%
-      pivot_wider(
-        .,
-        names_from = Label,
-        # id_cols = idcol,
-        values_from = value
-      ) %>%
-     mutate(
-       'Yr' = NA,
-       'MOD' = suff,
-       "IDX" = NA,
-       "REP" = paste0(suff,str_sub(variable, 6, -1))
-     ) %>%
-     select(-Yr, -MOD, REP, -IDX, everything(), -variable)
 
 
     mtemp$likelihoods %>%
