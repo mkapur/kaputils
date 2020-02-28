@@ -41,7 +41,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
     names(mtemp$quants)[1:length(mods)] <- basename(mods)
     names(mtemp$likelihoods)[1:length(mods)] <- basename(mods)
 
-    mtemp$quants %>%
+ mtemp$quants %>%
       melt(id = c('Yr', 'Label')) %>%
       filter(!is.na(.$Yr)) %>%
       mutate(Label2 = gsub("_.*", "", Label) ,
@@ -59,11 +59,37 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         "REP" = paste0(suff,str_sub(idcol, 6, -5))
       ) %>%
       select(Yr, MOD, REP, IDX, everything(), -idcol) %>%
+
+      merge(., refList, by.x = c('REP'), by.y = c('REP'), all.y = FALSE) %>%
+   mutate(Yr = Yr.x, MOD = suff, IDX = NA) %>%
+   select(-Yr.y, -Yr.x, -IDX.y, -IDX.x, -MOD.y, -MOD.x) %>%
+   select(Yr, MOD, IDX, REP, everything()) %>%
+
       write.csv(
         .,
         paste0(rootdir, "./results/management_quantities_", suff, ".csv"),
         row.names = FALSE
       )
+
+   refList <-  mtemp$quants %>%
+      melt(id = c('Yr', 'Label')) %>%
+      filter(is.na(.$Yr)) %>%
+      # mutate(Label2 = gsub("_.*", "", Label) ,
+      #        idcol  = paste0(variable, Label)) %>%
+      pivot_wider(
+        .,
+        names_from = Label,
+        # id_cols = idcol,
+        values_from = value
+      ) %>%
+     mutate(
+       'Yr' = NA,
+       'MOD' = suff,
+       "IDX" = NA,
+       "REP" = paste0(suff,str_sub(variable, 6, -1))
+     ) %>%
+     select(-Yr, -MOD, REP, -IDX, everything(), -variable)
+
 
     mtemp$likelihoods %>%
       melt(id = "Label") %>%
