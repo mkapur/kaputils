@@ -9,7 +9,7 @@
 #' @param pdfcols number of cols per page of PDF
 #' @seealso \code{\link[r4ss]}
 #'
-plotSRR_panel <- function(rootdir,
+plotSRR <- function(rootdir,
                           pattern = NA,
                           saveplot = T,
                           plotloc = NA,
