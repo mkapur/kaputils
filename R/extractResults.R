@@ -61,7 +61,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
       select(-Yr, -MOD, REP, -IDX, everything(), -variable)
 
 
- mtemp$quants %>%
+   mqs <-  mtemp$quants %>%
       melt(id = c('Yr', 'Label')) %>%
       filter(!is.na(.$Yr)) %>%
       mutate(Label2 = gsub("_.*", "", Label) ,
@@ -81,15 +81,21 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
       select(Yr, MOD, REP, IDX, everything(), -idcol) %>%
 
       merge(., refList, by.x = c('REP'), by.y = c('REP'), all.y = FALSE) %>%
-   mutate(Yr = Yr.x, MOD = suff, IDX = NA) %>%
-   select(-Yr.y, -Yr.x, -IDX.y, -IDX.x, -MOD.y, -MOD.x) %>%
-   select(Yr, MOD, IDX, REP, everything()) %>%
+      mutate(Yr = Yr.x, MOD = suff, IDX = NA) %>%
+      select(-Yr.y, -Yr.x, -IDX.y, -IDX.x, -MOD.y, -MOD.x) %>%
+      select(Yr, MOD, IDX, REP, everything())
 
-      write.csv(
-        .,
-        paste0(rootdir, "./results/management_quantities_", suff, ".csv"),
-        row.names = FALSE
-      )
+   if(writeTables == TRUE){
+     write.csv(
+       mqs,
+       paste0(rootdir, "./results/management_quantities_", suff, ".csv"),
+       row.names = FALSE
+     )
+
+   }   else{
+     return(mqs)
+   }
+
 
 
 
