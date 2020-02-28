@@ -1,12 +1,11 @@
 #' plotSRR
-#' \code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
+#' reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
 #' @param rootdir root filepath where all subdirectories containing Report.sso are stored
 #' @param pattern a string that specifically matches all directories with report files of interest.
 #' @param saveplot logical. should plots be saved to model directory
 #' @param plotloc folder to save plots; if NA, will save in rootdir/plots
 #' @param pdfrows number of rows per page of PDF
 #' @param pdfcols number of cols per page of PDF
-#' @seealso \code{\link[r4ss]}
 plotSRR <- function(rootdir,
                           pattern = NA,
                           saveplot = T,

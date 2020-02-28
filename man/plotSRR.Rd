@@ -3,7 +3,7 @@
 \name{plotSRR}
 \alias{plotSRR}
 \title{plotSRR
-\code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model}
+reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model}
 \usage{
 plotSRR(
   rootdir,
@@ -29,7 +29,7 @@ plotSRR(
 }
 \description{
 plotSRR
-\code{plotSRR} reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
+reboot of stock-recruit relationship plots from r4ss; plots expected curve and model-fitted estimates from Stock Synthesis Model
 }
 \seealso{
 \code{\link[r4ss]}
