@@ -85,21 +85,10 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
       select(-Yr.y, -Yr.x, -IDX.y, -IDX.x, -MOD.y, -MOD.x) %>%
       select(Yr, MOD, IDX, REP, everything())
 
-   if(writeTables == TRUE){
-     write.csv(
-       mqs,
-       paste0(rootdir, "./results/management_quantities_", suff, ".csv"),
-       row.names = FALSE
-     )
-
-   }   else{
-     return(mqs)
-   }
 
 
 
-
-    mtemp$likelihoods %>%
+   mls <-  mtemp$likelihoods %>%
       melt(id = "Label") %>%
       pivot_wider(
         .,
@@ -112,10 +101,23 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         "IDX" = NA,
         "REP" = sub('OMRep',"",variable)
       ) %>%
-      select(MOD, REP, everything(),-variable) %>%
-      write.csv(.,
+      select(MOD, REP, everything(),-variable)
+
+
+
+
+    if(writeTables == TRUE){
+      write.csv(
+        mqs,
+        paste0(rootdir, "./results/management_quantities_", suff, ".csv"),
+        row.names = FALSE
+      )
+      write.csv(mls,
                 paste0(rootdir, "/results/likelihoods_", suff, ".csv"),
                 row.names = FALSE)
+    }   else{
+      return(list(mqs,mls))
+    }
 
 
     # SSplotComparisons(mtemp, print = T, plotdir = paste0(rootdir,"/plots/"))
