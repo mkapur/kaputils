@@ -6,11 +6,11 @@
 #' @param pattern a string that specifically matches all directories with report files of interest.
 #' @param subpattern type of file to be saved
 #' @param writeTables logical. Should a csv of results be saved?
-#' @param FleetName optional vector of fleet names for which data should be extracted; all means all
 #' @export
 
 extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
-                           pattern = NA,  subpattern = NA, writeTables = T){
+                           pattern = NA,  subpattern = NA,
+                           writeTables = T){
 
   suff <- ifelse(is.na(suffix), ifelse(is.na(subpattern), pattern, subpattern), suffix)
 
@@ -122,8 +122,9 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
   }
   if (!is.na(subpattern)) {
     ## if subpattern provided loop once more
-
+    sIDX <- 0
     for (m in 1:length(mods)) {
+
       ## loop into master file
       modname <- sub('.*\\/', '', mods)[m]
       ## use SS_output function to extract quantities
@@ -139,7 +140,9 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
       for (s in 1:length(subdirs)) {
         ## skip if it's just directory with folders inside
         if (length(list.dirs(subdirs[s], recursive = F)) > 0) next
+
         IDX <-  basename(subdirs)[s]
+        sIDX <- sIDX + 1 ## will be one for first succesful hit
 
 
         ## pull out rep based on file name
@@ -240,12 +243,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
 
 
 
-          if (!exists( paste0(
-            rootdir,
-            "/results/management_quantities_",
-            suff,
-            ".csv"
-          ))) {
+          if (m == 1 & sIDX == 1) {
             ## first mod, first rep
             write.table(
               mtq,
@@ -564,12 +562,12 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
   # } ## end function
 
   # kaputils:::extractResults(
-  # rootdir =   "C:/Users/mkapur/Dropbox/UW/sneak/runs/2020-03-03/";
-  # terminal_year = 2016;
-  # suffix = "EM_E2";
-  # pattern = "OM";
-  # subpattern = "*SpaceLast";
-  # writeTables = T
+# rootdir =   "C:/Users/maia kapur/Dropbox/UW/sneak/runs/2020-03-09-E2/";
+# terminal_year = 2016;
+# suffix = "EM_E2";
+# pattern = "OM";
+# subpattern = "*SpaceLast";
+# writeTables = T
   # )
 
   # kaputils:::extractResults(
