@@ -153,6 +153,27 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
                     covar = F,
                     forecast = F,
                     ncols = 1000)
+        #
+        refList <-  mtemp$derived_quants %>%
+          select(Label, Value) %>%
+          mutate(Yr = gsub(".*_", "", Label)) %>%
+          filter(!(Yr %in% mtemp$startyr:mtemp$endyr)) %>%
+          select(-Yr) %>%
+          pivot_wider(
+            .,
+            names_from = Label,
+            # id_cols = idcol,
+            values_from = Value
+          ) %>%
+          mutate(
+            'Yr' = NA,
+            'MOD' = splitpath1[1],
+            "IDX" = IDX,
+            "REP" = splitpath
+          ) %>%
+          select(-MOD, -REP, IDX, everything())
+
+
 
         mtq <- mtemp$derived_quants %>%
           select(Label, Value) %>%
@@ -169,7 +190,12 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
           mutate('MOD' = splitpath2[1],
                  "IDX" = IDX,
                  "REP" = splitpath) %>%
-          select(Yr, MOD, REP, IDX, everything())
+          select(Yr, MOD, REP, IDX, everything()) %>%
+
+          merge(., refList, by.x = c('IDX'), by.y = c('IDX'), all.y = FALSE) %>%
+          mutate(Yr = Yr.x, MOD = MOD.x, REP = REP.x, IDX = IDX) %>%
+          select(-Yr.y, -Yr.x, -REP.y, -REP.x, -MOD.y, -MOD.x) %>%
+          select(Yr, MOD, IDX, REP, everything())
 
 
        mtl <-  mtemp$likelihoods_used %>%
@@ -214,7 +240,12 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
 
 
 
-          if (m == 1 & s == 1) {
+          if (!exists( paste0(
+            rootdir,
+            "/results/management_quantities_",
+            suff,
+            ".csv"
+          ))) {
             ## first mod, first rep
             write.table(
               mtq,
@@ -535,7 +566,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
   # kaputils:::extractResults(
   # rootdir =   "C:/Users/mkapur/Dropbox/UW/sneak/runs/2020-03-03/";
   # terminal_year = 2016;
-  # suffix = "EM";
+  # suffix = "EM_E2";
   # pattern = "OM";
   # subpattern = "*SpaceLast";
   # writeTables = T
