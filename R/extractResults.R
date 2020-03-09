@@ -22,12 +22,12 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
     mods <- rootdir
   }
 
-  refList = data.frame(
-    "MOD" = NA,
-    "REP" = NA,
-    "F_FMSY" = NA,
-    "SPB_SSBMSY" = NA
-  )
+  # refList = data.frame(
+  #   "MOD" = NA,
+  #   "REP" = NA,
+  #   "F_FMSY" = NA,
+  #   "SPB_SSBMSY" = NA
+  # )
   if (!exists(paste0(rootdir, "/results/")))
     dir.create(paste0(rootdir, "/results/"))
 
@@ -131,6 +131,9 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         list.dirs(., recursive = T) %>%
         .[grepl(subpattern, .)] %>%
         .[!grepl("plots", .)]
+
+      ## jump to next mod if for some reason this is empty (happens w runtime)
+      if(rlang::is_empty(subdirs)) next
 
 
       for (s in 1:length(subdirs)) {
@@ -530,11 +533,11 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
   # } ## end function
 
   # kaputils:::extractResults(
-  # rootdir =   "C:/Users/maia kapur/Dropbox/UW/sneak/runs/2020-02-21/",
-  # terminal_year = 2016,
-  # suffix = NA,
-  # pattern = "OM",
-  # subpattern = "EM",
+  # rootdir =   "C:/Users/mkapur/Dropbox/UW/sneak/runs/2020-03-03/";
+  # terminal_year = 2016;
+  # suffix = "EM";
+  # pattern = "OM";
+  # subpattern = "*SpaceLast";
   # writeTables = T
   # )
 
