@@ -1,5 +1,5 @@
 #' extract_results
-#' \code{extract_results} custom wrapper of to extract reference points nested SS3 simulations
+#' /code{extract_results} custom wrapper of to extract reference points nested SS3 simulations
 #' @param rootdir root filepath where all subdirectories containing Report.sso are stored
 #' @param terminal_year last year for reference pt extraction
 #' @param suffix optional tag appended to end of CSV filenames; defaults to subpattern or pattern
@@ -126,7 +126,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
     for (m in 1:length(mods)) {
 
       ## loop into master file
-      modname <- sub('.*\\/', '', mods)[m]
+      modname <- sub('.*///', '', mods)[m]
       ## use SS_output function to extract quantities
       subdirs <- mods[m] %>%
         list.dirs(., recursive = T) %>%
@@ -144,21 +144,16 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         IDX <-  basename(subdirs)[s]
         sIDX <- sIDX + 1 ## will be one for first succesful hit
 
-
         ## pull out rep based on file name
         splitpath0 <- strsplit(subdirs[s], "/")[[1]]
         splitpath1 <- splitpath0[grep('Rep', splitpath0)]
         splitpath2 <-  sub("Rep*", "", splitpath1)
         splitpath <- ifelse(length(splitpath2) > 1, splitpath2[2], splitpath)
 
-        mtemp <- subdirs[s] %>%
-          SS_output(.,
-                    covar = F,
-                    forecast = F,
-                    ncols = 1000)
-        #
+        mtemp <-   SS_output(subdirs[s], NoCompOK = TRUE, forecast = FALSE)
+        ## REF POINTS
         refList <-  mtemp$derived_quants %>%
-          select(Label, Value) %>%
+          select(Label, Value,StdDev) %>%
           mutate(Yr = gsub(".*_", "", Label)) %>%
           filter(!(Yr %in% mtemp$startyr:mtemp$endyr)) %>%
           select(-Yr) %>%
@@ -166,7 +161,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
             .,
             names_from = Label,
             # id_cols = idcol,
-            values_from = Value
+            values_from = c(StdDev,Value)
           ) %>%
           mutate(
             'Yr' = NA,
@@ -177,22 +172,23 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
           select(-MOD, -REP, IDX, everything())
 
 
-
+        ## time series
         mtq <- mtemp$derived_quants %>%
-          select(Label, Value) %>%
+          select(Label, Value,StdDev) %>%
           mutate(Yr = gsub(".*_", "", Label)) %>%
           filter(Yr %in% mtemp$startyr:mtemp$endyr) %>%
           # filter(!is.na(.$Year)) %>%
-          mutate(Label2 = gsub("_.*", "", Label)) %>%
+          mutate(Label2 = gsub("_.*", "", Label) ) %>%
           pivot_wider(
             .,
             names_from = Label2,
             id_cols = Yr,
-            values_from = Value
+            values_from = c(StdDev,Value)
           ) %>%
           mutate('MOD' = splitpath2[1],
                  "IDX" = IDX,
-                 "REP" = splitpath) %>%
+                 "REP" = splitpath,
+                 "RECDev" = mtemp$recruit$dev[mtemp$recruit$Yr%in% mtemp$startyr:mtemp$endyr ]) %>%
           select(Yr, MOD, REP, IDX, everything()) %>%
 
           merge(., refList, by.x = c('IDX'), by.y = c('IDX'), all.y = FALSE) %>%
@@ -562,7 +558,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
   # } ## end function
 
   # kaputils:::extractResults(
-# rootdir =   "C:/Users/maia kapur/Dropbox/UW/sneak/runs/2020-03-09-E2/";
+# rootdir =   "C:/Users/mkapur/Dropbox/UW/sneak/runs/2020-04-01/";
 # terminal_year = 2016;
 # suffix = "EM_E2";
 # pattern = "OM";
