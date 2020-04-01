@@ -40,8 +40,9 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
 
     names(mtemp$quants)[1:length(mods)] <- basename(mods)
     names(mtemp$likelihoods)[1:length(mods)] <- basename(mods)
+    names(mtemp$quantsSD)[1:length(mods)] <- paste(basename(mods))
 
-    refList <-  mtemp$quants %>%
+    refListSD <-  mtemp$quantsSD %>%
       melt(id = c('Yr', 'Label')) %>%
       filter(is.na(.$Yr)) %>%
       # mutate(Label2 = gsub("_.*", "", Label) ,
@@ -50,18 +51,41 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         .,
         names_from = Label,
         # id_cols = idcol,
-        values_from = value
+        values_from =  c(value)
       ) %>%
       mutate(
-        'Yr' = NA,
+      #   'Yr' = NA,
         'MOD' = suff,
-        "IDX" = NA,
+      #   "IDX" = NA,
         "REP" = paste0(suff,str_sub(variable, 6, -1))
       ) %>%
-      select(-Yr, -MOD, REP, -IDX, everything(), -variable)
+      select( -variable, -Yr)
+    names(refListSD)[1:20] <- paste0('StdDev_', names(refListSD)[1:20])
 
 
-   mqs <-  mtemp$quants %>%
+    refListVal <-  mtemp$quants %>%
+      melt(id = c('Yr', 'Label')) %>%
+      filter(is.na(.$Yr)) %>%
+      # mutate(Label2 = gsub("_.*", "", Label) ,
+      #        idcol  = paste0(variable, Label)) %>%
+      pivot_wider(
+        .,
+        names_from = Label,
+        # id_cols = idcol,
+        values_from =  c(value)
+      ) %>%
+      mutate(
+        # 'Yr' = NA,
+        'MOD' = suff,
+        # "IDX" = NA,
+        "REP" = paste0(suff,str_sub(variable, 6, -1))
+      ) %>%
+      select(-Yr, -MOD, REP, everything(), -variable)
+    names(refListVal)[1:20] <- paste0('Value_',names(refListVal)[1:20])
+
+    refList <- merge(refListVal, refListSD, by = 'REP') %>% mutate(MOD = MOD.x) %>% select(-MOD.x, -MOD.y) %>% select( MOD, REP, everything())
+
+    mqsSD <-  mtemp$quantsSD %>%
       melt(id = c('Yr', 'Label')) %>%
       filter(!is.na(.$Yr)) %>%
       mutate(Label2 = gsub("_.*", "", Label) ,
@@ -78,15 +102,36 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         "IDX" = NA,
         "REP" = paste0(suff,str_sub(idcol, 6, -5))
       ) %>%
-      select(Yr, MOD, REP, IDX, everything(), -idcol) %>%
+      select(-IDX, -idcol, -MOD) %>%
+      select(Yr,  REP, everything()) #
+    names(mqsSD)[3:7] <- paste0('StdDev_',   names(mqsSD)[3:7])
 
-      merge(., refList, by.x = c('REP'), by.y = c('REP'), all.y = FALSE) %>%
-      mutate(Yr = Yr.x, MOD = suff, IDX = NA) %>%
-      select(-Yr.y, -Yr.x, -IDX.y, -IDX.x, -MOD.y, -MOD.x) %>%
-      select(Yr, MOD, IDX, REP, everything())
+   mqsVal <-  mtemp$quants %>%
+      melt(id = c('Yr', 'Label')) %>%
+      filter(!is.na(.$Yr)) %>%
+      mutate(Label2 = gsub("_.*", "", Label) ,
+             idcol  = paste0(variable, Yr)) %>%
+      pivot_wider(
+        .,
+        names_from = Label2,
+        id_cols = idcol,
+        values_from = value
+      ) %>%
+      mutate(
+        'Yr' = str_sub(idcol, -4, -1),
+        'MOD' = suff,
+        "IDX" = NA,
+        "REP" = paste0(suff,str_sub(idcol, 6, -5))
+      ) %>%
+      select(Yr, MOD, REP, IDX, everything(), -idcol) #%>%
+   names(mqsVal)[5:9] <- paste0('Value_',   names(mqsVal)[5:9])
 
-
-
+   mqs <- merge(mqsVal,mqsSD, by = c('Yr','REP')) %>%
+     select(Yr, MOD, REP, IDX, everything())
+     #  merge(., refList, by.x = c('REP'), by.y = c('REP'), all.y = FALSE) %>%
+     #  mutate(Yr = Yr.x, MOD = suff, IDX = NA) %>%
+     #  select(-Yr.y, -Yr.x, -IDX.y, -IDX.x, -MOD.y, -MOD.x) %>%
+     # select(Yr, MOD, IDX, REP, everything())
 
    mls <-  mtemp$likelihoods %>%
       melt(id = "Label") %>%
@@ -108,6 +153,11 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
      write.csv(
        mqs,
        paste0(rootdir, "./results/management_quantities_", suff, ".csv"),
+       row.names = FALSE
+     )
+     write.csv(
+       refList,
+       paste0(rootdir, "./results/reference_points_", suff, ".csv"),
        row.names = FALSE
      )
      write.csv(mls,
@@ -151,6 +201,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         splitpath <- ifelse(length(splitpath2) > 1, splitpath2[2], splitpath)
 
         mtemp <-   SS_output(subdirs[s], NoCompOK = TRUE, forecast = FALSE)
+
         ## REF POINTS
         refList <-  mtemp$derived_quants %>%
           select(Label, Value,StdDev) %>%
@@ -174,7 +225,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
 
         ## time series
         mtq <- mtemp$derived_quants %>%
-          select(Label, Value,StdDev) %>%
+          select(Label, Value, StdDev) %>%
           mutate(Yr = gsub(".*_", "", Label)) %>%
           filter(Yr %in% mtemp$startyr:mtemp$endyr) %>%
           # filter(!is.na(.$Year)) %>%
@@ -187,14 +238,13 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
           ) %>%
           mutate('MOD' = splitpath2[1],
                  "IDX" = IDX,
-                 "REP" = splitpath,
-                 "RECDev" = mtemp$recruit$dev[mtemp$recruit$Yr%in% mtemp$startyr:mtemp$endyr ]) %>%
-          select(Yr, MOD, REP, IDX, everything()) %>%
+                 "REP" = splitpath) %>%
+          select(Yr, MOD, REP, IDX, everything()) #%>%
 
-          merge(., refList, by.x = c('IDX'), by.y = c('IDX'), all.y = FALSE) %>%
-          mutate(Yr = Yr.x, MOD = MOD.x, REP = REP.x, IDX = IDX) %>%
-          select(-Yr.y, -Yr.x, -REP.y, -REP.x, -MOD.y, -MOD.x) %>%
-          select(Yr, MOD, IDX, REP, everything())
+          # merge(., refList, by.x = c('IDX'), by.y = c('IDX'), all.y = FALSE) %>%
+          # mutate(Yr = Yr.x, MOD = MOD.x, REP = REP.x, IDX = IDX) %>%
+          # select(-Yr.y, -Yr.x, -REP.y, -REP.x, -MOD.y, -MOD.x) %>%
+          # select(Yr, MOD, IDX, REP, everything())
 
 
        mtl <-  mtemp$likelihoods_used %>%
@@ -254,6 +304,19 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
               col.names = TRUE,
               sep = ","
             )
+            write.table(
+              refList,
+              append = F,
+              file =  paste0(
+                rootdir,
+                "/results/reference_points_",
+                suff,
+                ".csv"
+              ),
+              row.names = F,
+              col.names = TRUE,
+              sep = ","
+            )
 
             write.table(
               mtl,
@@ -291,6 +354,19 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
               file =  paste0(
                 rootdir,
                 "/results/management_quantities_",
+                suff,
+                ".csv"
+              ),
+              row.names = F,
+              col.names = F,
+              sep = ","
+            )
+            write.table(
+              refList,
+              append = T,
+              file =  paste0(
+                rootdir,
+                "/results/reference_points_",
                 suff,
                 ".csv"
               ),
@@ -560,19 +636,19 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
   # kaputils:::extractResults(
 # rootdir =   "C:/Users/mkapur/Dropbox/UW/sneak/runs/2020-04-01/";
 # terminal_year = 2016;
-# suffix = "EM_E2";
+# suffix = "OM";
 # pattern = "OM";
 # subpattern = "*SpaceLast";
 # writeTables = T
   # )
 
   # kaputils:::extractResults(
-  #   rootdir =   "C:/Users/mkapur/Dropbox/UW/sneak/runs/2020-02-13/",
+  #   rootdir =   "C:/Users/mkapur/Dropbox/UW/sneak/runs/2020-04-01/",
   #   terminal_year = 2016,
   #   pattern = "OM",
+  #   # suffix = "EM",
   #   subpattern = NA,
-  #   writeTables = T,
-  #   FleetName = c("XX","XX","All")[3]
+  #   writeTables = T
   # )
   # ## test with subdir
   # kaputils:::extractResults(
