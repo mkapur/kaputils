@@ -54,9 +54,7 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         values_from =  c(value)
       ) %>%
       mutate(
-      #   'Yr' = NA,
         'MOD' = suff,
-      #   "IDX" = NA,
         "REP" = paste0(suff,str_sub(variable, 6, -1))
       ) %>%
       select( -variable, -Yr)
@@ -75,15 +73,20 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
         values_from =  c(value)
       ) %>%
       mutate(
-        # 'Yr' = NA,
         'MOD' = suff,
-        # "IDX" = NA,
         "REP" = paste0(suff,str_sub(variable, 6, -1))
       ) %>%
       select(-Yr, -MOD, REP, everything(), -variable)
     names(refListVal)[1:20] <- paste0('Value_',names(refListVal)[1:20])
 
-    refList <- merge(refListVal, refListSD, by = 'REP') %>% mutate(MOD = MOD.x) %>% select(-MOD.x, -MOD.y) %>% select( MOD, REP, everything())
+    refList <-
+      merge(refListVal, refListSD, by = 'REP') %>%
+      mutate(
+        MOD = MOD.x,
+        "HESS" = ifelse(!is.null(mtemp$log_det_hessian), mtemp$log_det_hessian, NA),
+        "GRAD" = mtemp$maximum_gradient_component ) %>%
+      select(-MOD.x,-MOD.y) %>%
+      select(MOD, REP, everything())
 
     mqsSD <-  mtemp$quantsSD %>%
       melt(id = c('Yr', 'Label')) %>%
@@ -218,9 +221,11 @@ extractResults <- function(rootdir,  terminal_year = 2015,   suffix = NA,
             'Yr' = NA,
             'MOD' = splitpath1[1],
             "IDX" = IDX,
-            "REP" = splitpath
+            "REP" = splitpath,
+            "HESS" = ifelse(!is.null(mtemp$log_det_hessian), mtemp$log_det_hessian, NA),
+            "GRAD" = mtemp$maximum_gradient_component
           ) %>%
-          select(-MOD, -REP, IDX, everything())
+          select(-MOD, -REP, IDX, HESS, GRAD, everything())
 
 
         ## time series
