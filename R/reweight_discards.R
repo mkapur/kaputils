@@ -18,12 +18,14 @@ reweight_discards <- function(ncs,cs,fleet, fleetno = 1, month = 7,years,units,w
 
 
   for(i in 1:length(fleet)){
-    discard <-  ncs  %>% filter(gear2 == fleet[i]) %>%
+    ncs_temp <- ncs  %>% filter(gear2 == fleet[i])
+    cs_temp <- cs %>% filter(gear2 == fleet[i])
+    discard <- ncs_temp  %>%
       select(yr = ryear, "OBS" = Observed_Ratio, 'sd' = StdDev.Boot_Ratio ) ## raw ncs, with SDs
 
     ## compute re-weighted values for cs years
-    discard_late <- merge(cs %>% select(ryear,'CS_MTS' = Observed_RETAINED.MTS, "CS_RATIO" = Observed_Ratio ) ,
-                          ncs  %>% select(ryear,'NCS_MTS' = Median.Boot_RETAINED.MTS , "NCS_RATIO" = Observed_Ratio ) , by = 'ryear') %>%
+    discard_late <- merge(cs_temp %>% select(ryear,'CS_MTS' = Observed_RETAINED.MTS, "CS_RATIO" = Observed_Ratio ) ,
+                          ncs_temp  %>% select(ryear,'NCS_MTS' = Median.Boot_RETAINED.MTS , "NCS_RATIO" = Observed_Ratio ) , by = 'ryear') %>%
       mutate(tot = CS_MTS+ NCS_MTS) %>%
       group_by(ryear) %>%
       summarise(cs_prop = CS_MTS/tot,
@@ -64,7 +66,7 @@ reweight_discards(
   years,
   writeTable = F,
   writeloc = getwd(),
-  years = 2009:2015
+  years = 2002:2015
 )
 
 
