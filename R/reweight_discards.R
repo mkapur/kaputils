@@ -5,7 +5,7 @@
 #' are in the traditional format as from the Observer program
 #' @param ncs  a data frame of non-catch-shares observer data
 #' @param cs a data frame of catch-shares observer data
-#' @param fleet a string or vector of strings matching values from column gear3
+#' @param fleet a string or vector of strings matching values from column gear2
 #' @param fleetno optional; fill in any number to the "FltSvy" column of the resultant table
 #' @param month optional; fill in a month into the month column of the resultant table
 #' @param years optional; if you'd like to only take a subset of years from the final dataframe
@@ -18,7 +18,7 @@ reweight_discards <- function(ncs,cs,fleet, fleetno = 1, month = 7,years,units,w
 
 
   for(i in 1:length(fleet)){
-    discard <-  ncs  %>% filter(gear3 == fleet[i]) %>%
+    discard <-  ncs  %>% filter(gear2 == fleet[i]) %>%
       select(yr = ryear, "OBS" = Observed_Ratio, 'sd' = StdDev.Boot_Ratio ) ## raw ncs, with SDs
 
     ## compute re-weighted values for cs years
@@ -52,13 +52,20 @@ reweight_discards <- function(ncs,cs,fleet, fleetno = 1, month = 7,years,units,w
 } ## end function
 
 ## not run:
-# setwd("C:/Users/mkapur/Dropbox/UW/assessments/sab_2019/200.00_base_files_29May/100.00_base_files/hklpot_agg")
-# ## read in CSVs and drop  'trawl'
-# cs <- read.csv("sablefish_OB_DisRatios_cs_2019_Coastwide_trawl_fixed_2019-06-27.csv")
-# ncs <- read.csv("sablefish_OB_DisRatios_ncs_2019_Coastwide_trawl_fixed_2019-06-27.csv")
-#
-# reweight_discards(ncs,cs,fleet = 'HLandPot', fleetno = 1, month = 7,years,writeTable = F,
-                  # writeloc = getwd(), years = 2009:2015)
+## read in CSVs and drop  'trawl'
+
+
+reweight_discards(
+  ncs,
+  cs,
+  fleet = 'FixedGears',
+  fleetno = 1,
+  month = 7,
+  years,
+  writeTable = F,
+  writeloc = getwd(),
+  years = 2009:2015
+)
 
 
 
