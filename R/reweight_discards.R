@@ -57,17 +57,17 @@ reweight_discards <- function(ncs,cs,fleet, fleetno = 1, month = 7,years,units,w
 ## read in CSVs and drop  'trawl'
 
 
-reweight_discards(
-  ncs,
-  cs,
-  fleet = 'FixedGears',
-  fleetno = 1,
-  month = 7,
-  years,
-  writeTable = F,
-  writeloc = getwd(),
-  years = 2002:2015
-)
+# reweight_discards(
+#   ncs,
+#   cs,
+#   fleet = 'FixedGears',
+#   fleetno = 1,
+#   month = 7,
+#   years,
+#   writeTable = F,
+#   writeloc = getwd(),
+#   years = 2002:2015
+# )
 
 
 
