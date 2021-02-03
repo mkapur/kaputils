@@ -22,12 +22,12 @@ reweight_discards <- function(ncs,cs,fleet, fleetno = 1, month = 7,years,units,w
       select(yr = ryear, "OBS" = Observed_Ratio, 'sd' = StdDev.Boot_Ratio ) ## raw ncs, with SDs
 
     ## compute re-weighted values for cs years
-    discard_late <- merge(cs %>% select(ryear,'CS_LBS' = Observed_RETAINED.LBS, "CS_RATIO" = Observed_Ratio ) ,
-                          ncs  %>% select(ryear,'NCS_LBS' = Median.Boot_RETAINED.LBS , "NCS_RATIO" = Observed_Ratio ) , by = 'ryear') %>%
-      mutate(tot = CS_LBS+ NCS_LBS) %>%
+    discard_late <- merge(cs %>% select(ryear,'CS_MTS' = Observed_RETAINED.MTS, "CS_RATIO" = Observed_Ratio ) ,
+                          ncs  %>% select(ryear,'NCS_MTS' = Median.Boot_RETAINED.MTS , "NCS_RATIO" = Observed_Ratio ) , by = 'ryear') %>%
+      mutate(tot = CS_MTS+ NCS_MTS) %>%
       group_by(ryear) %>%
-      summarise(cs_prop = CS_LBS/tot,
-                ncs_prop = NCS_LBS/tot,
+      summarise(cs_prop = CS_MTS/tot,
+                ncs_prop = NCS_MTS/tot,
                 cs_propxrate  = cs_prop*CS_RATIO,
                 ncs_propxrate  = ncs_prop*NCS_RATIO,
                 total_disrate = cs_propxrate+ncs_propxrate)
