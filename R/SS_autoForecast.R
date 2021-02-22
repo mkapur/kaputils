@@ -119,7 +119,7 @@ SS_autoForecast <- function(rootdir,
       ## copy from previous year so as to retain proper catches
       if(t>1){
         file.copy(list.files(
-          paste0(rootdir,"/",paste0("forecasts/forecast2021")),
+          paste0(rootdir,"/",paste0("forecasts/forecast2023")),
           full.names = TRUE,
           recursive = TRUE), to = base_temp, overwrite = TRUE)
 
@@ -143,7 +143,9 @@ SS_autoForecast <- function(rootdir,
 
       fore$Nforecastyrs <- forecast_end-replist0$endyr
       fore$FirstYear_for_caps_and_allocations <- forecast_start+(t-1)
-      fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
+      # fore$Ncatch <- replist0$nfishfleets*(t+forecast_start-replist0$endyr-2)
+      fore$Ncatch <- fore$Ncatch +replist0$nfishfleets
+
       fore$InputBasis <- 2 ## discards
       fore$ControlRuleMethod <- ifelse(replist0$SS_versionNumeric < 3.30,1,3) ## 3: ramp does catch=f(SSB), buffer on catch
 
