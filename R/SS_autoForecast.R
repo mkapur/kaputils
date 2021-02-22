@@ -119,7 +119,7 @@ SS_autoForecast <- function(rootdir,
       ## copy from previous year so as to retain proper catches
       if(t>1){
         file.copy(list.files(
-          paste0(rootdir,"/",paste0("forecasts/forecast2023")),
+          paste0(rootdir,"/",paste0("forecasts/forecast",forecast_start)),
           full.names = TRUE,
           recursive = TRUE), to = base_temp, overwrite = TRUE)
 
@@ -156,7 +156,10 @@ SS_autoForecast <- function(rootdir,
         # inityr <- max(fore$ForeCatch$Year)
         inityr <- min(catch_projections$YEAR)-1
         if(inityr == Inf   | inityr == -Inf) inityr <- catch_projections$YEAR[1]-1 ## overwrite if INF
-        fore$ForeCatch <- data.frame('Year' = NA, 'Seas' = NA,'Fleet' = NA, 'Catch_or_F' =NA) ## overwrite entire forecatch
+        fore$ForeCatch <- data.frame('Year' = NA, 'Seas' = NA,
+                                     'Fleet' = NA, 'Catch_or_F' =NA) ## overwrite entire forecatch
+
+
         for(k in 1:(forecast_start-1-inityr)){
           # if(class(term) =='NULL') term <- 0
           term <-  ifelse(k == 1, 0, nrow(fore$ForeCatch) ) ## start from zero first time
